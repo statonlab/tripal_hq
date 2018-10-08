@@ -16,7 +16,7 @@ function tripal_hq_admin_dashboard_form($form, &$form_state) {
     return $form;
   }
 
-  $header = [];
+  $header = ['User', 'Title', 'Status', 'Date Created', 'View'];
   $rows = [];
 
   foreach ($requests as $request) {
@@ -25,16 +25,39 @@ function tripal_hq_admin_dashboard_form($form, &$form_state) {
     $title = $request->title;
     $status = $request->status;
     $created = $request->timestamp;
-
-
     $entity_id = ISSET($request->entity_id) ? $request->entity_id : NULL;
 
+    $user = db_select('public.users', 'u')
+      ->fields('u', ['name', 'mail'])
+      ->condition('uid', $user_id)
+      ->execute()
+      ->fetchObject();
 
+    if (!$user) {
+      tripal_set_message(t("Error looking up user !user", ['!user' => $user_id], TRIPAL_WARNING));
+      continue;
+    }
+
+    $user_row = $user->name . ' (' . $user->mail . ')';
+
+    $row = [
+      $user_row,
+      $title,
+      $status,
+      $created,
+      'View',
+    ];
+    $rows[] = $row;
   }
 
+  $output = theme('table', [
+    'header' => $header,
+    'rows' => $rows,
+  ]);
+  $output .= theme('pager', ['quantity', 20]);
 
+  $form['table'] = ['#markup' => $output];
   return $form;
-
 }
 
 
