@@ -4,23 +4,35 @@
  * Implements hook_menu()
  */
 function tripal_hq_menu() {
-
-
   /**
    * Admin can configure which emails get sent out, more stuff?
    */
-  $items['/admin/tripal/tripal_hq'] = [
+  $items['admin/tripal/tripal_hq'] = [
     'title' => 'Tripal HQ settings',
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_admin_settings.form.inc',
-    'access arguments' => ['admin content'],
+    'access arguments' => ['access tripal_hq admin'],
     'page arguments' => ['tripal_hq_admin_settings_form']
   ];
 
 
-  $items['/tripal_hq/submission_dash/'] = [];
+  //Todo:  rename title to "site_name content" ro something?  Or make configurable?
+  
+  $items['tripal_hq/submission_dash'] = [
+    'title' => 'Tripal HQ User Submission Dashboard',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_user_dashboard.form.inc',
+    'access arguments' => ['access tripal_hq user'],
+    'page arguments' => ['tripal_hq_user_dashboard_form']
+  ];
 
-  $items['/tripal_hq/admin_dash/'] = [];
+  $items['tripal_hq/admin_dash'] = [
+    'title' => 'Tripal HQ Admin Dashboard',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_admin_dashboard.form.inc',
+    'access arguments' => ['access tripal_hq admin'],
+    'page arguments' => ['tripal_hq_admin_dashboard_form']
+  ];
 
   return $items;
 }
