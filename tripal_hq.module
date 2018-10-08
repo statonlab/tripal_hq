@@ -1,0 +1,9 @@
+<?php
+
+/**
+ * Implements hook menu
+ */
+function tripal_hq_menu() {
+
+  return [];
+}

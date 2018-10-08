@@ -2,12 +2,12 @@
 
 /**
  * Implements hook_schema.
+ *
  * @return array
  */
-function tripal_gateway_schema(){
+function tripal_hq_schema() {
 
   $schema = [];
 
   return $schema;
-
 }
