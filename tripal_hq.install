@@ -7,7 +7,42 @@
  */
 function tripal_hq_schema() {
 
-  $schema = [];
+  $schema['tripal_hq_submission'] = [
+    'description' => 'Store pending user requests to create Tripal content',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'uid' => ['description' => "Drupal user ID of submitter"],
+      'title' => [
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ],
+      'status' => [
+        'description' => 'pending, published, rejected, obsolete',
+        'type' => 'varchar',
+        'length' => '60',
+      ],
+      'timestamp' => [
+        'description' => 'Date created',
+      ],
+      'data' => [
+        'description' => 'serialized entity data.',
+        'type' => 'text',
+        'serialize' => TRUE
+      ],
+      'entity_id' => [
+        'description' => 'Tripal Entity ID.  NULL For new create requests.',
+        'type' => 'int',
+      ],
+    ],
+    'primary key' => [
+      'id',
+    ],
+  ];
 
   return $schema;
 }
