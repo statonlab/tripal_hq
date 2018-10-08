@@ -34,6 +34,14 @@ function tripal_hq_menu() {
     'page arguments' => ['tripal_hq_admin_dashboard_form']
   ];
 
+  $items['tripal_hq/admin_dash/view/%'] = [
+    'title' => 'Tripal HQ Approve/Reject',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_admin_approve.form.inc',
+    'access arguments' => ['access tripal_hq admin'],
+    'page arguments' => ['tripal_hq_admin_view_form', 3]
+  ];
+
   return $items;
 }
 
