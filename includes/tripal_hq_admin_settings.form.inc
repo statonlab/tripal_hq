@@ -1,7 +1,9 @@
 <?php
 
 
-function tripal_hq_admin_settings_form(){
+function tripal_hq_admin_settings_form($form, &$form_state){
+
+  $form['instructions'] = [];
 
 }
 
