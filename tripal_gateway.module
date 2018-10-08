@@ -1,0 +1,10 @@
+<?php
+
+
+/**
+ * Implements hook menu
+ */
+function tripal_gateway_menu(){
+  
+  return;
+}

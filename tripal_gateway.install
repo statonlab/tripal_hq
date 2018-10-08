@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * Implements hook_schema.
+ * @return array
+ */
+function tripal_gateway_schema(){
+
+  $schema = [];
+
+  return $schema;
+
+}
