@@ -5,7 +5,7 @@ function tripal_hq_admin_dashboard_form($form, &$form_state) {
   $form['instructions'] = ['#markup' => '<p>User data submissions are listed below.  Click on any row to view that submission.</p>'];
 
 
-  $requests = tripal_hq_fetch_pending_requests();
+  $requests = tripal_hq_fetch_all_requests();
 
   if (!$requests) {
     $form['null'] = [
@@ -20,7 +20,7 @@ function tripal_hq_admin_dashboard_form($form, &$form_state) {
   $rows = [];
 
   foreach ($requests as $request) {
-    $id = $request->id;
+    $request_id = $request->id;
     $user_id = $request->uid;
     $title = $request->title;
     $status = $request->status;
@@ -38,14 +38,14 @@ function tripal_hq_admin_dashboard_form($form, &$form_state) {
       continue;
     }
 
-    $user_row = $user->name . ' (' . $user->mail . ')';
+    $user_row = l( $user->name . ' (' . $user->mail . ')', 'user/' . $user_id);
 
     $row = [
       $user_row,
-      $title,
+      l($title, 'tripal_hq/admin_dash/view/' . $request_id),
       $status,
       $created,
-      'View',
+      l('View', 'tripal_hq/admin_dash/view/' . $request_id),
     ];
     $rows[] = $row;
   }
