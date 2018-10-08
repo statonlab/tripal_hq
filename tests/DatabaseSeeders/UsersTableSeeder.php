@@ -66,5 +66,17 @@ class UsersTableSeeder extends Seeder {
       ->execute();
 
 
+    db_insert('public.tripal_hq_submission')
+      ->fields([
+        'uid' => $user_id,
+        'title' => "this request was seeded and its not approved",
+        'status' => 'pending',
+        'timestamp' => "some second time stamp",
+        'data' => '',
+        'entity_id' => NULL,
+      ])
+      ->execute();
+
+
   }
 }
