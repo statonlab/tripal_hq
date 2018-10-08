@@ -25,9 +25,12 @@ function tripal_hq_schema() {
         'description' => 'pending, published, rejected, obsolete',
         'type' => 'varchar',
         'length' => '60',
+        'not null' => TRUE
       ],
       'timestamp' => [
         'description' => 'Date created',
+        'type' => 'varchar',
+        'length' => '255',
       ],
       'data' => [
         'description' => 'serialized entity data.',
