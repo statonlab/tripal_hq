@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/statonlab/tripal_hq.svg?branch=master)](https://travis-ci.org/statonlab/tripal_hq)
 
-#Tripal HeadQuarters (HQ)
+# Tripal HeadQuarters (HQ)
 
 Tripal HQ provides an administative curation toolbox for your Tripal site.  This means that users are able to create whatever Chado content you'd like them, but withhold inserting it into the database until someone has approved it.
 
