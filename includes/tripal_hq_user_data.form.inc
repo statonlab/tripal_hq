@@ -23,7 +23,6 @@ function tripal_hq_list_bundles_page() {
       continue;
     }
 
-
     $bundle = tripal_load_bundle_entity(['id' => $bundle->id]);
     if (!$bundle) {
       continue;
@@ -158,12 +157,12 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
   // If the submission is pending, update it
   if ($submission && $submission->status === 'pending') {
     db_update('tripal_hq_submission')->condition('id', $submission_id)->fields([
-        'uid' => $user->uid,
-        'title' => $title,
-        'status' => 'pending',
-        'updated_at' => time(),
-        'data' => $serialized,
-      ])->execute();
+      'uid' => $user->uid,
+      'title' => $title,
+      'status' => 'pending',
+      'updated_at' => time(),
+      'data' => $serialized,
+    ])->execute();
 
     return 'updated';
   }
