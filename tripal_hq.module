@@ -1,5 +1,7 @@
 <?php
 
+require_once 'includes/tripal_hq.api.inc';
+
 /**
  * Implements hook_menu()
  */
@@ -51,8 +53,16 @@ function tripal_hq_menu() {
 
   $items['tripal_hq/bio_data/add/%'] = [
     'page callback' => 'drupal_get_form',
-    'page arguments' => ['tripal_hq_add_form'],
+    'page arguments' => ['tripal_hq_user_entity_form', 3],
     'access arguments' => ['access tripal_hq user'],
+    'file' => 'includes/tripal_hq_user_data.form.inc',
+  ];
+
+  $items['tripal_hq/bio_data/edit/%/%'] = [
+    'page callback' => 'drupal_get_form',
+    'page arguments' => ['tripal_hq_user_entity_form', 3, 4],
+    'access arguments' => [4],
+    'access callback' => 'tripal_hq_submission_access',
     'file' => 'includes/tripal_hq_user_data.form.inc',
   ];
 
@@ -85,4 +95,30 @@ function tripal_hq_permission() {
   }
 
   return $permissions;
+}
+
+/**
+ * Determines whether a user has access to view/edit a submission.
+ *
+ * @param $submission_id
+ *
+ * @return bool
+ */
+function tripal_hq_submission_access($submission_id) {
+  global $user;
+
+  // If an admin, allow access to all submissions
+  if (user_access('access tripal_hq admin')) {
+    return TRUE;
+  }
+
+  // Users who don't have an appropriate role don't get to access the page
+  if (!user_access('access tripal_hq user')) {
+    return FALSE;
+  }
+
+  // The last type of allowed user is the submitter
+  $submission = tripal_hq_get_submission_by_id($submission_id);
+
+  return $submission ? $user->uid == $submission->uid : FALSE;
 }

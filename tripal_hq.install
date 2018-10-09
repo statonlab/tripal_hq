@@ -25,26 +25,34 @@ function tripal_hq_schema() {
         'length' => '255',
         'not null' => TRUE,
       ],
-      'status' => [
-        'description' => 'pending, published, rejected, obsolete',
-        'type' => 'varchar',
-        'length' => '60',
-        'not null' => TRUE,
-      ],
-      'timestamp' => [
-        'description' => 'Date created',
-        'type' => 'varchar',
-        'length' => '255',
-      ],
       'data' => [
         'description' => 'serialized entity data.',
-        'type' => 'text',
+        'type' => 'blob',
+        'size' => 'big',
         'serialize' => TRUE,
       ],
       'entity_id' => [
         'description' => 'Tripal Entity ID.  NULL For new create requests.',
         'type' => 'int',
       ],
+      'status' => [
+        'description' => 'pending, published, rejected, obsolete',
+        'type' => 'varchar',
+        'length' => '60',
+        'not null' => TRUE,
+      ],
+      'created_at' => [
+        'description' => 'Date created',
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+      ],
+      'updated_at' => [
+        'description' => 'Date created',
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => FALSE,
+      ]
     ],
     'primary key' => [
       'id',
@@ -52,4 +60,13 @@ function tripal_hq_schema() {
   ];
 
   return $schema;
+}
+
+/**
+ * Uninstall the module.
+ */
+function tripal_hq_uninstall() {
+  if (db_table_exists('tripal_hq_submission')) {
+    db_drop_table('tripal_hq_submission');
+  }
 }

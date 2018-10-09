@@ -58,5 +58,4 @@ function tripal_hq_get_user_submissions($user) {
     ->fetchAll();
 
   return $results;
-
 }
