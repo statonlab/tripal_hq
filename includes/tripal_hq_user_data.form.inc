@@ -90,8 +90,7 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
   $user = user_load_by_name($username);
   $entity->uid = $user->uid;
 
-  $create_date = $form_state['values']['author_date'];
-  $entity->created = $create_date;
+  $entity->created = empty($entity->created) ? time() : $entity->created;
 
   $published = $form_state['values']['status'];
   $entity->status = $published;

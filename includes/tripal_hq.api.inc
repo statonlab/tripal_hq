@@ -29,3 +29,17 @@ function tripal_hq_get_user_submissions($user) {
 
   return $results;
 }
+
+/**
+ * Save and publish the entity.
+ *
+ * @param object $entity The entity object. Normally, this comes from
+ *        unserializing the data field in tripal_hq_submissions table.
+ *
+ * @return bool|int
+ */
+function tripal_hq_publish_entity($entity) {
+  /** @var \TripalEntityController $controller */
+  $controller = entity_get_controller('TripalEntity');
+  return $controller->save($entity);
+}
