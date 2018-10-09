@@ -4,29 +4,32 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
 
   global $user;
   $submissions = tripal_hq_get_user_submissions($user);
-  
 
   //TODO: combine with user_data.form.inc
 
-  $header = ['Title', 'Status', 'Date Submitted', 'View/Edit'];
+  $header = ['Title', 'Status', 'Date Submitted', 'Date Updated', 'View/Edit'];
   $rows = [];
+  $date_format = 'M d Y H:i:s';
   foreach ($submissions as $submission) {
     $id = $submission->id;
     $title = $submission->title;
     $status = $submission->status;
-    $timestamp = $submission->timestamp;
+    $created_at = date($date_format, $submission->created_at);
+    $updated_at = $submission->updated_at ? date($date_format, $submission->updated_at) : '';
     $entity_id = $submission->entity_id;
 
-    $link = l('View/Edit', '/somepath/' . $id);
+    $link = l('View/Edit', '/tripal_hq/bio_data/edit/bundle/' . $id);
 
     if ($entity_id) {
-      $link = l('View/Edit', '/bio_data/' . $entity_id);
+      $link = l('View', '/bio_data/' . $entity_id) . ' ' . l('Edit',
+          'tripal_hq/bio_data/edit/bundle/' . $id);
     }
 
     $rows[] = [
       $title,
-      $status,
-      $timestamp,
+      ucwords($status),
+      $created_at,
+      $updated_at,
       $link,
     ];
   }
@@ -39,23 +42,4 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
 
   $form['my_submissions'] = ['#markup' => $output];
   return $form;
-}
-
-/**
- * Fetch all submissions for a given user (minus serialized data).
- *
- * @param $user
- *
- * @return mixed
- */
-function tripal_hq_get_user_submissions($user) {
-  $uid = $user->uid;
-
-  $results = db_select('public.tripal_hq_submission', 't')
-    ->fields('t', ['id', 'title', 'status', 'timestamp', 'entity_id'])
-    ->condition('uid', $uid)
-    ->execute()
-    ->fetchAll();
-
-  return $results;
 }
