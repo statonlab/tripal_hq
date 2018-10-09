@@ -51,7 +51,7 @@ function tripal_hq_menu() {
 
   $items['tripal_hq/bio_data/add/%'] = [
     'page callback' => 'drupal_get_form',
-    'page arguments' => ['tripal_hq_add_form'],
+    'page arguments' => ['tripal_hq_user_entity_form', 3],
     'access arguments' => ['access tripal_hq user'],
     'file' => 'includes/tripal_hq_user_data.form.inc',
   ];
