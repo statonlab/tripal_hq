@@ -78,6 +78,12 @@ function tripal_hq_user_entity_form(
   return $form;
 }
 
+/**
+ * Handle submission.
+ *
+ * @param $form
+ * @param $form_state
+ */
 function tripal_hq_entity_form_submit($form, &$form_state) {
   $entity = $form_state['TripalEntity'];
   $username = $form_state['values']['author_name'];
@@ -128,6 +134,8 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
 }
 
 /**
+ * Save the fully constructed entity as a submission.
+ *
  * @param $entity
  * @param null $submission_id
  *
