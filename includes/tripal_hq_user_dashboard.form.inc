@@ -4,14 +4,9 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
 
   global $user;
   $submissions = tripal_hq_get_user_submissions($user);
+  
 
-
-  //Get all permissions defined by this module.
-
-  $bundles = tripal_hq_get_permitted_bundles($user);
-  //if (user_access('propose ' . $bundle->name)) {
-
-
+  //TODO: combine with user_data.form.inc
 
   $header = ['Title', 'Status', 'Date Submitted', 'View/Edit'];
   $rows = [];
@@ -21,7 +16,6 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
     $status = $submission->status;
     $timestamp = $submission->timestamp;
     $entity_id = $submission->entity_id;
-
 
     $link = l('View/Edit', '/somepath/' . $id);
 
@@ -36,7 +30,6 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
       $link,
     ];
   }
-
 
   $output = theme('table', [
     'header' => $header,
@@ -67,16 +60,3 @@ function tripal_hq_get_user_submissions($user) {
   return $results;
 
 }
-
-function tripal_hq_get_permitted_bundles($user){
-
-
-  $permissions = module_invoke('tripal_hq', 'permission');
-
-  dpm($permissions);
-  //unset standard permissions.
-
-
-
-}
-//if (user_access('propose ' . $bundle->name)) {
