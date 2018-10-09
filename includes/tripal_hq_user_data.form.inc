@@ -15,10 +15,10 @@ function tripal_hq_list_bundles_page() {
     '#markup' => t('Page description with instructions will go here'),
     '#suffix' => '</p>',
   ];
-  
+
   $bundles = tripal_get_content_types();
   foreach ($bundles as $bundle) {
-    if(!user_access("propose $bundle->name")) {
+    if (!user_access("propose $bundle->name")) {
       continue;
     }
 
