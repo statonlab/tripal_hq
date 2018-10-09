@@ -38,7 +38,8 @@ function tripal_hq_schema() {
       ],
       'data' => [
         'description' => 'serialized entity data.',
-        'type' => 'text',
+        'type' => 'blob',
+        'size' => 'big',
         'serialize' => TRUE,
       ],
       'entity_id' => [
