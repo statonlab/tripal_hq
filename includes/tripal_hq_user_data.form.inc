@@ -43,6 +43,7 @@ function tripal_hq_list_bundles_page() {
  *
  * @param array $form
  * @param array $form_state
+ *
  * @return array
  */
 function tripal_hq_user_entity_form(
@@ -68,7 +69,12 @@ function tripal_hq_user_entity_form(
     unset($form['#submit'][$index]);
   }
   $form['#submit'][] = 'tripal_hq_entity_form_submit';
-
+  if ($submission_id) {
+    $form['submission_id'] = [
+      '#type' => 'hidden',
+      '#value' => $submission_id,
+    ];
+  }
   return $form;
 }
 
@@ -108,24 +114,60 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
 
   $entity = entity_ui_controller('TripalEntity')->entityFormSubmitBuildEntity($form,
     $form_state);
-  /** @var \TripalEntityController $controller */
+  $submission_id = isset($form_state['values']['submission_id']) ? $form_state['values']['submission_id'] : NULL;
+
+  $op = tripal_hq_save_submission($entity, $submission_id);
+  if ($op === 'inserted') {
+    drupal_set_message('Submission created successfully. We will review your submission and get back to you shortly.');
+  }
+  else {
+    drupal_set_message('Submission updated successfully. We will review your submission and get back to you shortly.');
+  }
+
+  drupal_goto('tripal_hq/submission_dash');
+}
+
+/**
+ * @param $entity
+ * @param null $submission_id
+ *
+ * @return string 'updated' or 'inserted'
+ */
+function tripal_hq_save_submission($entity, $submission_id = NULL) {
+  global $user;
+  $serialized = serialize($entity);
+  $submission = NULL;
+  if ($submission_id) {
+    $submission = tripal_hq_get_submission_by_id($submission_id);
+  }
+
   $bundle = tripal_load_bundle_entity(['name' => $entity->bundle]);
   $title = tripal_get_title_format($bundle);
   $title = tripal_replace_entity_tokens($title, $entity, $bundle);
   $entity->title = $title;
-  $serialized = serialize($entity);
 
-  global $user;
+  // If the submission is pending, update it
+  if ($submission && $submission->status === 'pending') {
+    db_update('tripal_hq_submission')->condition('id', $submission_id)->fields([
+        'uid' => $user->uid,
+        'title' => $title,
+        'status' => 'pending',
+        'updated_at' => time(),
+        'data' => $serialized,
+      ])->execute();
+
+    return 'updated';
+  }
+
+  // Create a new submission
   db_insert('tripal_hq_submission')->fields([
     'uid' => $user->uid,
     'title' => $title,
     'status' => 'pending',
-    'timestamp' => time(),
+    'created_at' => time(),
     'data' => $serialized,
     'entity_id' => NULL,
   ])->execute();
 
-  drupal_set_message('Submission created successfully. We will review your submission and get back to you shortly.');
-
-  drupal_goto('tripal_hq/submission_dash');
+  return 'inserted';
 }
