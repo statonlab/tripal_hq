@@ -19,7 +19,7 @@ function tripal_hq_list_bundles_page() {
 
   $bundles = tripal_get_content_types();
   foreach ($bundles as $bundle) {
-    if (!user_access("propose $bundle->label content")) {
+    if (!user_access("propose $bundle->name")) {
       continue;
     }
 
