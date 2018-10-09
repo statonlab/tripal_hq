@@ -115,5 +115,7 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
     'entity_id' => null
   ])->execute();
 
+  drupal_set_message('Submission created successfully. We will review your submission and get back to you shortly.');
+
   drupal_goto('tripal_hq/submission_dash');
 }
