@@ -43,14 +43,24 @@ function tripal_hq_list_bundles_page() {
  *
  * @param array $form
  * @param array $form_state
+ * @return array
  */
 function tripal_hq_user_entity_form(
   $form,
   &$form_state,
   $bundle_id,
-  $entity_id = NULL
+  $submission_id = NULL
 ) {
-  $form = tripal_entity_form($form, $form_state, $bundle_id);
+  $entity = NULL;
+  if ($submission_id) {
+    $submission = tripal_hq_get_submission_by_id($submission_id);
+    if (empty($submission)) {
+      drupal_not_found();
+      return [];
+    }
+    $entity = unserialize($submission->data);
+  }
+  $form = tripal_entity_form($form, $form_state, $bundle_id, $entity);
 
   // Remove the original submit function and replace it with ours
   $index = array_search('tripal_entity_form_submit', $form['#submit']);
@@ -112,7 +122,7 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
     'status' => 'pending',
     'timestamp' => time(),
     'data' => $serialized,
-    'entity_id' => null
+    'entity_id' => NULL,
   ])->execute();
 
   drupal_set_message('Submission created successfully. We will review your submission and get back to you shortly.');
