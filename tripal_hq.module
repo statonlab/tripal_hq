@@ -12,18 +12,17 @@ function tripal_hq_menu() {
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_admin_settings.form.inc',
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments' => ['tripal_hq_admin_settings_form']
+    'page arguments' => ['tripal_hq_admin_settings_form'],
   ];
 
-
   //Todo:  rename title to "site_name content" ro something?  Or make configurable?
-  
+
   $items['tripal_hq/submission_dash'] = [
     'title' => 'Tripal HQ User Submission Dashboard',
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_user_dashboard.form.inc',
     'access arguments' => ['access tripal_hq user'],
-    'page arguments' => ['tripal_hq_user_dashboard_form']
+    'page arguments' => ['tripal_hq_user_dashboard_form'],
   ];
 
   $items['tripal_hq/admin_dash'] = [
@@ -31,7 +30,7 @@ function tripal_hq_menu() {
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_admin_dashboard.form.inc',
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments' => ['tripal_hq_admin_dashboard_form']
+    'page arguments' => ['tripal_hq_admin_dashboard_form'],
   ];
 
   $items['tripal_hq/admin_dash/view/%'] = [
@@ -39,27 +38,51 @@ function tripal_hq_menu() {
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_admin_approve.form.inc',
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments' => ['tripal_hq_admin_view_form', 3]
+    'page arguments' => ['tripal_hq_admin_view_form', 3],
+  ];
+
+  // Content control (adding/deleting/editing)
+  $items['tripal_hq/bio_data/add'] = [
+    'title' => 'Content Types',
+    'page callback' => 'tripal_hq_list_bundles_page',
+    'access arguments' => ['access tripal_hq user'],
+    'file' => 'includes/tripal_hq_user_data.form.inc',
+  ];
+
+  $items['tripal_hq/bio_data/add/%'] = [
+    'page callback' => 'drupal_get_form',
+    'page arguments' => ['tripal_hq_add_form'],
+    'access arguments' => ['access tripal_hq user'],
+    'file' => 'includes/tripal_hq_user_data.form.inc',
   ];
 
   return $items;
 }
-
 
 /**
  * Implements hook_permission().
  */
 
 function tripal_hq_permission() {
-  return [
-    'access tripal_hq admin' => [
-      'title' => t('Administer tripal_HQ content'),
-      'description' => t('Allow admins to view and approve content.'),
-    ],
-    'access tripal_hq user' =>
-      [
-        'title' => t('Create Tripal content requests'),
-        'description' => t('Allow users to submit content requests, and view their content dashboard'),
-      ],
+  $permissions['access tripal_hq admin'] = [
+    'title' => t('Administer tripal_HQ content'),
+    'description' => t('Allow admins to view and approve content.'),
   ];
+
+  $permissions['access tripal_hq user'] = [
+    'title' => t('Create Tripal content requests'),
+    'description' => t('Allow users to submit content requests, and view their content dashboard'),
+  ];
+
+  // Add permissions for each content type.
+  $bundles = tripal_get_content_types();
+  foreach ($bundles as $bundle) {
+    $permissions['propose ' . $bundle->name] = [
+      'title' => t('%label: Propose Content', ['%label' => $bundle->label]),
+      'description' => t('Allow the user to propose %label content',
+        ['%label' => $bundle->label]),
+    ];
+  }
+
+  return $permissions;
 }
