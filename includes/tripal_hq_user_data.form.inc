@@ -174,6 +174,7 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
     'created_at' => time(),
     'data' => $serialized,
     'entity_id' => NULL,
+    'bundle_id' => substr($entity->bundle, strlen('bio_data_'))
   ])->execute();
 
   return 'inserted';
