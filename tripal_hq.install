@@ -34,6 +34,12 @@ function tripal_hq_schema() {
       'entity_id' => [
         'description' => 'Tripal Entity ID.  NULL For new create requests.',
         'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'bundle_id' => [
+        'description' => 'The bundle id. Foreign key to `tripal_bundle.id`.',
+        'type' => 'int',
+        'not null' => TRUE,
       ],
       'status' => [
         'description' => 'pending, published, rejected, obsolete',
@@ -52,7 +58,7 @@ function tripal_hq_schema() {
         'type' => 'int',
         'size' => 'big',
         'not null' => FALSE,
-      ]
+      ],
     ],
     'primary key' => [
       'id',
