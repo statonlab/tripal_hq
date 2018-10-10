@@ -43,3 +43,35 @@ function tripal_hq_publish_entity($entity) {
   $controller = entity_get_controller('TripalEntity');
   return $controller->save($entity);
 }
+
+/**
+ * Approve and publish a submission.
+ *
+ * @param object $submission Submission object.
+ *
+ * @return object|boolean Entity. The published entity or FALSE on failure.
+ */
+function tripal_hq_approve_submission($submission) {
+  db_update('tripal_hq_submission')->fields([
+    'status' => 'approved',
+  ])->condition('id', $submission->id)->execute();
+
+  $entity = unserialize($submission->data);
+
+  return tripal_hq_publish_entity($entity);
+}
+
+/**
+ * Reject a submission.
+ *
+ * @param object $submission Submission object.
+ *
+ * @return boolean TRUE on success or FALSE otherwise.
+ */
+function tripal_hq_reject_submission($submission) {
+  db_update('tripal_hq_submission')->fields([
+    'status' => 'rejected',
+  ])->condition('id', $submission->id)->execute();
+
+  return TRUE;
+}

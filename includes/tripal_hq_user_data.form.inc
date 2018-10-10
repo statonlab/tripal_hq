@@ -129,7 +129,7 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
     drupal_set_message('Submission updated successfully. We will review your submission and get back to you shortly.');
   }
 
-  drupal_goto('tripal_hq/submission_dash');
+  drupal_goto('tripal_hq/submissions');
 }
 
 /**

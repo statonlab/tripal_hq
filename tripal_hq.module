@@ -19,7 +19,7 @@ function tripal_hq_menu() {
 
   //Todo:  rename title to "site_name content" ro something?  Or make configurable?
 
-  $items['tripal_hq/submission_dash'] = [
+  $items['tripal_hq/submissions'] = [
     'title' => 'Tripal HQ User Submission Dashboard',
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_user_dashboard.form.inc',
@@ -27,7 +27,7 @@ function tripal_hq_menu() {
     'page arguments' => ['tripal_hq_user_dashboard_form'],
   ];
 
-  $items['tripal_hq/admin_dash'] = [
+  $items['tripal_hq/admin'] = [
     'title' => 'Tripal HQ Admin Dashboard',
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_admin_dashboard.form.inc',
@@ -35,12 +35,20 @@ function tripal_hq_menu() {
     'page arguments' => ['tripal_hq_admin_dashboard_form'],
   ];
 
-  $items['tripal_hq/admin_dash/view/%'] = [
-    'title' => 'Tripal HQ Approve/Reject',
+  $items['tripal_hq/admin/approve/%'] = [
+    'title' => 'Tripal HQ Approve',
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_admin_approve.form.inc',
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments' => ['tripal_hq_admin_view_form', 3],
+    'page arguments' => ['tripal_hq_admin_control_form', 'approve', 3],
+  ];
+
+  $items['tripal_hq/admin/reject/%'] = [
+    'title' => 'Tripal HQ Reject',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_admin_approve.form.inc',
+    'access arguments' => ['access tripal_hq admin'],
+    'page arguments' => ['tripal_hq_admin_control_form', 'reject', 3],
   ];
 
   // Content control (adding/deleting/editing)
