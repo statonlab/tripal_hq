@@ -52,13 +52,19 @@ function tripal_hq_publish_entity($entity) {
  * @return object|boolean Entity. The published entity or FALSE on failure.
  */
 function tripal_hq_approve_submission($submission) {
+  $entity = unserialize($submission->data);
+  $entity = tripal_hq_publish_entity($entity);
+
+  if (!$entity) {
+    return FALSE;
+  }
+
   db_update('tripal_hq_submission')->fields([
     'status' => 'approved',
+    'entity_id' => $entity->id,
   ])->condition('id', $submission->id)->execute();
 
-  $entity = unserialize($submission->data);
-
-  return tripal_hq_publish_entity($entity);
+  return $entity;
 }
 
 /**
