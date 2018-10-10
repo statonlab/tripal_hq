@@ -81,3 +81,23 @@ function tripal_hq_reject_submission($submission) {
 
   return TRUE;
 }
+
+/**
+ * Fetch all submissions sorted by ID.
+ *
+ * @param string $status One of "approved", "rejected", "pending"
+ *
+ * @return array of requests, or null if none.
+ */
+function tripal_hq_submissions($status = NULL) {
+  $requests = db_select('public.tripal_hq_submission', 't')
+    ->fields('t')
+    ->orderBy('id', 'desc');
+
+  if (!is_null($status)) {
+    $requests->condition('status', $status);
+  }
+
+  $requests = $requests->execute()->fetchAll();
+  return $requests;
+}
