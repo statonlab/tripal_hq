@@ -97,10 +97,35 @@ function tripal_hq_user_entity_form($bundle, $sid = NULL) {
 }
 
 /**
+ * Alter the tripal entity form to add our submit function.
+ *
+ * @param array $form
+ * @param array $form_state
+ * @param string $form_id
+ *
+ * @return array
+ */
+function tripal_hq_form_tripal_entity_form_alter(&$form, &$form_state) {
+  if (strstr($_GET['q'], 'tripal_hq') !== FALSE) {
+    // Remove the original submit function and replace it with ours
+    $index = array_search('tripal_entity_form_submit', $form['#submit']);
+    if ($index !== FALSE) {
+      unset($form['#submit'][$index]);
+    }
+    $form['#submit'][] = 'tripal_hq_entity_form_submit';
+    $form['#validate'] = ['tripal_hq_entity_form_validate'];
+    if (isset($form['delete_button'])) {
+      unset($form['delete_button']);
+    }
+  }
+
+  return $form;
+}
+
+/**
  * Implements hook_validate() for the tripal_hq_user_entity_form.
  */
-function tripal_hq_user_entity_form_validate($form, &$form_state) {
-
+function tripal_hq_entity_form_validate($form, &$form_state) {
   // If the user is cancelling or deleting the entity then don't validate.
   if (array_key_exists('clicked_button',
       $form_state) and ($form_state['clicked_button']['#name'] == 'cancel_data' or $form_state['clicked_button']['#name'] == 'delete_data')) {
@@ -177,7 +202,7 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
      your submission and get back to you shortly.');
   }
 
-  drupal_goto('tripal_hq/submissions');
+  drupal_goto('tripal_hq/bio_data');
 }
 
 /**
