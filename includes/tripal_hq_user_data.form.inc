@@ -235,7 +235,7 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
   $entity->title = $title;
 
   // If the submission is pending, update it
-  if ($submission && $submission->status === 'pending') {
+  if ($submission) {
     db_update('tripal_hq_submission')->condition('id', $submission_id)->fields([
       'uid' => $user->uid,
       'title' => $title,
