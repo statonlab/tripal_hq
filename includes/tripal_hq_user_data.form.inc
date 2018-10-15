@@ -116,15 +116,11 @@ function tripal_hq_form_tripal_entity_form_alter(&$form, &$form_state) {
     $form['#validate'] = ['tripal_hq_entity_form_validate'];
 
     $sid = arg(4);
-    if($sid) {
+    if ($sid) {
       $form['submission_id'] = [
         '#type' => 'hidden',
-        '#value' => $sid
+        '#value' => $sid,
       ];
-    }
-
-    if (isset($form['delete_button'])) {
-      unset($form['delete_button']);
     }
   }
 
@@ -164,8 +160,25 @@ function tripal_hq_entity_form_validate($form, &$form_state) {
  * @param $form_state
  */
 function tripal_hq_entity_form_submit($form, &$form_state) {
+  // If the user is cancelling or deleting the entity then don't validate.
+  if ($form_state['clicked_button']['#name'] == 'cancel_data') {
+    $form_state['redirect'] = 'tripal_hq/bio_data';
+    return;
+  }
+
+  if ($form_state['clicked_button']['#name'] == 'delete_data') {
+    if (isset($form_state['values']['submission_id'])) {
+      $sid = $form_state['values']['submission_id'];
+      $submission = tripal_hq_get_submission_by_id($sid);
+      tripal_hq_delete_submission($submission);
+      drupal_set_message('Submission deleted successfully.');
+      $form_state['redirect'] = 'tripal_hq/bio_data';
+    }
+    return;
+  }
+
   $entity = $form_state['TripalEntity'];
-  $username = $form_state['values']['author_name'];
+  $username = isset($form_state['values']['author_name']) ? $form_state['values']['author_name'] : '';
   $user = user_load_by_name($username);
   $entity->uid = $user->uid;
 
@@ -235,7 +248,7 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
   $entity->title = $title;
 
   // If the submission is pending, update it
-  if ($submission) {
+  if ($submission && $submission->status !== 'approved') {
     db_update('tripal_hq_submission')->condition('id', $submission_id)->fields([
       'uid' => $user->uid,
       'title' => $title,
