@@ -16,14 +16,14 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
     $status = $submission->status;
     $bundle_id = $submission->bundle_id;
     $created_at = date($date_format, $submission->created_at);
-    $updated_at = $submission->updated_at ? date($date_format, $submission->updated_at) : '';
+    $updated_at = $submission->updated_at ? date($date_format,
+      $submission->updated_at) : '';
     $entity_id = $submission->entity_id;
 
-    $link = l('Edit', '/tripal_hq/bio_data/edit/'.$bundle_id.'/' . $id);
+    $link = l('Edit', '/tripal_hq/bio_data/edit/' . $bundle_id . '/' . $id);
 
     if ($entity_id) {
-      $link = l('View', '/bio_data/' . $entity_id) . ' / ' . l('Edit',
-          '/tripal_hq/bio_data/edit/'.$bundle_id.'/' . $id);
+      $link = l('View', '/bio_data/' . $entity_id) . ' / ';
     }
 
     $rows[] = [

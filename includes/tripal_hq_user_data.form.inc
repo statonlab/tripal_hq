@@ -69,6 +69,11 @@ function tripal_hq_user_entity_form($bundle, $sid = NULL) {
     }
     $entity = unserialize($submission->data);
     $bundle = substr($entity->bundle, strlen('bio_data_'));
+
+    if($submission->status === 'approved') {
+      drupal_not_found();
+      return[];
+    }
   }
 
   $fullBundle = tripal_load_bundle_entity(['id' => $bundle]);
