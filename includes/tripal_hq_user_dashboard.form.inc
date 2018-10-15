@@ -23,7 +23,7 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
     $link = l('Edit', '/tripal_hq/bio_data/edit/' . $bundle_id . '/' . $id);
 
     if ($entity_id) {
-      $link = l('View', '/bio_data/' . $entity_id) . ' / ';
+      $link = l('View', '/bio_data/' . $entity_id);
     }
 
     $rows[] = [
