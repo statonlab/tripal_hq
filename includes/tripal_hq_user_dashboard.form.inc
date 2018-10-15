@@ -5,7 +5,7 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
   global $user;
   $submissions = tripal_hq_get_user_submissions($user);
 
-  //TODO: combine with user_data.form.inc
+  // TODO: combine with user_data.form.inc
 
   $header = ['Title', 'Status', 'Date Submitted', 'Date Updated', 'View/Edit'];
   $rows = [];
@@ -19,10 +19,10 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
     $updated_at = $submission->updated_at ? date($date_format, $submission->updated_at) : '';
     $entity_id = $submission->entity_id;
 
-    $link = l('View/Edit', '/tripal_hq/bio_data/edit/'.$bundle_id.'/' . $id);
+    $link = l('Edit', '/tripal_hq/bio_data/edit/'.$bundle_id.'/' . $id);
 
     if ($entity_id) {
-      $link = l('View', '/bio_data/' . $entity_id) . ' ' . l('Edit',
+      $link = l('View', '/bio_data/' . $entity_id) . ' / ' . l('Edit',
           '/tripal_hq/bio_data/edit/'.$bundle_id.'/' . $id);
     }
 

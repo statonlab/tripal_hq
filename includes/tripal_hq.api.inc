@@ -24,6 +24,7 @@ function tripal_hq_get_user_submissions($user) {
   $results = db_select('public.tripal_hq_submission', 't')
     ->fields('t')
     ->condition('uid', $uid)
+    ->orderBy('id', 'desc')
     ->execute()
     ->fetchAll();
 
@@ -89,14 +90,43 @@ function tripal_hq_reject_submission($submission) {
  * @return array of requests, or null if none.
  */
 function tripal_hq_submissions($status = NULL) {
-  $requests = db_select('public.tripal_hq_submission', 't')
+  $submissions = db_select('tripal_hq_submission', 't')
     ->fields('t')
     ->orderBy('id', 'desc');
 
   if (!is_null($status)) {
-    $requests->condition('status', $status);
+    $submissions->condition('status', $status);
   }
 
-  $requests = $requests->execute()->fetchAll();
-  return $requests;
+  $submissions = $submissions->execute()->fetchAll();
+  return $submissions;
+}
+
+/**
+ * Retrieve a submission by entity_id.
+ *
+ * @param $entity_id
+ *
+ * @return mixed
+ */
+function tripal_hq_submission_by_entity_id($entity_id) {
+  return db_select('tripal_hq_submission', 't')
+    ->fields('t')
+    ->orderBy('id', 'desc')
+    ->condition('entity_id', $entity_id)
+    ->execute()
+    ->fetchObject();
+}
+
+/**
+ * Delete a submission.
+ *
+ * @param $submission
+ *
+ * @return int
+ */
+function tripal_hq_delete_submission($submission) {
+  return db_delete('tripal_hq_submission')
+    ->condition('id', $submission->id)
+    ->execute();
 }

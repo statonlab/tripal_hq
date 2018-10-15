@@ -134,3 +134,20 @@ function tripal_hq_submission_access($submission_id) {
 
   return $submission ? $user->uid == $submission->uid : FALSE;
 }
+
+/**
+ * Implements hook_entity_delete().
+ *
+ * Delete submissions that have the deleted entity id if any exists.
+ */
+function tripal_hq_entity_delete($entity, $type) {
+  if($type !== 'TripalEntity') {
+    return;
+  }
+
+  $submission = tripal_hq_submission_by_entity_id($entity->id);
+
+  if(!empty($submission)) {
+    tripal_hq_delete_submission($submission);
+  }
+}
