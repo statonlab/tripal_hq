@@ -247,6 +247,21 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
   $title = tripal_replace_entity_tokens($title, $entity, $bundle);
   $entity->title = $title;
 
+  // A hack to remove empty fields since we don't need to delete anything
+  // from storage yet.
+  $fields = field_info_instances('TripalEntity', $entity->bundle);
+  foreach ($fields as $field_name => $value) {
+    if (isset($entity->{$field_name})) {
+      if (!empty($entity->{$field_name}['und']) && is_array($entity->{$field_name}['und'])) {
+        foreach ($entity->{$field_name}['und'] as $key => $value) {
+          if($value['value'] === 'delete_me' || empty($value['value'])) {
+            unset($entity->{$field_name}['und'][$key]);
+          }
+        }
+      }
+    }
+  }
+
   // If the submission is pending, update it
   if ($submission && $submission->status !== 'approved') {
     db_update('tripal_hq_submission')->condition('id', $submission_id)->fields([
