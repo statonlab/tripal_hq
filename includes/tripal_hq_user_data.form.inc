@@ -114,6 +114,15 @@ function tripal_hq_form_tripal_entity_form_alter(&$form, &$form_state) {
     }
     $form['#submit'][] = 'tripal_hq_entity_form_submit';
     $form['#validate'] = ['tripal_hq_entity_form_validate'];
+
+    $sid = arg(4);
+    if($sid) {
+      $form['submission_id'] = [
+        '#type' => 'hidden',
+        '#value' => $sid
+      ];
+    }
+
     if (isset($form['delete_button'])) {
       unset($form['delete_button']);
     }
