@@ -60,7 +60,7 @@ function tripal_hq_menu() {
     'page callback' => 'tripal_hq_list_bundles_page',
     'access arguments' => ['access tripal_hq user'],
     'file' => 'includes/tripal_hq_user_data.form.inc',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'type' => MENU_LOCAL_ACTION,
   ];
 
   $items['tripal_hq/bio_data/add/%'] = [
@@ -68,7 +68,7 @@ function tripal_hq_menu() {
     'page arguments' => [3],
     'access arguments' => ['access tripal_hq user'],
     'file' => 'includes/tripal_hq_user_data.form.inc',
-    'type' => MENU_LOCAL_ACTION
+    'type' => MENU_LOCAL_TASK
   ];
 
   $items['tripal_hq/bio_data/edit/%/%'] = [
@@ -77,7 +77,7 @@ function tripal_hq_menu() {
     'access arguments' => [4],
     'access callback' => 'tripal_hq_submission_access',
     'file' => 'includes/tripal_hq_user_data.form.inc',
-    'type' => MENU_LOCAL_ACTION
+    'type' => MENU_LOCAL_TASK
   ];
 
   return $items;
