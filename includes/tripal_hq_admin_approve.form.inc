@@ -17,13 +17,14 @@ function tripal_hq_admin_control_form($form, &$form_state, $op, $sid) {
     return [];
   }
 
+  $bundle_id = $submission->bundle_id;
   if ($op === 'reject') {
     $message = "Are you sure you want to reject " . l($submission->title,
-        'tripal_hq/tripal_hq/bio_data/edit/bundle/' . $sid) . "?";
+        '/tripal_hq/bio_data/edit/'.$bundle_id.'/' . $sid) . "?";
   }
   else {
     $message = "Are you sure you want to approve " . l($submission->title,
-        'tripal_hq/tripal_hq/bio_data/edit/bundle/' . $sid) . "?";
+        '/tripal_hq/bio_data/edit/'.$bundle_id.'/' . $sid) . "?";
   }
 
   $form['submission_id'] = [

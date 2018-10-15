@@ -21,6 +21,7 @@ function tripal_hq_admin_dashboard_form($form, &$form_state) {
     $title = $submission->title;
     $status = $submission->status;
     $created_at = date($date_format, $submission->created_at);
+    $bundle_id = $submission->bundle_id;
     $updated_at = $submission->updated_at ? date($date_format,
       $submission->updated_at) : '';
 
@@ -37,7 +38,7 @@ function tripal_hq_admin_dashboard_form($form, &$form_state) {
 
     $row = [
       $user_row,
-      l($title, 'tripal_hq/bio_data/edit/bundle/' . $submission->id),
+      l($title, '/tripal_hq/bio_data/edit/'.$bundle_id.'/' . $submission->id),
       $status,
       $created_at,
       l('Approve', 'tripal_hq/admin/approve/' . $submission->id),

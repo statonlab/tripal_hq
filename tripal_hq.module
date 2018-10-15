@@ -17,16 +17,6 @@ function tripal_hq_menu() {
     'page arguments' => ['tripal_hq_admin_settings_form'],
   ];
 
-  //Todo:  rename title to "site_name content" ro something?  Or make configurable?
-
-  $items['tripal_hq/submissions'] = [
-    'title' => 'Tripal HQ User Submission Dashboard',
-    'page callback' => 'drupal_get_form',
-    'file' => 'includes/tripal_hq_user_dashboard.form.inc',
-    'access arguments' => ['access tripal_hq user'],
-    'page arguments' => ['tripal_hq_user_dashboard_form'],
-  ];
-
   $items['tripal_hq/admin'] = [
     'title' => 'Tripal HQ Admin Dashboard',
     'page callback' => 'drupal_get_form',
@@ -51,27 +41,43 @@ function tripal_hq_menu() {
     'page arguments' => ['tripal_hq_admin_control_form', 'reject', 3],
   ];
 
+  //Todo:  rename title to "site_name content" ro something?  Or make configurable?
+  // note that we can always use drupal_set_title() in the form function
+
+  $items['tripal_hq/bio_data'] = [
+    'title' => 'Tripal HQ User Submission Dashboard',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_user_dashboard.form.inc',
+    'access arguments' => ['access tripal_hq user'],
+    'page arguments' => ['tripal_hq_user_dashboard_form'],
+    'type' => MENU_NORMAL_ITEM,
+  ];
+
   // Content control (adding/deleting/editing)
   $items['tripal_hq/bio_data/add'] = [
-    'title' => 'Content Types',
+    'title' => 'Add new content',
+    'description' => 'Create and submit new content for review.',
     'page callback' => 'tripal_hq_list_bundles_page',
     'access arguments' => ['access tripal_hq user'],
     'file' => 'includes/tripal_hq_user_data.form.inc',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
   ];
 
   $items['tripal_hq/bio_data/add/%'] = [
-    'page callback' => 'drupal_get_form',
-    'page arguments' => ['tripal_hq_user_entity_form', 3],
+    'page callback' => 'tripal_hq_user_entity_form',
+    'page arguments' => [3],
     'access arguments' => ['access tripal_hq user'],
     'file' => 'includes/tripal_hq_user_data.form.inc',
+    'type' => MENU_LOCAL_ACTION
   ];
 
   $items['tripal_hq/bio_data/edit/%/%'] = [
-    'page callback' => 'drupal_get_form',
-    'page arguments' => ['tripal_hq_user_entity_form', 3, 4],
+    'page callback' => 'tripal_hq_user_entity_form',
+    'page arguments' => [3, 4],
     'access arguments' => [4],
     'access callback' => 'tripal_hq_submission_access',
     'file' => 'includes/tripal_hq_user_data.form.inc',
+    'type' => MENU_LOCAL_ACTION
   ];
 
   return $items;
