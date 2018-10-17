@@ -71,7 +71,7 @@ class UsersTableSeeder extends Seeder {
         'uid' => $user_id,
         'title' => "this request was seeded and its not approved",
         'status' => 'pending',
-        'timestamp' => "some second time stamp",
+        'created_at' => time(),
         'data' => '',
         'entity_id' => NULL,
       ])
