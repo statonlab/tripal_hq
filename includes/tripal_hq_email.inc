@@ -15,8 +15,7 @@
  *      - admin_edit_notice
  *
  * @param $message
- * @param $params - assumes the following keys exist:
- *      - user_name
+ * @param $params - this is the tripal_hq_submission object.
  *
  */
 
@@ -24,10 +23,22 @@ function tripal_hq_mail($key, &$message, $params) {
   $language = $message['language'];
   $site_name = variable_get('site_name');
   $site_email = variable_get('site_mail');
-  //Note we use the $user variable for both the user and admin emails.  Should we do this differently?
-  ddl($params);
+  global $base_url;
 
-  $user = $params['user_name'];
+  $uid = $params->uid;
+  $user_object = user_load($uid);
+  $submitter_name = $user_object->name;
+
+  $title = $params->title;
+  $bundle_id = $params->bundle_id;
+
+  $bundle = tripal_load_bundle_entity(array('id' => $bundle_id));
+  $bundle_label = $bundle->label;
+
+  $entity_id = $params->entity_id;
+  $link = $base_url . 'bio_data/'. $entity_id;
+
+
 
   switch ($key) {
 
@@ -39,9 +50,10 @@ function tripal_hq_mail($key, &$message, $params) {
       if ($site_settings['User'] == 0) {
         return;
       }
-      $message['body'][] = t("Dear !user,", ['!user' => $user]);
+      $message['body'][] = t("Dear !user,", ['!user' => $submitter_name]);
       $message['subject'] = t('!site Content Submission Request Received', ['!site' => $site_name], ['langcode' => $language->language]);
-
+      $message['body'][] = t('You have successfully submitted a request to create the !type record !title .', ['!type' => $bundle_label, '!type' => $title]);
+      $message['body'][] = t('Our site admins will review your request.');
       break;
 
     /**
@@ -54,7 +66,7 @@ function tripal_hq_mail($key, &$message, $params) {
       }
       //TODO: flesh this out.
       $message['subject'] = t('!site Content Submission Request Received', ['!site' => $site_name], ['langcode' => $language->language]);
-      $message['body'][] = t("Dear !user,", ['!user' => $user]);
+      $message['body'][] = t("Dear !user,", ['!user' => $submitter_name]);
       $message['body'][] = t("A user has submitted the following content creation request:");
       $message['body'][] = t("To approve or deny this request, please visit your Tripal HQ content portal, located here:");
 
@@ -71,7 +83,7 @@ function tripal_hq_mail($key, &$message, $params) {
       }
 
       $message['subject'] = t('!site Content Submission Request Approved', ['!site' => $site_name], ['langcode' => $language->language]);
-      $message['body'][] = t("Dear !user,", ['!user' => $user]);
+      $message['body'][] = t("Dear !user,", ['!user' => $submitter_name]);
 
 
       break;
@@ -93,7 +105,7 @@ function tripal_hq_mail($key, &$message, $params) {
         return;
       }
       $message['subject'] = t('!site Content Submission Request Denied', ['!site' => $site_name], ['langcode' => $language->language]);
-      $message['body'][] = t("Dear !user,", ['!user' => $user]);
+      $message['body'][] = t("Dear !user,", ['!user' => $submitter_name]);
 
       break;
 
@@ -103,7 +115,7 @@ function tripal_hq_mail($key, &$message, $params) {
         return;
       }
       $message['subject'] = t('!site Content Submission Request Denied', ['!site' => $site_name], ['langcode' => $language->language]);
-      $message['body'][] = t("Dear !user,", ['!user' => $user]);
+      $message['body'][] = t("Dear !user,", ['!user' => $submitter_name]);
 
       break;
   }

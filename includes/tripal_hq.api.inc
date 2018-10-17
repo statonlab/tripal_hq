@@ -153,24 +153,24 @@ function tripal_hq_send_emails($submission_id, $event) {
 
   switch ($event) {
     case "submit":
-      
+
       //From site, to end user
-      drupal_mail('tripal_hq', 'user_submit_notice', $user_email, language_default(), $values, $site_email, TRUE);
+      drupal_mail('tripal_hq', 'user_submit_notice', $user_email, language_default(), $submission, $site_email, TRUE);
       //from site to site_admin
-      drupal_mail('tripal_hq', 'admin_submit_notice', $relevant_admins, language_default(), $values, $site_email, TRUE);
+      drupal_mail('tripal_hq', 'admin_submit_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
 
       break;
     case "approve":
 
-      drupal_mail('tripal_hq', 'user_approve_notice', $user_email, language_default(), $values, $site_email, TRUE);
+      drupal_mail('tripal_hq', 'user_approve_notice', $user_email, language_default(), $submission, $site_email, TRUE);
       //from site to site_admin
-      drupal_mail('tripal_hq', 'admin_approve_notice', $relevant_admins, language_default(), $values, $site_email, TRUE);
+      drupal_mail('tripal_hq', 'admin_approve_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
 
       break;
     case "reject":
-      drupal_mail('tripal_hq', 'user_reject_notice', $user_email, language_default(), $values, $site_email, TRUE);
+      drupal_mail('tripal_hq', 'user_reject_notice', $user_email, language_default(), $submission, $site_email, TRUE);
       //from site to site_admin
-      drupal_mail('tripal_hq', 'admin_reject_notice', $relevant_admins, language_default(), $values, $site_email, TRUE);
+      drupal_mail('tripal_hq', 'admin_reject_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
 
 
       break;
