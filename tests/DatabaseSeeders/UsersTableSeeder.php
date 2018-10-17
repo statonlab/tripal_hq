@@ -54,14 +54,21 @@ class UsersTableSeeder extends Seeder {
 
     $eid = chado_get_record_entity_by_table('organism', $organism->organism_id);
 
+$bundle_id = db_select('tripal_bundle', 't')
+    ->fields('t', ['id'])
+    ->condition('label', 'Organism')
+    ->execute()
+    ->fetchField();
+
     db_insert('public.tripal_hq_submission')
       ->fields([
         'uid' => $user_id,
         'title' => "this request was seeded",
         'status' => 'approved',
-        'timestamp' => "some time stamp",
+          'created_at' => time(),
         'data' => '',
         'entity_id' => $eid,
+          'bundle_id' => $bundle_id
       ])
       ->execute();
 
@@ -71,8 +78,9 @@ class UsersTableSeeder extends Seeder {
         'uid' => $user_id,
         'title' => "this request was seeded and its not approved",
         'status' => 'pending',
-        'timestamp' => "some second time stamp",
+        'created_at' => time(),
         'data' => '',
+        'bundle_id' => $bundle_id,
         'entity_id' => NULL,
       ])
       ->execute();
