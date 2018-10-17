@@ -70,9 +70,9 @@ function tripal_hq_user_entity_form($bundle, $sid = NULL) {
     $entity = unserialize($submission->data);
     $bundle = substr($entity->bundle, strlen('bio_data_'));
 
-    if($submission->status === 'approved') {
+    if ($submission->status === 'approved') {
       drupal_not_found();
-      return[];
+      return [];
     }
   }
 
@@ -219,8 +219,21 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
   $entity = $controller->entityFormSubmitBuildEntity($form, $form_state);
   $sid = isset($form_state['values']['submission_id']) ? $form_state['values']['submission_id'] : NULL;
 
+  $values = $form_state['values'];
+  
+  $user_email = $user->mail;
+  $site_email = variable_get('site_mail');
+  $relevant_admins = tripal_hq_get_curator_emails();
+
   $op = tripal_hq_save_submission($entity, $sid);
   if ($op === 'inserted') {
+
+    //From site, to end user
+    drupal_mail('tripal_hq', 'user_submit_notice', $user_email, language_default(), $values, $site_email, TRUE);
+    //from site to site_admin
+    drupal_mail('tripal_hq', 'admin_submit_notice', $relevant_admins, language_default(), $values, $site_email, TRUE);
+
+
     drupal_set_message('Submission created successfully. We will review 
     your submission and get back to you shortly.');
   }
@@ -259,7 +272,7 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
     if (isset($entity->{$field_name})) {
       if (!empty($entity->{$field_name}['und']) && is_array($entity->{$field_name}['und'])) {
         foreach ($entity->{$field_name}['und'] as $key => $value) {
-          if($value['value'] === 'delete_me' || empty($value['value'])) {
+          if ($value['value'] === 'delete_me' || empty($value['value'])) {
             unset($entity->{$field_name}['und'][$key]);
           }
         }
