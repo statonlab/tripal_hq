@@ -8,7 +8,6 @@ function tripal_hq_admin_settings_form($form, &$form_state) {
 
   $form['instructions'] = ['#markup' => "<p>The below form will let you configure site-wide preferences for this module.</p>"];
 
-
   $form['email'] = [
     '#type' => "fieldset",
     '#title' => t('Email Notification Settings'),
@@ -24,16 +23,16 @@ function tripal_hq_admin_settings_form($form, &$form_state) {
     '#default_value' => $prev_email['submit_request'] ? $prev_email['submit_request'] : [],
   ];
 
+//TODO: do we want to enable this?
 
-  $form['email']['edit_request'] = [
-    '#type' => 'checkboxes',
-    '#multiple' => TRUE,
-    '#title' => t('Content Creation Request Edit'),
-    '#options' => ['User' => t('User'), 'Admin' => t('Admin')],
-    '#description' => t('When a user edits an existing content creation request, an email can be sent to confirm creation to the user, and to notify the admin an action is required.'),
-    '#default_value' => $prev_email['edit_request'] ? $prev_email['edit_request'] : [],
-
-  ];
+//  $form['email']['edit_request'] = [
+//    '#type' => 'checkboxes',
+//    '#multiple' => TRUE,
+//    '#title' => t('Content Creation Request Edit'),
+//    '#options' => ['User' => t('User'), 'Admin' => t('Admin')],
+//    '#description' => t('When a user edits an existing content creation request, an email can be sent to confirm creation to the user, and to notify the admin an action is required.'),
+//    '#default_value' => $prev_email['edit_request'] ? $prev_email['edit_request'] : [],
+//  ];
 
 
   $form['email']['approval'] = [

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Implements hook_mail().
  *
@@ -24,6 +23,8 @@ function tripal_hq_mail($key, &$message, $params) {
   $language = $message['language'];
   $site_name = variable_get('site_name');
   $site_email = variable_get('site_mail');
+  //Note we use the $user variable for both the user and admin emails.  Should we do this differently?
+
   $user = $params['user_name'];
 
   switch ($key) {
@@ -32,7 +33,7 @@ function tripal_hq_mail($key, &$message, $params) {
      * Acknowledge user has submitted a content request.
      */
     case 'user_submit_notice':
-      $site_settings = variable_get('tripal_submit_request');
+      $site_settings = variable_get('tripal_hq_submit_request');
       if ($site_settings['User'] == 0) {
         return;
       }
@@ -45,7 +46,7 @@ function tripal_hq_mail($key, &$message, $params) {
      * Let relevant admins know a content request has been received.
      */
     case 'admin_submit_notice':
-      $site_settings = variable_get('tripal_submit_request');
+      $site_settings = variable_get('tripal_hq_submit_request');
       if ($site_settings['Admin'] == 0) {
         return;
       }
@@ -62,6 +63,11 @@ function tripal_hq_mail($key, &$message, $params) {
      */
     case 'user_accept_notice':
 
+      $site_settings = variable_get('tripal_hq_approval');
+      $message['subject'] = t('!site Content Submission Request Approved', ['!site' => $site_name], ['langcode' => $language->language]);
+      $message['body'][] = t("Dear !user,", ['!user' => $user]);
+
+
       //TODO: flesh this out.
 
 
@@ -74,6 +80,18 @@ function tripal_hq_mail($key, &$message, $params) {
 
       //TODO: flesh this out.
 
+
+      break;
+
+    case 'user_reject_notice':
+      $message['subject'] = t('!site Content Submission Request Denied', ['!site' => $site_name], ['langcode' => $language->language]);
+      $message['body'][] = t("Dear !user,", ['!user' => $user]);
+
+      break;
+
+    case 'admin_reject_notice':
+      $message['subject'] = t('!site Content Submission Request Denied', ['!site' => $site_name], ['langcode' => $language->language]);
+      $message['body'][] = t("Dear !user,", ['!user' => $user]);
 
       break;
   }
