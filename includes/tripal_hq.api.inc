@@ -139,13 +139,14 @@ function tripal_hq_delete_submission($submission) {
  */
 function tripal_hq_get_curator_emails(){
 
-  $query = db_select('user', 'u')
+  $query = db_select('users', 'u')
     ->fields('u', ['mail']);
-    $query->join('users_role', 'ur', 'ur.uid = u.uid');
+    $query->join('users_roles', 'ur', 'ur.uid = u.uid');
     $query->join('role_permission', 'rp', 'rp.rid = ur.rid');
     $query->condition('rp.permission', 'access tripal_hq admin');
+  $query->condition('rp.module', 'tripal_hq');
 
-    $results =$query->execute()->fetcAll();
+    $results =$query->execute()->fetchAll();
     $mail = [];
 
     if (!$results){
