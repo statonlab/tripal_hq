@@ -130,3 +130,29 @@ function tripal_hq_delete_submission($submission) {
     ->condition('id', $submission->id)
     ->execute();
 }
+
+/**
+ * Gets all users with tripal_hq admin permission.
+ * In the future this could/would use chado-specific roles.
+ *
+ * @return string, list of emails suitable for drupal_mail hook
+ */
+function tripal_hq_get_curator_emails(){
+
+  $query = db_select('user', 'u')
+    ->fields('u', ['mail']);
+    $query->join('users_role', 'ur', 'ur.uid = u.uid');
+    $query->join('role_permission', 'rp', 'rp.rid = ur.rid');
+    $query->condition('rp.permission', 'access tripal_hq admin');
+
+    $results =$query->execute()->fetcAll();
+    $mail = [];
+
+    if (!$results){
+      return '';
+    }
+    foreach ($results as $result){
+      $mail[] = $result->mail;
+    }
+    return implode(', ', $mail);
+}
