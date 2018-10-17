@@ -84,7 +84,7 @@ function tripal_hq_admin_control_form_submit($form, &$form_state) {
     $rejected = tripal_hq_reject_submission($submission);
     if ($rejected) {
 
-      tripal_hq_send_emails($sid, 'accept');
+      tripal_hq_send_emails($sid, 'reject');
 
       drupal_set_message('Submission rejected successfully');
       drupal_goto('tripal_hq/admin');

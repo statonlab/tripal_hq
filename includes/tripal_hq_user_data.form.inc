@@ -220,11 +220,11 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
   $sid = isset($form_state['values']['submission_id']) ? $form_state['values']['submission_id'] : NULL;
 
 
-
   $values = $form_state['values'];
 
-  $op = tripal_hq_save_submission($entity, $sid);
-  if ($op === 'inserted') {
+  $sid = tripal_hq_save_submission($entity, $sid);
+
+  if ($sid) {
 
     tripal_hq_send_emails($sid, 'submit');
 
@@ -245,7 +245,7 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
  * @param $entity
  * @param null $submission_id
  *
- * @return string 'updated' or 'inserted'
+ * @return string submission id, or FALSE if error
  */
 function tripal_hq_save_submission($entity, $submission_id = NULL) {
   global $user;
@@ -284,11 +284,11 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
       'data' => serialize($entity),
     ])->execute();
 
-    return 'updated';
+    return $submission_id;
   }
 
   // Create a new submission
-  db_insert('tripal_hq_submission')->fields([
+  $submission_id = db_insert('tripal_hq_submission')->fields([
     'uid' => $user->uid,
     'title' => $title,
     'status' => 'pending',
@@ -298,5 +298,9 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
     'bundle_id' => substr($entity->bundle, strlen('bio_data_')),
   ])->execute();
 
-  return 'inserted';
+  if ($submission_id){
+    return $submission_id;
+
+  }
+return FALSE;
 }
