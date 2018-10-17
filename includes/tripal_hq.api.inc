@@ -140,13 +140,13 @@ function tripal_hq_delete_submission($submission) {
 
 function tripal_hq_send_emails($submission_id, $event) {
 
+
   $submission = tripal_hq_get_submission_by_id($submission_id);
 
-  $user_email = db_select('user', 't')
-    ->addField('t', 'mail')
-    ->condition('uid', $submission->uid)
-    ->execute()
-    ->fetchobject();
+
+  $user_object = user_load($submission->uid);
+
+  $user_email = $user_object->mail;
 
   $site_email = variable_get('site_mail');
   $relevant_admins = tripal_hq_get_curator_emails();
@@ -154,24 +154,46 @@ function tripal_hq_send_emails($submission_id, $event) {
   switch ($event) {
     case "submit":
 
-      //From site, to end user
-      drupal_mail('tripal_hq', 'user_submit_notice', $user_email, language_default(), $submission, $site_email, TRUE);
+      $site_settings = variable_get('tripal_hq_submit_request');
+
+      if (!empty($site_settings['User'])) {
+        //From site, to end user
+        drupal_mail('tripal_hq', 'user_submit_notice', $user_email, language_default(), $submission, $site_email, TRUE);
+      }
       //from site to site_admin
-      drupal_mail('tripal_hq', 'admin_submit_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
+      if (!empty($site_settings['Admin'])) {
+
+        drupal_mail('tripal_hq', 'admin_submit_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
+      }
 
       break;
     case "approve":
+      $site_settings = variable_get('tripal_hq_approval');
 
-      drupal_mail('tripal_hq', 'user_approve_notice', $user_email, language_default(), $submission, $site_email, TRUE);
+
+      if (!empty($site_settings['User'])) {
+
+        drupal_mail('tripal_hq', 'user_approve_notice', $user_email, language_default(), $submission, $site_email, TRUE);
+      }
       //from site to site_admin
-      drupal_mail('tripal_hq', 'admin_approve_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
+      if (!empty($site_settings['Admin'])) {
+
+        drupal_mail('tripal_hq', 'admin_approve_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
+      }
 
       break;
     case "reject":
-      drupal_mail('tripal_hq', 'user_reject_notice', $user_email, language_default(), $submission, $site_email, TRUE);
-      //from site to site_admin
-      drupal_mail('tripal_hq', 'admin_reject_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
+      $site_settings = variable_get('tripal_hq_denied');
 
+      if (!empty($site_settings['User'])) {
+
+        drupal_mail('tripal_hq', 'user_reject_notice', $user_email, language_default(), $submission, $site_email, TRUE);
+      }
+      //from site to site_admin
+      if (!empty($site_settings['Admin'])) {
+
+        drupal_mail('tripal_hq', 'admin_reject_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
+      }
 
       break;
   }

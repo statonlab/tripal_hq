@@ -47,19 +47,15 @@ function tripal_hq_mail($key, &$message, $params) {
      * Acknowledge user has submitted a content request.
      */
     case 'user_submit_notice':
-      $site_settings = variable_get('tripal_hq_submit_request');
-      if ($site_settings['User'] == 0) {
-        return;
-      }
+
       $message['body'][] = t("Dear !user,", ['!user' => $submitter_name]);
-      $message['subject'] = t('!site Content Submission Request Received', ['!site' => $site_name], ['langcode' => $language->language]);
+      $message['subject'] = t('!site Content Submission Request Received', ['!site' => $site_name]);
       $message['body'][] = t('You have successfully submitted a request to create the !type record !title .', [
         '!type' => $bundle_label,
-        '!type' => $title,
+        '!title' => $title,
       ]);
       $message['body'][] = t('You can review your request status at !url', [
-        '!url',
-        $user_dash,
+        '!url' => $user_dash,
       ]);
       break;
 
@@ -67,15 +63,11 @@ function tripal_hq_mail($key, &$message, $params) {
      * Let relevant admins know a content request has been received.
      */
     case 'admin_submit_notice':
-      $site_settings = variable_get('tripal_hq_submit_request');
-      if ($site_settings['Admin'] == 0) {
-        return;
-      }
+
       $message['subject'] = t('!site Content Submission Request Received', ['!site' => $site_name], ['langcode' => $language->language]);
-      $message['body'][] = t('Dear !site admin,', ['!site' => $site_name]);
+      $message['body'][] = t('Dear !site admin,', ['!site' => $site_name], ['langcode' => $language->language]);
       $message['body'][] = t("User !user has submitted the following content creation request:", [
-        '!user',
-        $submitter_name,
+        '!user' => $submitter_name
       ]);
       $message['body'][] = t("Type: !type", ['!type' => $bundle_label]);
       $message['body'][] = t("Title: !title", [
@@ -90,16 +82,11 @@ function tripal_hq_mail($key, &$message, $params) {
      */
     case 'user_accept_notice':
 
-      $site_settings = variable_get('tripal_hq_approval');
-      if ($site_settings['User'] == 0) {
-        return;
-      }
-
       $message['subject'] = t('!site Content Submission Request Approved', ['!site' => $site_name], ['langcode' => $language->language]);
       $message['body'][] = t("Dear !user,", ['!user' => $submitter_name]);
-      $message['body'][] = t('Your !type submission titled: !title , has been approved.', [
+      $message['body'][] = t('Your !type submission titled: !title, has been approved.', [
         '!type' => $bundle_label,
-        '!type' => $title,
+        '!title' => $title,
       ]);
       $message['body'][] = t('Your newly created content is available here: !url', ['!url' => $link]);
 
@@ -109,41 +96,33 @@ function tripal_hq_mail($key, &$message, $params) {
      * Admin: submission has been approved!
      */
     case 'admin_accept_notice':
-      $site_settings = variable_get('tripal_hq_approval');
-      if ($site_settings['Admin'] == 0) {
-        $message['body'][] = t('Dear !site admin,', ['!site' => $site_name]);
-        $message['body'][] = t('The !type submitted by !user, titled: !title , has been approved.', [
-          '!type' => $bundle_label,
-          '!type' => $title,
-          '!user' => $submitter_name,
-        ]);
-        $message['body'][] = t('The newly created content is available here: !url', ['!url' => $link]);
 
-        return;
-      }
+      $message['body'][] = t('Dear !site admin,', ['!site' => $site_name]);
+      $message['body'][] = t('The !type submitted by !user, titled: !title , has been approved.', [
+        '!type' => $bundle_label,
+        '!title' => $title,
+        '!user' => $submitter_name,
+      ]);
+      $message['body'][] = t('The newly created content is available here: !url', ['!url' => $link]);
+
+      return;
+
 
       break;
 
     case 'user_reject_notice':
-      $site_settings = variable_get('tripal_hq_denied');
-      if ($site_settings['User'] == 0) {
-        return;
-      }
+
       $message['subject'] = t('!site Content Submission Request Denied', ['!site' => $site_name], ['langcode' => $language->language]);
       $message['body'][] = t("Dear !user,", ['!user' => $submitter_name]);
       $message['body'][] = t('Your !type submission titled: !title , has been denied.', [
         '!type' => $bundle_label,
-        '!type' => $title,
+        '!title' => $title,
       ]);
 
       break;
 
     case 'admin_reject_notice':
-      $site_settings = variable_get('tripal_hq_denied');
-      if ($site_settings['Admin'] == 0) {
 
-        return;
-      }
       $message['body'][] = t('Dear !site admin,', ['!site' => $site_name]);
       $message['subject'] = t('!site Content Submission Request Denied', ['!site' => $site_name]);
       $message['body'][] = t('The submission !name has been denied.', ['!name' => $title]);
