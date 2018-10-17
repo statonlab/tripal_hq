@@ -19,6 +19,7 @@
  *      - user_name
  *
  */
+
 function tripal_hq_mail($key, &$message, $params) {
   $language = $message['language'];
   $site_name = variable_get('site_name');
@@ -64,11 +65,12 @@ function tripal_hq_mail($key, &$message, $params) {
     case 'user_accept_notice':
 
       $site_settings = variable_get('tripal_hq_approval');
+      if ($site_settings['User'] == 0) {
+        return;
+      }
+
       $message['subject'] = t('!site Content Submission Request Approved', ['!site' => $site_name], ['langcode' => $language->language]);
       $message['body'][] = t("Dear !user,", ['!user' => $user]);
-
-
-      //TODO: flesh this out.
 
 
       break;
@@ -77,25 +79,34 @@ function tripal_hq_mail($key, &$message, $params) {
      * Admin: submission has been approved!
      */
     case 'admin_accept_notice':
-
-      //TODO: flesh this out.
-
+      $site_settings = variable_get('tripal_hq_approval');
+      if ($site_settings['Admin'] == 0) {
+        return;
+      }
 
       break;
 
     case 'user_reject_notice':
+      $site_settings = variable_get('tripal_hq_denied');
+      if ($site_settings['User'] == 0) {
+        return;
+      }
       $message['subject'] = t('!site Content Submission Request Denied', ['!site' => $site_name], ['langcode' => $language->language]);
       $message['body'][] = t("Dear !user,", ['!user' => $user]);
 
       break;
 
     case 'admin_reject_notice':
+      $site_settings = variable_get('tripal_hq_denied');
+      if ($site_settings['Admin'] == 0) {
+        return;
+      }
       $message['subject'] = t('!site Content Submission Request Denied', ['!site' => $site_name], ['langcode' => $language->language]);
       $message['body'][] = t("Dear !user,", ['!user' => $user]);
 
       break;
   }
 
-  $message['body'][] = '<br><BR>Regards,<br><bR>The ' . $site_name . 'team';
+  $message['body'][] = '<br/>Regards,<br/>The ' . $site_name . ' team';
   $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
 }
