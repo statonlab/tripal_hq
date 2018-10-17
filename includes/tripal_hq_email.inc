@@ -25,6 +25,7 @@ function tripal_hq_mail($key, &$message, $params) {
   $site_name = variable_get('site_name');
   $site_email = variable_get('site_mail');
   //Note we use the $user variable for both the user and admin emails.  Should we do this differently?
+  ddl($params);
 
   $user = $params['user_name'];
 

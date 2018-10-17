@@ -219,20 +219,14 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
   $entity = $controller->entityFormSubmitBuildEntity($form, $form_state);
   $sid = isset($form_state['values']['submission_id']) ? $form_state['values']['submission_id'] : NULL;
 
+
+
   $values = $form_state['values'];
-  
-  $user_email = $user->mail;
-  $site_email = variable_get('site_mail');
-  $relevant_admins = tripal_hq_get_curator_emails();
 
   $op = tripal_hq_save_submission($entity, $sid);
   if ($op === 'inserted') {
 
-    //From site, to end user
-    drupal_mail('tripal_hq', 'user_submit_notice', $user_email, language_default(), $values, $site_email, TRUE);
-    //from site to site_admin
-    drupal_mail('tripal_hq', 'admin_submit_notice', $relevant_admins, language_default(), $values, $site_email, TRUE);
-
+    tripal_hq_send_emails($sid, 'submit');
 
     drupal_set_message('Submission created successfully. We will review 
     your submission and get back to you shortly.');

@@ -131,29 +131,76 @@ function tripal_hq_delete_submission($submission) {
     ->execute();
 }
 
+
+/**
+ * @param $submission_id - the tripal_hq_submission.id
+ *
+ * @param $event -  the event key. Valid keys:  "submit", "approve", "reject"
+ */
+
+function tripal_hq_send_emails($submission_id, $event) {
+
+  $submission = tripal_hq_get_submission_by_id($submission_id);
+
+  $user_email = db_select('user', 't')
+    ->addField('t', 'mail')
+    ->condition('uid', $submission->uid)
+    ->execute()
+    ->fetchobject();
+
+  $site_email = variable_get('site_mail');
+  $relevant_admins = tripal_hq_get_curator_emails();
+
+  switch ($event) {
+    case "submit":
+      
+      //From site, to end user
+      drupal_mail('tripal_hq', 'user_submit_notice', $user_email, language_default(), $values, $site_email, TRUE);
+      //from site to site_admin
+      drupal_mail('tripal_hq', 'admin_submit_notice', $relevant_admins, language_default(), $values, $site_email, TRUE);
+
+      break;
+    case "approve":
+
+      drupal_mail('tripal_hq', 'user_approve_notice', $user_email, language_default(), $values, $site_email, TRUE);
+      //from site to site_admin
+      drupal_mail('tripal_hq', 'admin_approve_notice', $relevant_admins, language_default(), $values, $site_email, TRUE);
+
+      break;
+    case "reject":
+      drupal_mail('tripal_hq', 'user_reject_notice', $user_email, language_default(), $values, $site_email, TRUE);
+      //from site to site_admin
+      drupal_mail('tripal_hq', 'admin_reject_notice', $relevant_admins, language_default(), $values, $site_email, TRUE);
+
+
+      break;
+  }
+
+}
+
 /**
  * Gets all users with tripal_hq admin permission.
  * In the future this could/would use chado-specific roles.
  *
  * @return string, list of emails suitable for drupal_mail hook
  */
-function tripal_hq_get_curator_emails(){
+function tripal_hq_get_curator_emails() {
 
   $query = db_select('users', 'u')
     ->fields('u', ['mail']);
-    $query->join('users_roles', 'ur', 'ur.uid = u.uid');
-    $query->join('role_permission', 'rp', 'rp.rid = ur.rid');
-    $query->condition('rp.permission', 'access tripal_hq admin');
+  $query->join('users_roles', 'ur', 'ur.uid = u.uid');
+  $query->join('role_permission', 'rp', 'rp.rid = ur.rid');
+  $query->condition('rp.permission', 'access tripal_hq admin');
   $query->condition('rp.module', 'tripal_hq');
 
-    $results =$query->execute()->fetchAll();
-    $mail = [];
+  $results = $query->execute()->fetchAll();
+  $mail = [];
 
-    if (!$results){
-      return '';
-    }
-    foreach ($results as $result){
-      $mail[] = $result->mail;
-    }
-    return implode(', ', $mail);
+  if (!$results) {
+    return '';
+  }
+  foreach ($results as $result) {
+    $mail[] = $result->mail;
+  }
+  return implode(', ', $mail);
 }
