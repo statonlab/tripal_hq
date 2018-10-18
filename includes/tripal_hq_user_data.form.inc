@@ -219,30 +219,25 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
   $entity = $controller->entityFormSubmitBuildEntity($form, $form_state);
   $sid = isset($form_state['values']['submission_id']) ? $form_state['values']['submission_id'] : NULL;
 
-  $values = $form_state['values'];
-  
-  $user_email = $user->mail;
-  $site_email = variable_get('site_mail');
-  $relevant_admins = tripal_hq_get_curator_emails();
+  $sid = tripal_hq_save_submission($entity, $sid);
 
-  $op = tripal_hq_save_submission($entity, $sid);
-  if ($op === 'inserted') {
+  if ($sid) {
+    tripal_hq_send_emails($sid, 'submit');
 
-    //From site, to end user
-    drupal_mail('tripal_hq', 'user_submit_notice', $user_email, language_default(), $values, $site_email, TRUE);
-    //from site to site_admin
-    drupal_mail('tripal_hq', 'admin_submit_notice', $relevant_admins, language_default(), $values, $site_email, TRUE);
+    if (isset($form_state['values']['submission_id'])) {
+      drupal_set_message('Submission created successfully. We will review 
+                            your submission and get back to you shortly.');
+    }
+    else {
+      drupal_set_message('Submission updated successfully. We will review
+                            your submission and get back to you shortly.');
+    }
 
-
-    drupal_set_message('Submission created successfully. We will review 
-    your submission and get back to you shortly.');
+    drupal_goto('tripal_hq/bio_data');
   }
   else {
-    drupal_set_message('Submission updated successfully. We will review
-     your submission and get back to you shortly.');
+    drupal_set_message('Unable to save your submission. Please contact us to fix the issue.', 'error');
   }
-
-  drupal_goto('tripal_hq/bio_data');
 }
 
 /**
@@ -251,7 +246,7 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
  * @param $entity
  * @param null $submission_id
  *
- * @return string 'updated' or 'inserted'
+ * @return string submission id, or FALSE if error
  */
 function tripal_hq_save_submission($entity, $submission_id = NULL) {
   global $user;
@@ -290,11 +285,11 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
       'data' => serialize($entity),
     ])->execute();
 
-    return 'updated';
+    return $submission_id;
   }
 
   // Create a new submission
-  db_insert('tripal_hq_submission')->fields([
+  $submission_id = db_insert('tripal_hq_submission')->fields([
     'uid' => $user->uid,
     'title' => $title,
     'status' => 'pending',
@@ -304,5 +299,9 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
     'bundle_id' => substr($entity->bundle, strlen('bio_data_')),
   ])->execute();
 
-  return 'inserted';
+  if ($submission_id) {
+    return $submission_id;
+  }
+
+  return FALSE;
 }

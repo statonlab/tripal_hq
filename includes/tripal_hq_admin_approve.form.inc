@@ -37,11 +37,6 @@ function tripal_hq_admin_control_form($form, &$form_state, $op, $sid) {
     '#value' => $op,
   ];
 
-  $form['submitter_uid'] = [
-    '#type' => 'hidden',
-    '#value' => $submission->uid,
-  ];
-
   $form['confirmation_message'] = [
     '#type' => 'item',
     '#markup' => $message,
@@ -82,26 +77,14 @@ function tripal_hq_admin_control_form_submit($form, &$form_state) {
   $values = $form_state['values'];
   $op = $values['operation'];
   $sid = $values['submission_id'];
-  $uid = $values['submitter_uid'];//UID of submitter
-
-  $user_email = db_select('user', 't')
-    ->addField('t', 'mail')
-    ->condition('uid', $uid)
-    ->execute()
-    ->fetchobject();
-
-  $site_email = variable_get('site_mail');
-  $relevant_admins = tripal_hq_get_curator_emails();
 
   $submission = tripal_hq_get_submission_by_id($sid);
 
   if ($op === 'reject') {
     $rejected = tripal_hq_reject_submission($submission);
     if ($rejected) {
-      //From site, to end user
-      drupal_mail('tripal_hq', 'user_reject_notice', $user_email, language_default(), $values, $site_email, TRUE);
-      //from site to site_admin
-      drupal_mail('tripal_hq', 'admin_reject_notice', $relevant_admins, language_default(), $values, $site_email, TRUE);
+
+      tripal_hq_send_emails($sid, 'reject');
 
       drupal_set_message('Submission rejected successfully');
       drupal_goto('tripal_hq/admin');
@@ -116,10 +99,8 @@ function tripal_hq_admin_control_form_submit($form, &$form_state) {
   $entity = tripal_hq_approve_submission($submission);
 
   if ($entity) {
-    //From site, to end user
-    drupal_mail('tripal_hq', 'user_accept_notice', $user_email, language_default(), $values, $site_email, TRUE);
-    //from site to site_admin
-    drupal_mail('tripal_hq', 'admin_accept_notice', $relevant_admins, language_default(), $values, $site_email, TRUE);
+
+    tripal_hq_send_emails($sid, 'accept');
 
     drupal_set_message('Entity published successfully');
     drupal_goto("bio_data/$entity->id");

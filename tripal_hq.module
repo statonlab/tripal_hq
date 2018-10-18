@@ -1,6 +1,7 @@
 <?php
 
 require_once 'includes/tripal_hq.api.inc';
+require_once 'includes/tripal_hq_email.inc';
 
 /**
  * Implements hook_menu()
