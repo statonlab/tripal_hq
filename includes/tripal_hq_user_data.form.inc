@@ -219,24 +219,25 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
   $entity = $controller->entityFormSubmitBuildEntity($form, $form_state);
   $sid = isset($form_state['values']['submission_id']) ? $form_state['values']['submission_id'] : NULL;
 
-
-  $values = $form_state['values'];
-
   $sid = tripal_hq_save_submission($entity, $sid);
 
   if ($sid) {
-
     tripal_hq_send_emails($sid, 'submit');
 
-    drupal_set_message('Submission created successfully. We will review 
-    your submission and get back to you shortly.');
+    if (isset($form_state['values']['submission_id'])) {
+      drupal_set_message('Submission created successfully. We will review 
+                            your submission and get back to you shortly.');
+    }
+    else {
+      drupal_set_message('Submission updated successfully. We will review
+                            your submission and get back to you shortly.');
+    }
+
+    drupal_goto('tripal_hq/bio_data');
   }
   else {
-    drupal_set_message('Submission updated successfully. We will review
-     your submission and get back to you shortly.');
+    drupal_set_message('Unable to save your submission. Please contact us to fix the issue.', 'error');
   }
-
-  drupal_goto('tripal_hq/bio_data');
 }
 
 /**
@@ -298,9 +299,9 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
     'bundle_id' => substr($entity->bundle, strlen('bio_data_')),
   ])->execute();
 
-  if ($submission_id){
+  if ($submission_id) {
     return $submission_id;
-
   }
-return FALSE;
+
+  return FALSE;
 }
