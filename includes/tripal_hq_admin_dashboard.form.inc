@@ -4,7 +4,25 @@ function tripal_hq_admin_dashboard_form($form, &$form_state) {
 
   $form['instructions'] = ['#markup' => '<p>User data submissions are listed below.  Click on any row to view that submission.</p>'];
 
-  $requests = tripal_hq_submissions('pending');
+  $header = [
+    'User',
+    'Title' => ['data' => t('Title'), 'field' => 'title', 'sort' => 'asc'],
+    'Type',
+    'Status',
+    'Date Created' => ['data' => t('Date Created'), 'field' => 'created_at', 'sort' => 'asc'],
+    'Approve',
+    'Reject',
+  ];
+
+  $requests = db_select('tripal_hq_submission', 't')
+    ->extend('TableSort')
+    ->orderByHeader($header)
+    ->fields('t')
+    ->orderBy('id', 'desc')
+    ->extend('PagerDefault')
+    ->limit(10)
+    ->execute()
+    ->fetchAll();
 
   if (!$requests) {
     $form['message'] = [
@@ -13,15 +31,6 @@ function tripal_hq_admin_dashboard_form($form, &$form_state) {
     return $form;
   }
 
-  $header = [
-    'User',
-    'Title',
-    'Type',
-    'Status',
-    'Date Created',
-    'Approve',
-    'Reject',
-  ];
   $rows = [];
   $date_format = 'M d Y H:i:s';
 
@@ -62,7 +71,8 @@ function tripal_hq_admin_dashboard_form($form, &$form_state) {
     'header' => $header,
     'rows' => $rows,
   ]);
-  $output .= theme('pager', ['quantity', 20]);
+
+  $output .= theme('pager', ['quantity', 5]);
 
   $form['table'] = ['#markup' => $output];
   return $form;

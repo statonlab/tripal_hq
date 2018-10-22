@@ -46,7 +46,7 @@ function tripal_hq_menu() {
   // note that we can always use drupal_set_title() in the form function
 
   $items['tripal_hq/bio_data'] = [
-    'title' => 'Tripal HQ User Submission Dashboard',
+    'title' => 'User Submissions',
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_user_dashboard.form.inc',
     'access arguments' => ['access tripal_hq user'],
