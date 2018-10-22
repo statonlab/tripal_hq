@@ -7,14 +7,31 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
 
   // TODO: combine with user_data.form.inc
 
-  $header = ['Title', 'Status', 'Date Submitted', 'Date Updated', 'View/Edit'];
+  $header = ['Title', 'Content Type', 'Status', 'Date Submitted', 'Date Updated', 'View/Edit'];
   $rows = [];
   $date_format = 'M d Y H:i:s';
+
+  $bundle_labels = [];
+
+
   foreach ($submissions as $submission) {
     $id = $submission->id;
     $title = $submission->title;
     $status = $submission->status;
     $bundle_id = $submission->bundle_id;
+
+    if (!isset($bundle_labels[$bundle_id])){
+
+      $label = db_select('tripal_bundle', 't')
+      ->fields('t', ['label'])
+      ->condition('id', $bundle_id)
+      ->execute()
+      ->fetchField();
+      $bundle_labels[$bundle_id] = $label;
+    }
+
+    $label = $bundle_labels[$bundle_id];
+
     $created_at = date($date_format, $submission->created_at);
     $updated_at = $submission->updated_at ? date($date_format,
       $submission->updated_at) : '';
@@ -28,6 +45,7 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
 
     $rows[] = [
       $title,
+      $label,
       ucwords($status),
       $created_at,
       $updated_at,
