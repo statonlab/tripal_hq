@@ -12,11 +12,9 @@
  * @return mixed
  */
 function tripal_hq_admin_dashboard_form($form, &$form_state, $status =NULL) {
-  $message = '<p>User data submissions are listed below.  The tabs in the corner will let you filter submissions based on their status.  Click on any row to view that submission.</p>';
+  $message = '<p>User data submissions are listed below.  The tabs above will let you filter submissions based on their status.  Click on any row to view that submission.</p>';
 
-  if (!$status){
-    $message .= '<p>You can </p>';
-  }
+
   $form['instructions'] = ['#markup' => $message];
 
   $header = [

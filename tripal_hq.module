@@ -19,37 +19,50 @@ function tripal_hq_menu() {
   ];
 
   //Admin area for viewing requests.  Wildcard is the tripal_hq_submission.status
-  $items['tripal_hq/admin/'] = [
+  $items['tripal_hq/admin'] = [
     'title' => 'Tripal HQ Admin Dashboard',
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_admin_dashboard.form.inc',
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments' => ['tripal_hq_admin_dashboard_form'],
+    'page arguments' => ['tripal_hq_admin_dashboard_form', "pending"],
+    'type' => MENU_NORMAL_ITEM
   ];
 
   //Admin area for viewing requests.  Wildcard is the tripal_hq_submission.status
   $items['tripal_hq/admin/pending'] = [
     'title' => 'Pending',
-    'page arguments' => [ 2],
+    'access arguments' => ['access tripal_hq admin'],
     'type' => MENU_DEFAULT_LOCAL_TASK,
   ];
 
-  $items['tripal_hq/admin/published'] = [
+  $items['tripal_hq/admin/approved'] = [
     'title' => 'Published',
     'type' => MENU_LOCAL_TASK,
-    'page arguments' => [ 2],
+    'access arguments' => ['access tripal_hq admin'],
+    'page arguments' => [ 'tripal_hq_admin_dashboard_form', 'approved'],
+  ];
+
+  $items['tripal_hq/admin/all'] = [
+    'title' => 'All',
+    'type' => MENU_LOCAL_TASK,
+    'access arguments' => ['access tripal_hq admin'],
+    'page arguments' => [ 'tripal_hq_admin_dashboard_form', NULL],
   ];
 
 
   $items['tripal_hq/admin/rejected'] = [
     'title' => 'Rejected',
-    'page arguments' => [ 2],
+    'page arguments' => ['tripal_hq_admin_dashboard_form', 'rejected'],
+    'access arguments' => ['access tripal_hq admin'],
+
     'type' => MENU_LOCAL_TASK,
   ];
 
   $items['tripal_hq/admin/obsolete'] = [
     'title' => 'Obsolete',
-    'page arguments' => [2],
+    'page arguments' => ['tripal_hq_admin_dashboard_form', 'obsolete'],
+    'access arguments' => ['access tripal_hq admin'],
+
     'type' => MENU_LOCAL_TASK,
   ];
 
