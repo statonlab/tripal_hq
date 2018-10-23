@@ -25,10 +25,9 @@ function tripal_hq_menu() {
     'file' => 'includes/tripal_hq_admin_dashboard.form.inc',
     'access arguments' => ['access tripal_hq admin'],
     'page arguments' => ['tripal_hq_admin_dashboard_form', "pending"],
-    'type' => MENU_NORMAL_ITEM
+    'type' => MENU_NORMAL_ITEM,
   ];
 
-  //Admin area for viewing requests.  Wildcard is the tripal_hq_submission.status
   $items['tripal_hq/admin/pending'] = [
     'title' => 'Pending',
     'access arguments' => ['access tripal_hq admin'],
@@ -39,14 +38,14 @@ function tripal_hq_menu() {
     'title' => 'Published',
     'type' => MENU_LOCAL_TASK,
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments' => [ 'tripal_hq_admin_dashboard_form', 'approved'],
+    'page arguments' => ['tripal_hq_admin_dashboard_form', 'approved'],
   ];
 
   $items['tripal_hq/admin/all'] = [
     'title' => 'All',
     'type' => MENU_LOCAL_TASK,
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments' => [ 'tripal_hq_admin_dashboard_form', NULL],
+    'page arguments' => ['tripal_hq_admin_dashboard_form', NULL],
   ];
 
 
@@ -54,7 +53,6 @@ function tripal_hq_menu() {
     'title' => 'Rejected',
     'page arguments' => ['tripal_hq_admin_dashboard_form', 'rejected'],
     'access arguments' => ['access tripal_hq admin'],
-
     'type' => MENU_LOCAL_TASK,
   ];
 
@@ -62,7 +60,6 @@ function tripal_hq_menu() {
     'title' => 'Obsolete',
     'page arguments' => ['tripal_hq_admin_dashboard_form', 'obsolete'],
     'access arguments' => ['access tripal_hq admin'],
-
     'type' => MENU_LOCAL_TASK,
   ];
 
@@ -183,13 +180,13 @@ function tripal_hq_submission_access($submission_id) {
  * Delete submissions that have the deleted entity id if any exists.
  */
 function tripal_hq_entity_delete($entity, $type) {
-  if($type !== 'TripalEntity') {
+  if ($type !== 'TripalEntity') {
     return;
   }
 
   $submission = tripal_hq_submission_by_entity_id($entity->id);
 
-  if(!empty($submission)) {
+  if (!empty($submission)) {
     tripal_hq_delete_submission($submission);
   }
 }
