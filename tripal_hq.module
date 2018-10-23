@@ -18,13 +18,41 @@ function tripal_hq_menu() {
     'page arguments' => ['tripal_hq_admin_settings_form'],
   ];
 
-  $items['tripal_hq/admin'] = [
+  //Admin area for viewing requests.  Wildcard is the tripal_hq_submission.status
+  $items['tripal_hq/admin/'] = [
     'title' => 'Tripal HQ Admin Dashboard',
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_admin_dashboard.form.inc',
     'access arguments' => ['access tripal_hq admin'],
     'page arguments' => ['tripal_hq_admin_dashboard_form'],
   ];
+
+  //Admin area for viewing requests.  Wildcard is the tripal_hq_submission.status
+  $items['tripal_hq/admin/pending'] = [
+    'title' => 'Pending',
+    'page arguments' => [ 2],
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  ];
+
+  $items['tripal_hq/admin/published'] = [
+    'title' => 'Published',
+    'type' => MENU_LOCAL_TASK,
+    'page arguments' => [ 2],
+  ];
+
+
+  $items['tripal_hq/admin/rejected'] = [
+    'title' => 'Rejected',
+    'page arguments' => [ 2],
+    'type' => MENU_LOCAL_TASK,
+  ];
+
+  $items['tripal_hq/admin/obsolete'] = [
+    'title' => 'Obsolete',
+    'page arguments' => [2],
+    'type' => MENU_LOCAL_TASK,
+  ];
+
 
   $items['tripal_hq/admin/approve/%'] = [
     'title' => 'Tripal HQ Approve',
@@ -46,7 +74,7 @@ function tripal_hq_menu() {
   // note that we can always use drupal_set_title() in the form function
 
   $items['tripal_hq/bio_data'] = [
-    'title' => 'User Submissions',
+    'title' => 'Submit Content',
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_user_dashboard.form.inc',
     'access arguments' => ['access tripal_hq user'],
