@@ -3,18 +3,41 @@
 function tripal_hq_user_dashboard_form($form, &$form_state) {
 
   global $user;
-  $submissions = tripal_hq_get_user_submissions($user);
-
-  // TODO: combine with user_data.form.inc
-
+  $uid = $user->uid;
+  
   $header = [
-    'Title',
-    'Content Type',
-    'Status',
-    'Date Submitted',
+    'Title' => [
+      'data' => t('Title'),
+      'field' => 'title',
+    ],
+    'Type' => [
+      'data' => t('Content Type'),
+      'field' => 'bundle_id',
+    ],
+    'Status' => [
+      'data' => t('Approval Status'),
+      'field' => 'status',
+    ],
+    'Date Created' => [
+      'data' => t('Date Created'),
+      'field' => 'created_at',
+      'sort' => 'dsc',
+    ],
     'Date Updated',
     'View/Edit',
   ];
+
+  $submissions = db_select('public.tripal_hq_submission', 't')
+    ->fields('t')
+    ->condition('uid', $uid)
+    ->orderBy('id', 'desc')
+    ->extend('TableSort')
+    ->orderByHeader($header)
+    ->extend('PagerDefault')
+    ->limit(20)
+    ->execute()
+    ->fetchAll();
+
   $rows = [];
   $date_format = 'M d Y H:i:s';
 
@@ -64,7 +87,6 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
     'header' => $header,
     'rows' => $rows,
   ]);
-  $output .= theme('pager', ['quantity', 20]);
 
   $form['my_submissions'] = ['#markup' => $output];
   return $form;
