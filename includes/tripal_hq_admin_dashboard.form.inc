@@ -1,27 +1,73 @@
 <?php
 
-function tripal_hq_admin_dashboard_form($form, &$form_state) {
+/**
+ * Implements hook form().
+ * Provides a dashboard for site or content admins to view all user-submitted
+ * content.
+ *
+ * @param $form
+ * @param $form_state
+ * @param $status - Valid statuses are: pending, published, rejected, obsolete.
+ *
+ * @return mixed
+ */
+function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
+  $message = '<p>User data submissions are listed below.  The tabs above will let you filter submissions based on their status.  Click on any row to view that submission.</p>';
 
-  $form['instructions'] = ['#markup' => '<p>User data submissions are listed below.  Click on any row to view that submission.</p>'];
 
-  $requests = tripal_hq_submissions('pending');
+  $form['instructions'] = ['#markup' => $message];
+
+  $header = [
+    'User' => [
+      'data' => t('User'),
+      'field' => 'uid',
+    ],
+    'Title' => [
+      'data' => t('Title'),
+      'field' => 'title',
+    ],
+    'Type' => [
+      'data' => t('Content Type'),
+      'field' => 'bundle_id',
+    ],
+    'Status' => [
+      'data' => t('Approval Status'),
+      'field' => 'status',
+    ],
+
+    'Date Created' => [
+      'data' => t('Date Created'),
+      'field' => 'created_at',
+      'sort' => 'dsc',
+    ],
+    'Approve',
+    'Reject',
+  ];
+
+  $query = db_select('tripal_hq_submission', 't')
+    ->extend('TableSort')
+    ->orderByHeader($header)
+    ->extend('PagerDefault');
+
+  if ($status) {
+    $query->condition('t.status', $status);
+  }
+  $requests = $query->fields('t')
+    ->orderBy('id', 'desc')
+    ->limit(10)
+    ->execute()
+    ->fetchAll();
 
   if (!$requests) {
+
+    $message = '<h4>no ' . $status . '  requests</h4>';
+
     $form['message'] = [
-      '#markup' => '<h4>No Requests</h4><p>There are no pending requests.</p>',
+      '#markup' => $message,
     ];
     return $form;
   }
 
-  $header = [
-    'User',
-    'Title',
-    'Type',
-    'Status',
-    'Date Created',
-    'Approve',
-    'Reject',
-  ];
   $rows = [];
   $date_format = 'M d Y H:i:s';
 
@@ -62,7 +108,8 @@ function tripal_hq_admin_dashboard_form($form, &$form_state) {
     'header' => $header,
     'rows' => $rows,
   ]);
-  $output .= theme('pager', ['quantity', 20]);
+
+  $output .= theme('pager', ['quantity', 5]);
 
   $form['table'] = ['#markup' => $output];
   return $form;

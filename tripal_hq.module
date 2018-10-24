@@ -18,13 +18,51 @@ function tripal_hq_menu() {
     'page arguments' => ['tripal_hq_admin_settings_form'],
   ];
 
+  //Admin area for viewing requests.  Wildcard is the tripal_hq_submission.status
   $items['tripal_hq/admin'] = [
     'title' => 'Tripal HQ Admin Dashboard',
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_admin_dashboard.form.inc',
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments' => ['tripal_hq_admin_dashboard_form'],
+    'page arguments' => ['tripal_hq_admin_dashboard_form', "pending"],
+    'type' => MENU_NORMAL_ITEM,
   ];
+
+  $items['tripal_hq/admin/pending'] = [
+    'title' => 'Pending',
+    'access arguments' => ['access tripal_hq admin'],
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  ];
+
+  $items['tripal_hq/admin/approved'] = [
+    'title' => 'Published',
+    'type' => MENU_LOCAL_TASK,
+    'access arguments' => ['access tripal_hq admin'],
+    'page arguments' => ['tripal_hq_admin_dashboard_form', 'approved'],
+  ];
+
+  $items['tripal_hq/admin/all'] = [
+    'title' => 'All',
+    'type' => MENU_LOCAL_TASK,
+    'access arguments' => ['access tripal_hq admin'],
+    'page arguments' => ['tripal_hq_admin_dashboard_form', NULL],
+  ];
+
+
+  $items['tripal_hq/admin/rejected'] = [
+    'title' => 'Rejected',
+    'page arguments' => ['tripal_hq_admin_dashboard_form', 'rejected'],
+    'access arguments' => ['access tripal_hq admin'],
+    'type' => MENU_LOCAL_TASK,
+  ];
+
+  $items['tripal_hq/admin/obsolete'] = [
+    'title' => 'Obsolete',
+    'page arguments' => ['tripal_hq_admin_dashboard_form', 'obsolete'],
+    'access arguments' => ['access tripal_hq admin'],
+    'type' => MENU_LOCAL_TASK,
+  ];
+
 
   $items['tripal_hq/admin/approve/%'] = [
     'title' => 'Tripal HQ Approve',
@@ -46,7 +84,7 @@ function tripal_hq_menu() {
   // note that we can always use drupal_set_title() in the form function
 
   $items['tripal_hq/bio_data'] = [
-    'title' => 'Tripal HQ User Submission Dashboard',
+    'title' => 'Submit Content',
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_user_dashboard.form.inc',
     'access arguments' => ['access tripal_hq user'],
@@ -142,13 +180,13 @@ function tripal_hq_submission_access($submission_id) {
  * Delete submissions that have the deleted entity id if any exists.
  */
 function tripal_hq_entity_delete($entity, $type) {
-  if($type !== 'TripalEntity') {
+  if ($type !== 'TripalEntity') {
     return;
   }
 
   $submission = tripal_hq_submission_by_entity_id($entity->id);
 
-  if(!empty($submission)) {
+  if (!empty($submission)) {
     tripal_hq_delete_submission($submission);
   }
 }
