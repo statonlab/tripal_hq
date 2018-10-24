@@ -4,7 +4,7 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
 
   global $user;
   $uid = $user->uid;
-  
+
   $header = [
     'Title' => [
       'data' => t('Title'),
@@ -30,7 +30,6 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
   $submissions = db_select('public.tripal_hq_submission', 't')
     ->fields('t')
     ->condition('uid', $uid)
-    ->orderBy('id', 'desc')
     ->extend('TableSort')
     ->orderByHeader($header)
     ->extend('PagerDefault')
