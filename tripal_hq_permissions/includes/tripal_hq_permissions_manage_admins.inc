@@ -27,6 +27,12 @@ function tripal_hq_permissions_manage_admins_form($form, &$form_state) {
 
   foreach ($deputies as $entry) {
 
+    dpm($entry);
+    $row = [
+    ];
+
+    $rows[] = $row;
+
   }
 
   $table = theme('table', ['rows' => $rows, 'header' => $header]);
@@ -47,31 +53,35 @@ function tripal_hq_permissions_manage_admins_form($form, &$form_state) {
 function tripal_hq_permissions_get_deputies_query($header) {
 
   $query = db_select('users', 'u');
-
   $query->join('users_roles', 'ur', 'ur.uid = u.uid');
   $query->join('role_permission', 'p', 'ur.rid = p.rid');
   $query->condition('u.uid', 0, '!=');
   $query->condition('u.uid', 1, '!=');
   $query->condition('p.permission', 'tripal_hq_permissions deputy');
-  //TODO: this needs to be a join that includes null on THP.
-  //FULL OUTER JOIN on this table.
 
-  $query->leftJoin('tripal_hq_permissions', 'thp', 'thp.uid = u.uid');
-  $query->fields('u' . ['uid', 'name', 'mail']);
-  //TODO:  this is actually a bit tricky.
-  //I think, for this table, we just want count by content type.  Ie this user is admin on 2 organisms, 1 project.
-  $query->fields('thp', []);
+  $query->fields('u' , ['uid', 'name', 'mail']);
 
-  $query = db_select('tripal_hq_user_permissions', 't')
-    ->extend('TableSort')
+  //add paging
+   $query->extend('TableSort')
     ->orderByHeader($header)
-    ->extend('PagerDefault');
+    ->extend('PagerDefault')
+     ->limit(10)
+     ->execute();
 
-  $requests = $query->fields('t')
-    ->orderBy('id', 'desc')
-    ->limit(10)
-    ->execute()
-    ->fetchAll();
+  return $query;
+}
 
-  return $requests;
+/**
+ * Get all permissions set for the given user.
+ *
+ * @param $uid
+ *
+ * @return mixed
+ */
+function tripal_hq_permissions_get_users_specific_permissions($uid){
+
+  $query = db_select('tripal_hq_permissions', 'ths');
+  $query->fields('ths');
+  return $query->execute()->fetchAll();
+
 }

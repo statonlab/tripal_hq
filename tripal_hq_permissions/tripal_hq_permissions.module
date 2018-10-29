@@ -3,9 +3,10 @@
 
 /**
  * Implements hook_menu.
+ *
  * @return mixed
  */
-function tripal_hq_permissions_menu(){
+function tripal_hq_permissions_menu() {
   $items['admin/tripal/tripal_hq/chado_permissions'] = [
     'title' => 'Tripal HQ Permissions',
     'page callback' => 'drupal_get_form',
@@ -26,7 +27,6 @@ function tripal_hq_permissions_menu(){
 }
 
 
-
 /**
  * Implements hook_permission().
  */
@@ -36,4 +36,5 @@ function tripal_hq_permissions_permission() {
     'title' => t('Administer CHADO-specific tripal_HQ content'),
     'description' => t('Give admins chado-specific admin roles.'),
   ];
+  return $permissions;
 }
