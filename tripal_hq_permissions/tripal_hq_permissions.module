@@ -11,7 +11,7 @@ function tripal_hq_permissions_menu(){
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_permissions_manage_admins.inc',
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments' => ['tripal_hq_permissions_manage_admins'],
+    'page arguments' => ['tripal_hq_permissions_manage_admins_form'],
   ];
 
   $items['admin/tripal/tripal_hq/chado_permissions/%'] = [
@@ -19,7 +19,7 @@ function tripal_hq_permissions_menu(){
     'page callback' => 'drupal_get_form',
     'file' => 'includes/tripal_hq_permissions_edit_admin.inc',
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments' => ['tripal_hq_permissions_edit_admin', 4],
+    'page arguments' => ['tripal_hq_permissions_edit_admin_form', 4],
   ];
 
   return $items;
