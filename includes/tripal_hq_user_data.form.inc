@@ -303,6 +303,10 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
   ])->execute();
 
   if ($submission_id) {
+
+
+    tripal_hq_permissions_process_submission($submission_id);
+
     return $submission_id;
   }
 
