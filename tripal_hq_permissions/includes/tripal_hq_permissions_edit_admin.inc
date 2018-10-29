@@ -105,54 +105,69 @@ function tripal_hq_permissions_edit_admin_form_validate($form, &$form_state) {
 
 function tripal_hq_permissions_edit_admin_form_submit($form, &$form_state) {
   $uid = $form_state['values']['uid'];
-  $organisms = $form_state['values']['organisms'];
-  $projects = $form_state['values']['projects'];
+  $organisms = isset($form_state['values']['organism']) ? $form_state['values']['organism'] : NULL;
+  $projects = isset($form_state['values']['project']) ? isset($form_state['values']['project']) : NULL;
 
 
   //clear user permissions and inferred permissions
+
+  $perms = db_select('tripal_hq_permissions', 't')
+    ->fields('t', ['id'])
+    ->condition('uid', $uid)
+    ->execute()
+    ->fetchAll();
+  $perm_array = [];
+  foreach ($perms as $perm) {
+    $perm_array[] = $perm->id;
+
+  }
+
+  if (!empty($perm_array)) {
+
+    db_delete('tripal_hq_submission_permissions')
+      ->condition('hq_permission_id', $perm_array, 'IN');
+  }
+
   db_delete('tripal_hq_permissions')
     ->condition('uid', $uid)->execute();
 
 
   //TODO: other modules extending this permission will need to hook into this.
 
-  db_delete('tripal_hq_submission_permissions')
-    ->condition('uid', $uid)->execute();
-
 
   //insert primary permissions.
 
-  foreach ($organisms as $organism => $label) {
+  if ($organisms) {
+    foreach ($organisms as $organism => $label) {
 
-    db_insert('tripal_hq_permissions')
-      ->fields([
-        'uid' => $uid,
-        'base_table' => 'organism',
-        'record_id' => $organism,
-      ]);
+      db_insert('tripal_hq_permissions')
+        ->fields([
+          'uid' => $uid,
+          'base_table' => 'organism',
+          'record_id' => $organism,
+        ]);
+    }
   }
-  foreach ($projects as $project => $label) {
 
-    db_insert('tripal_hq_permissions')
-      ->fields([
-        'uid' => $uid,
-        'base_table' => 'project',
-        'record_id' => $project,
-      ]);
+  if ($projects) {
+    foreach ($projects as $project => $label) {
 
+      db_insert('tripal_hq_permissions')
+        ->fields([
+          'uid' => $uid,
+          'base_table' => 'project',
+          'record_id' => $project,
+        ]);
+
+    }
   }
-  //TODO:  other content.
-
 
   //Now, submit job to infer all new permissions.
-
-
   $args = ['uid' => $uid];
 
   global $user;
 
   tripal_add_job('infer_permissions_user_' . $uid, 'tripal_hq_permissions', 'tripal_hq_permissions_infer_permissions', $args, $user->uid, 10, $includes = [], FALSE);
-
 }
 
 
