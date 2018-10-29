@@ -110,11 +110,51 @@ function tripal_hq_permissions_edit_admin_form_submit($form, &$form_state) {
 
 
   //clear user permissions and inferred permissions
+  db_delete('tripal_hq_permissions')
+    ->condition('uid', $uid)->execute();
 
-  //build dependent permissions
 
-  
+  //TODO: other modules extending this permission will need to hook into this.
+
+  db_delete('tripal_hq_submission_permissions')
+    ->condition('uid', $uid)->execute();
+
+
+  //insert primary permissions.
+
+  foreach ($organisms as $organism => $label) {
+
+    db_insert('tripal_hq_permissions')
+      ->fields([
+        'uid' => $uid,
+        'base_table' => 'organism',
+        'record_id' => $organism,
+      ]);
+  }
+  foreach ($projects as $project => $label) {
+
+    db_insert('tripal_hq_permissions')
+      ->fields([
+        'uid' => $uid,
+        'base_table' => 'project',
+        'record_id' => $project,
+      ]);
+
+  }
+  //TODO:  other content.
+
+
+  //Now, submit job to infer all new permissions.
+
+
+  $args = ['uid' => $uid];
+
+  global $user;
+
+  tripal_add_job('infer_permissions_user_' . $uid, 'tripal_hq_permissions', 'tripal_hq_permissions_infer_permissions', $args, $user->uid, 10, $includes = [], FALSE);
+
 }
+
 
 function tripal_hq_permissions_build_other($form, &$form_state) {
 

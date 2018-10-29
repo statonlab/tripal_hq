@@ -1,6 +1,9 @@
 <?php
 
 
+include_once('includes/tripal_hq_permissions_api.inc');
+
+
 /**
  * Implements hook_menu.
  *

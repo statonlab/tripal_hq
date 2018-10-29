@@ -20,13 +20,13 @@ function tripal_hq_permissions_schema() {
         'type' => 'int',
         'not null' => TRUE,
       ],
-      'bundle_id' => [
-        'description' => 'The bundle id. Foreign key to `tripal_bundle.id`.',
-        'type' => 'int',
+      'base_table' => [
+        'description' => 'The base table. IE organism, project.',
+        'type' => 'varchar',
         'not null' => TRUE,
       ],
-      'entity_id' => [
-        'description' => 'the entity id.  Users admin permission based on this entity.',
+      'record_id' => [
+        'description' => 'the record id.  Users admin permission based on this record.',
         'type' => 'int',
         'not null' => TRUE,
       ],
