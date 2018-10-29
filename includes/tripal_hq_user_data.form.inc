@@ -111,12 +111,14 @@ function tripal_hq_user_entity_form($bundle, $sid = NULL) {
  * @return array
  */
 function tripal_hq_form_tripal_entity_form_alter(&$form, &$form_state) {
-  if (strstr($_GET['q'], 'tripal_hq') !== FALSE) {
+  if (strstr($_GET['q'],
+      'tripal_hq') !== FALSE || isset($form_state['tripal_hq_set'])) {
     // Remove the original submit function and replace it with ours
     $index = array_search('tripal_entity_form_submit', $form['#submit']);
     if ($index !== FALSE) {
       unset($form['#submit'][$index]);
     }
+    $form_state['tripal_hq_set'] = TRUE;
     $form['#submit'][] = 'tripal_hq_entity_form_submit';
     $form['#validate'] = ['tripal_hq_entity_form_validate'];
 
@@ -236,7 +238,8 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
     drupal_goto('tripal_hq/bio_data');
   }
   else {
-    drupal_set_message('Unable to save your submission. Please contact us to fix the issue.', 'error');
+    drupal_set_message('Unable to save your submission. Please contact us to fix the issue.',
+      'error');
   }
 }
 
