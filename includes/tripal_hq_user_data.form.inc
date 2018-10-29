@@ -269,8 +269,8 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
   foreach ($fields as $field_name => $value) {
     if (isset($entity->{$field_name})) {
       if (!empty($entity->{$field_name}['und']) && is_array($entity->{$field_name}['und'])) {
-        foreach ($entity->{$field_name}['und'] as $key => $value) {
-          if ($value['value'] === 'delete_me' || empty($value['value'])) {
+        foreach ($entity->{$field_name}['und'] as $key => $value2) {
+          if (empty($value2['value']) || $value2['value'] === 'delete_me') {
             unset($entity->{$field_name}['und'][$key]);
           }
         }
