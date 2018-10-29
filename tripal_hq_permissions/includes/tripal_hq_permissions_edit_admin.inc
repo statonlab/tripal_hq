@@ -8,7 +8,7 @@
 /**
  * Implements hook_form().
  */
-function tripal_hq_permissions_manage_admins_form($form, &$form_state, $uid) {
+function tripal_hq_permissions_edit_admin_form($form, &$form_state, $uid) {
 
   $form['instructions'] = [
     '#markup' => '
@@ -16,20 +16,116 @@ function tripal_hq_permissions_manage_admins_form($form, &$form_state, $uid) {
   <p>This module supports permissions for child content for organisms and projects, meaning if, for example, an analysis is created linked to an organism, and the user is an admin of the organism, this user will have admin permissions for that analysis as well.</p>',
   ];
 
-  //load each entity as a collapsible field.
-  //List organism and project first.
+
+  $user = user_load($uid);
+
+  $form['uid'] = ['#type' => 'value', '#value' => $uid];
+
+  $header = ['Field', 'Value'];
+
+  $rows = [['User Name', $user->name], ['User Email', $user->mail]];
+
+  $table = theme('table', ['header' => $header, 'rows' => $rows]);
+  $form['user_table'] = ['#markup' => $table];
+
+  $o_options = [];
+  $p_options = [];
+
+  $orgs = db_select('chado.organism', 'o')->fields('o', [
+    'organism_id',
+    'abbreviation',
+  ])->execute();
+
+  foreach ($orgs as $organism) {
+    $o_options[$organism->organism_id] = $organism->abbreviation;
+  }
 
 
-  $form['submit'] = ['#type' => 'submit', '#value' => 'Submit'];
+  $projects = db_select('chado.project', 'p')->fields('p', [
+    'project_id',
+    'name',
+  ])->execute();
+
+  foreach ($projects as $project) {
+    $o_options[$project->project_id] = $project->name;
+  }
+
+  $form['organism'] = [
+    '#type' => "select",
+    '#title' => 'Organisms',
+    '#multiple' => TRUE,
+    '#options' => $o_options,
+  ];
+
+
+  $form['project'] = [
+    '#type' => "select",
+    '#title' => 'Projects',
+    '#multiple' => TRUE,
+    '#options' => $p_options,
+  ];
+
+
+  if (empty($o_options)) {
+    $form['organism'] = [
+      '#title' => 'Organisms',
+      '#type' => 'item',
+      '#description' => "You have no Organisms in the database",
+    ];
+
+  }
+
+  if (empty($p_options)) {
+    $form['project'] = [
+      '#title' => 'Projects',
+      '#type' => 'item',
+      '#description' => "You have no Projects in the database",
+    ];
+  }
+
+  $form['other'] = [
+    '#type' => "fieldset",
+    '#title' => t('Other'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+
+  ];
+
+  $form['other'] = tripal_hq_permissions_build_other($form['other'], $form_state);
+
+  $form['submit'] = ['#type' => 'submit', '#value' => "Submit"];
 
   return $form;
 
 }
 
-function tripal_hq_permissions_manage_admins_form_validate() {
+function tripal_hq_permissions_edit_admin_form_validate($form, &$form_state) {
 
 }
 
-function tripal_hq_permissions_manage_admins_form_submit() {
+function tripal_hq_permissions_edit_admin_form_submit($form, &$form_state) {
+  $uid = $form_state['values']['uid'];
+  $organisms = $form_state['values']['organisms'];
+  $projects = $form_state['values']['projects'];
 
+
+  //clear user permissions and inferred permissions
+
+  //build dependent permissions
+
+  
+}
+
+function tripal_hq_permissions_build_other($form, &$form_state) {
+
+  $form['instructions'] = ['#markup' => '<p>This section will let you assign permissions to custom Chado records. Note this module only offers limited support for these associations.  Instead, consider grouping content into projects for easier permission management.</p>'];
+
+
+  //get all base tables
+
+  //remove organism and project
+
+  //remove nonsensical tables??? which is most.
+
+  return $form;
 }
