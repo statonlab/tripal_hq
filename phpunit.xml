@@ -10,6 +10,8 @@
   <testsuites>
     <testsuite name="default">
       <directory suffix="Test.php">tests</directory>
+      <directory suffix="Test.php">tests/tripal_hq_permissions</directory>
+
     </testsuite>
   </testsuites>
 </phpunit>

@@ -1,0 +1,82 @@
+<?php
+
+/**
+ * Implements hook_schema.
+ *
+ * @return array
+ */
+function tripal_hq_permissions_schema() {
+
+  $schema['tripal_hq_permissions'] = [
+    'description' => 'Link users to specific chado records.  These are set by the site admin, and determine which submissions the admin listed here will be able to view.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'uid' => [
+        'description' => "Drupal user ID of admin.",
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'base_table' => [
+        'description' => 'The base table. IE organism, project.',
+        'type' => 'varchar',
+        'not null' => TRUE,
+      ],
+      'record_id' => [
+        'description' => 'the record id.  Users admin permission based on this record.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => [
+      'id',
+    ],
+  ];
+
+
+  $schema['tripal_hq_submission_permissions'] = [
+    'description' => 'Submissions that a given admin has admin rights to.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+        'hq_permission_id' => [
+          'type' => 'int',
+          'not null' => TRUE,
+          'description' => 'The tripal_hq_permission id.  This is the general Chado permission set which is responsible for this child permission.'
+        ],
+      'submission_id' => [
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+
+    ],
+    'primary key' => [
+      'id',
+    ],
+    'foreign keys' => [
+      'submission_id' => [
+        'table' => 'tripal_hq_submission',
+        'columns' => [
+          'submission_id' => 'id',
+        ],
+      ],
+    ],
+  ];
+
+  return $schema;
+}
+
+/**
+ * Uninstall the module.
+ */
+function tripal_hq_permissions_uninstall() {
+  if (db_table_exists('tripal_hq_permissions')) {
+    db_drop_table('tripal_hq_permissions');
+  }
+}

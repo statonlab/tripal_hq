@@ -1,0 +1,8 @@
+name = Tripal Headquarters Permissions
+description = Chado-level permissions.
+core = 7.x
+version = 7.x-3.x
+project = tripal_hq
+package = Tripal Extensions
+dependencies[] = tripal
+dependencies[] = tripal_hq

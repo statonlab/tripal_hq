@@ -1,0 +1,43 @@
+<?php
+
+
+include_once('includes/tripal_hq_permissions_api.inc');
+
+
+/**
+ * Implements hook_menu.
+ *
+ * @return mixed
+ */
+function tripal_hq_permissions_menu() {
+  $items['admin/tripal/tripal_hq/chado_permissions'] = [
+    'title' => 'Tripal HQ Permissions',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_permissions_manage_admins.inc',
+    'access arguments' => ['access tripal_hq admin'],
+    'page arguments' => ['tripal_hq_permissions_manage_admins_form'],
+  ];
+
+  $items['admin/tripal/tripal_hq/chado_permissions/%'] = [
+    'title' => 'Tripal HQ Permissions',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_permissions_edit_admin.inc',
+    'access arguments' => ['access tripal_hq admin'],
+    'page arguments' => ['tripal_hq_permissions_edit_admin_form', 4],
+  ];
+
+  return $items;
+}
+
+
+/**
+ * Implements hook_permission().
+ */
+
+function tripal_hq_permissions_permission() {
+  $permissions['tripal_hq_permissions deputy'] = [
+    'title' => t('Administer CHADO-specific tripal_HQ content'),
+    'description' => t('Give admins chado-specific admin roles.'),
+  ];
+  return $permissions;
+}
