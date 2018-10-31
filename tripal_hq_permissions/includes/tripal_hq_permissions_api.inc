@@ -3,10 +3,11 @@
 /**
  * Tripal jobs callback
  *
- * @param $args .  requires 'uid' key.
+ * @param $args
  */
 function tripal_hq_permissions_infer_permissions($args) {
-  $uid = $args['uid'];
+
+  $uid = $args;
 
   //Get parent user permissions.
 
@@ -99,7 +100,7 @@ function tripal_hq_permissions_link_request($base, $record_id, $submission_id) {
 
   $permissions = db_select('tripal_hq_permissions', 't')
     ->fields('t', ['id'])
-    ->condition('base', $base)
+    ->condition('base_table', $base)
     ->condition('record_id', $record_id)
     ->execute()
     ->fetchAll();
