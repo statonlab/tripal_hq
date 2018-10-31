@@ -81,11 +81,25 @@ function tripal_hq_permissions_process_submission($submission_id) {
       $organism_id = $organism['value'];
 
       tripal_hq_permissions_link_request('organism', $organism_id, $submission_id);
+    }
+  }
+
+  if (isset($entity->obi__organism_linker)){
+
+    $organisms = $entity->obi__organism_linker;
+
+    foreach ($organisms['und'] as $organism){
+
+      //field:  see https://github.com/statonlab/tripal_manage_analyses/blob/7ca149463cad59dcb626389dc713cf0bc4a5610e/includes/TripalFields/obi__organism_linker/obi__organism_linker.inc#L173-L184
+
+
+      $organism_id = $organism['value']['organism_id'];
+
+      tripal_hq_permissions_link_request('organism', $organism_id, $submission_id);
 
     }
   }
-  //TODO: organism linker field.
-  //TODO: project linker field.
+  //TODO: project fields.  THey don't exist yet though i think.
   return;
 }
 
