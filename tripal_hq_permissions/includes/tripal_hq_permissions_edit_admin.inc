@@ -135,8 +135,6 @@ function tripal_hq_permissions_edit_admin_form_submit($form, &$form_state) {
   //TODO: other modules extending this permission will need to hook into this.
 
 
-  //insert primary permissions.
-
   if ($organisms) {
     foreach ($organisms as $organism => $label) {
 
@@ -145,7 +143,7 @@ function tripal_hq_permissions_edit_admin_form_submit($form, &$form_state) {
           'uid' => $uid,
           'base_table' => 'organism',
           'record_id' => $organism,
-        ]);
+        ])->execute();
     }
   }
 

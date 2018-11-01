@@ -1,0 +1,3 @@
+
+This submodule handles Chado-based permissions.  In short, site admins might want to allow some admins to only have permission for a subset of content.  Two of the main content divisors in Chado are organisms and projects, so we support that. HQ uses said permissions to determine what content appears in an admin's feed.  If they are an admin over organism X, and a content request is made for an analysis for said organism, it will appear in their feed.
+

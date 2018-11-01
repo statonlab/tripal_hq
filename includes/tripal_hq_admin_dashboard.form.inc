@@ -15,12 +15,18 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
   $message = '<p>User data submissions are listed below.  The tabs above will let you filter submissions based on their status.  Click on any row to view that submission.</p>';
 
 
+  //Check if the user is a deputy.  If so, they only get access to a subset of data.
+
+  $deputy = user_access('tripal_hq_permissions deputy');
+  global $user;
+  $uid = $user->uid;
+
   $form['instructions'] = ['#markup' => $message];
 
   $header = [
     'User' => [
       'data' => t('User'),
-      'field' => 'uid',
+      'field' => 't.uid',
     ],
     'Title' => [
       'data' => t('Title'),
@@ -44,19 +50,44 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
     'Reject',
   ];
 
-  $query = db_select('tripal_hq_submission', 't')
-    ->extend('TableSort')
-    ->orderByHeader($header)
-    ->extend('PagerDefault');
+  if ($deputy && $uid != 0 && $uid != 1) {
 
-  if ($status) {
-    $query->condition('t.status', $status);
+    $query = db_select('tripal_hq_submission', 't')
+      ->extend('TableSort')
+      ->orderByHeader($header)
+      ->extend('PagerDefault');
+    $query->join('tripal_hq_submission_permissions', 'thsp', 'thsp.submission_id = t.id');
+    $query->join('tripal_hq_permissions', 'thp', 'thp.id = thsp.hq_permission_id');
+    $query->condition('thp.uid', $uid);
+
+    if ($status) {
+      $query->condition('t.status', $status);
+    }
+    $requests = $query->fields('t')
+      ->orderBy('id', 'desc')
+      ->limit(10)
+      ->execute()
+      ->fetchAll();
+
+
   }
-  $requests = $query->fields('t')
-    ->orderBy('id', 'desc')
-    ->limit(10)
-    ->execute()
-    ->fetchAll();
+  else {
+
+    $query = db_select('tripal_hq_submission', 't')
+      ->extend('TableSort')
+      ->orderByHeader($header)
+      ->extend('PagerDefault');
+
+    if ($status) {
+      $query->condition('t.status', $status);
+    }
+    $requests = $query->fields('t')
+      ->orderBy('id', 'desc')
+      ->limit(10)
+      ->execute()
+      ->fetchAll();
+  }
+
 
   if (!$requests) {
 
