@@ -162,3 +162,26 @@ function tripal_hq_permissions_process_entity_permissions($submission_id, $entit
   //TODO: project fields.  THey don't exist yet though i think.
   return;
 }
+
+
+/**
+ * @param $record_id
+ * @param $record_type
+ */
+function tripal_hq_permissions_get_admins($record_id, $record_type) {
+  $query = db_select('tripal_hq_permissions', 't')
+    ->fields('t', ['uid'])
+    ->condition('base_table', $record_type)
+    ->condition('record_id', $record_id);
+  $query->join('users', 'u', 'u.uid = t.uid');
+  $query->fields('u', ['mail']);
+  $results = $query->execute()
+    ->fetchAll();
+
+  $admins = [];
+
+  foreach ($results as $result) {
+    $admins[$result->uid] = $result->mail;
+  }
+  return $admins;
+}
