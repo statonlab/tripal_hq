@@ -5,3 +5,4 @@ version = 7.x-3.x
 project = tripal_hq
 package = Tripal Extensions
 dependencies[] = tripal
+dependencies[] = tripal_hq_permissions
