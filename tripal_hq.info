@@ -1,7 +1,7 @@
 name = Tripal Headquarters
 description = coming soon
 core = 7.x
-version = 7.x-3.x
+version = 7.x-1.0-rc1
 project = tripal_hq
 package = Tripal Extensions
 dependencies[] = tripal
