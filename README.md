@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/statonlab/tripal_hq.svg?branch=master)](https://travis-ci.org/statonlab/tripal_hq)
+[![DOI](https://zenodo.org/badge/152087832.svg)](https://zenodo.org/badge/latestdoi/152087832)
+
 
 # Tripal HeadQuarters (HQ)
 
