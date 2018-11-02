@@ -17,23 +17,22 @@ function tripal_hq_permissions_manage_admins_form($form, &$form_state) {
   ];
 
   $header = [
-    'User Name',
-    'Number of admin records',
-    'Set Permissions'
+    'Name' => ['data' => t('User Name'), 'field' => 'u.name'],
+    'Number of admin records' => ['data' => t('Number of Base Permissions'), 'field' => 'thqp.count'],
+    'Set Permissions',
   ];
+
   $deputies = tripal_hq_permissions_get_deputies_query($header);
 
   $rows = [];
 
   foreach ($deputies as $entry) {
 
-   $permissions = tripal_hq_permissions_get_users_specific_permissions($entry->uid);
-
-$link = l('Assign', '/admin/tripal/tripal_hq/chado_permissions/' .$entry->uid);
+    $link = l('Assign', '/admin/tripal/tripal_hq/chado_permissions/' . $entry->uid);
     $row = [
       $entry->name,
-      count($permissions),
-      $link
+      $entry->count,
+      $link,
     ];
 
     $rows[] = $row;
@@ -41,6 +40,8 @@ $link = l('Assign', '/admin/tripal/tripal_hq/chado_permissions/' .$entry->uid);
   }
 
   $table = theme('table', ['rows' => $rows, 'header' => $header]);
+  $table .= theme('pager');
+
   $form['table'] = [
     '#markup' => $table,
   ];
@@ -57,7 +58,11 @@ $link = l('Assign', '/admin/tripal/tripal_hq/chado_permissions/' .$entry->uid);
  */
 function tripal_hq_permissions_get_deputies_query($header) {
 
-  $query = db_select('users', 'u');
+  $query = db_select('users', 'u')
+    ->extend('PagerDefault')
+    ->extend('TableSort')
+   ;
+
   $query->join('users_roles', 'ur', 'ur.uid = u.uid');
   $query->join('role_permission', 'p', 'ur.rid = p.rid');
   $query->condition('u.uid', 0, '!=');
@@ -65,19 +70,22 @@ function tripal_hq_permissions_get_deputies_query($header) {
   $query->condition('p.permission', 'tripal_hq_permissions deputy');
   $query->fields('u', ['uid', 'name', 'mail']);
 
-  //add paging
-  $results = $query->extend('TableSort')
+  $query->leftJoin('tripal_hq_permissions', 'thqp', 'thqp.uid = u.uid');
+  $query->groupBy('u.uid');
+  $query->addExpression('COUNT(thqp.id)', 'count');
+
+
+
+  $results = $query
     ->orderByHeader($header)
-    ->extend('PagerDefault')
-    ->limit(10)
-    ->execute()
-    ->fetchAll();
+    ->limit(25)
+    ->execute();
 
   return $results;
 }
 
 /**
- * Get all permissions set for the given user.
+ * Get all BASE permissions set for the given user.
  *
  * @param $uid
  *
@@ -87,6 +95,7 @@ function tripal_hq_permissions_get_users_specific_permissions($uid) {
 
   $query = db_select('tripal_hq_permissions', 'ths');
   $query->fields('ths');
+  $query->condition('uid', $uid);
   return $query->execute()->fetchAll();
 
 }
