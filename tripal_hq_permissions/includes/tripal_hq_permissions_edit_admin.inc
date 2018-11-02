@@ -50,11 +50,39 @@ function tripal_hq_permissions_edit_admin_form($form, &$form_state, $uid) {
     $o_options[$project->project_id] = $project->name;
   }
 
+  //Get pre-existing options
+
+  $organism_records = db_select('tripal_hq_permissions', 't')->fields('t', ['record_id'])
+    ->condition('uid', $uid)
+    ->condition('base_table', 'organism')
+    ->execute()
+    ->fetchAll();
+
+  $pre_org = [];
+  foreach ($organism_records as $org){
+    $org = $org->record_id;
+    $pre_org[$org] = $org;
+  }
+  
+  $project_records = db_select('tripal_hq_permissions', 't')->fields('t', ['record_id'])
+    ->condition('uid', $uid)
+    ->condition('base_table', 'project')
+    ->execute()
+    ->fetchAll();
+
+  $pre_project = [];
+  foreach ($project_records as $project){
+    $pre_project[$project] = $project;
+  }
+
+
+
   $form['organism'] = [
     '#type' => "select",
     '#title' => 'Organisms',
     '#multiple' => TRUE,
     '#options' => $o_options,
+    '#default_value' => $pre_org
   ];
 
 
@@ -63,6 +91,7 @@ function tripal_hq_permissions_edit_admin_form($form, &$form_state, $uid) {
     '#title' => 'Projects',
     '#multiple' => TRUE,
     '#options' => $p_options,
+    '#default_value' => $pre_project
   ];
 
 
