@@ -3,7 +3,7 @@
 Tripal HQ is configured to notify both users and administrators when the following events occur for a given requested record:
 
 * Creation
-* Edit
+* Edit (not yet implemented)
 * Approval
 * Rejection
 
