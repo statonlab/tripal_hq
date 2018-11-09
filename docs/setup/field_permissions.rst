@@ -19,12 +19,12 @@ Setting Field-specific Permissions
 
 Let's assume I want to hide the Cross-Reference field from my users submitting Genome Assembly data, but still want it available for my administrators.
 
-.. image:: _static/img/cross_ref_GA.png
+.. image:: /_static/img/cross_ref_GA.png
 
 First, navigate to the bundle field configuration page via **Admin --> Structure --> Tripal Content --> Genome Assembly**.  For each field we want to hide, we must configure the field instance settings individually.  Click **Edit** for the Cross Reference field, and scroll down to **CROSS REFERENCE FIELD SETTINGS**.
 Select **Custom Permissions** and ensure that the user role you set up for HQ submitters can view, but cannot edit, this field.
 
-.. image:: _static/img/crossref_permissions.png
+.. image:: /_static/img/crossref_permissions.png
 
 Once permissions are configured to your liking, click **Save Settings**.
 

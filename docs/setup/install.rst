@@ -26,7 +26,7 @@ Additional Module Installation
 Field Permissions
 ------------------
 
-We recommend using the Drupal Field Permissions module to hide some fields from user submission forms.  You can read more about why this is a good idea :ref:`why_field_permissions`
+We recommend using the Drupal Field Permissions module to hide some fields from user submission forms.  You can read more about why this is a good idea here: :ref:`why_field_permissions`
 
 The module can be enabled directly from Drush with the below command.
 
