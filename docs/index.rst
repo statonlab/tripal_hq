@@ -12,3 +12,5 @@ Tripal HeadQuarters Guide
 
   introduction
   installation
+  usage
+  contributing
