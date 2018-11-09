@@ -28,11 +28,11 @@ Chado specific Permissions
 
 Chado-specific permissions can be configured at ```admin/tripal/tripal_hq/chado_permissions``.  Here you will see all users with the "Administer CHADO-specific tripal_HQ content" permission.  Click "Assign" to give them permission for specific organisms.
 
-.. image:: docs/permissions_page.png
+.. image:: img/permissions_page.png
 
 Select one or more organism for this user and click "Submit".
 
-.. image:: docs/specific_permission.png
+.. image:: img/specific_permission.png
 
 
 For now, you can only configure organism-based permissions.

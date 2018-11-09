@@ -8,7 +8,7 @@ Users
 User content submission can be reached at ``tripal_hq/bio_data``.
 
 
-.. image:: docs/user_dash.png
+.. image:: img/user_dash.png
 
 Approved, pending, and rejected content is displayed in the table.  Clicking the View/Edit button will either link to the accepted entity, or to the submission form to submit changes.
 
@@ -21,7 +21,7 @@ Admins
  The HQ admin dashboard is located at ``tripal_hq/admin``.  Admins can click on the tabs to filter submissions based on their status.
 
 
-.. image:: docs/admin_dash.png
+.. image:: img/admin_dash.png
 
 
  Clicking on the **title** of a pending submission will bring up the edit form, and an admin can make changes to the submission before it is created.
