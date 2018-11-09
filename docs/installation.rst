@@ -10,3 +10,4 @@ Installation and Setup
    setup/install
    setup/permissions
    setup/settings
+   setup/field_permissions
