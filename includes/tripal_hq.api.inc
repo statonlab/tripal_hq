@@ -149,7 +149,7 @@ function tripal_hq_send_emails($submission_id, $event) {
   $user_email = $user_object->mail;
 
   $site_email = variable_get('site_mail');
-  $relevant_admins = tripal_hq_get_curator_emails();
+  $relevant_admins = tripal_hq_get_curator_emails($submission_id);
 
   switch ($event) {
     case "submit":
@@ -206,7 +206,29 @@ function tripal_hq_send_emails($submission_id, $event) {
  *
  * @return string, list of emails suitable for drupal_mail hook
  */
-function tripal_hq_get_curator_emails() {
+function tripal_hq_get_curator_emails($submission_id) {
+
+  $mail = [];
+
+
+  $query = db_select('tripal_hq_submission_permission', 'thsp');
+  $query->join('tripal_hq_permissions', 'thp', 'thp.id = thsp.hq_permission_id');
+  $query->condition('thsp.submission_id', $submission_id);
+  $query->join('users', 'u', 'u.uid = thp.uid');
+  $query->fields('u', ['mail']);
+  $deputies = $query->execute()->fetchAll();
+
+
+   // If specific permissions are set, only notify those in charge of it.
+
+  if (!empty($deputies)){
+    foreach ($deputies as $deputy) {
+      $mail[] = $deputy->mail;
+    }
+    return implode(', ', $mail);
+  }
+
+  //Otherwise, get all admins with the role.
 
   $query = db_select('users', 'u')
     ->fields('u', ['mail']);
@@ -216,7 +238,6 @@ function tripal_hq_get_curator_emails() {
   $query->condition('rp.module', 'tripal_hq');
 
   $results = $query->execute()->fetchAll();
-  $mail = [];
 
   if (!$results) {
     return '';
