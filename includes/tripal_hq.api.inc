@@ -219,9 +219,9 @@ function tripal_hq_get_curator_emails($submission_id) {
   $deputies = $query->execute()->fetchAll();
 
 
-   // If specific permissions are set, only notify those in charge of it.
+  // If specific permissions are set, only notify those in charge of it.
 
-  if (!empty($deputies)){
+  if (!empty($deputies)) {
     foreach ($deputies as $deputy) {
       $mail[] = $deputy->mail;
     }
@@ -236,6 +236,8 @@ function tripal_hq_get_curator_emails($submission_id) {
   $query->join('role_permission', 'rp', 'rp.rid = ur.rid');
   $query->condition('rp.permission', 'access tripal_hq admin');
   $query->condition('rp.module', 'tripal_hq');
+  $query->leftJoin('tripal_hq_permissions', 'thp', 'thp.uid = u.uid');
+  $query->isNull('thp.id');
 
   $results = $query->execute()->fetchAll();
 
