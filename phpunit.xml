@@ -18,6 +18,8 @@
    <whitelist addUncoveredFilesFromWhitelist="true">
      <directory suffix=".inc">./includes</directory>
      <directory suffix=".php">./includes</directory>
+       <directory suffix=".inc">./tripal_hq_permissions/includes</directory>
+       <directory suffix=".php">./tripal_hq_permissions/includes</directory>
    </whitelist>
  </filter>
 </phpunit>
