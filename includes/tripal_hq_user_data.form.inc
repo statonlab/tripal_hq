@@ -1,7 +1,12 @@
 <?php
 
 /**
- * Bundle list page.
+ * @file
+ * Bundle list for new user submissions.
+ */
+
+/**
+ * Provides the page view for user submissions.
  *
  * @return array
  */
@@ -9,7 +14,7 @@ function tripal_hq_list_bundles_page() {
   $page = [];
 
   // TODO: add description for the page. We might also add a warning
-  // TODO: for *admin* users to use the actual tripal content forms
+  // TODO: for *admin* users to use the actual tripal content forms.
   $page['description'] = [
     '#type' => 'markup',
     '#prefix' => '<p>',
@@ -17,7 +22,7 @@ function tripal_hq_list_bundles_page() {
     '#suffix' => '</p>',
   ];
 
-  // Get bundles sorted by label
+  // Get bundles sorted by label.
   $bundles = db_select('tripal_bundle', 'tb')
     ->fields('tb')
     ->orderBy('label', 'asc')
@@ -49,18 +54,19 @@ function tripal_hq_list_bundles_page() {
 /**
  * Create entity form.
  *
- * @param array $form
- * @param array $form_state
- * @param int $bundle Bundle ID
- * @param int $sid Submission ID
+ * @param int $bundle
+ *   Bundle ID.
+ * @param int $sid
+ *   Submission ID.
  *
  * @return array
+ *   Renderable array.
  */
 function tripal_hq_user_entity_form($bundle, $sid = NULL) {
   $data = NULL;
   $entity = NULL;
 
-  // Construct an entity if a submission is provided
+  // Construct an entity if a submission is provided.
   if ($sid) {
     $submission = tripal_hq_get_submission_by_id($sid);
     if (empty($submission)) {
@@ -79,10 +85,10 @@ function tripal_hq_user_entity_form($bundle, $sid = NULL) {
   $fullBundle = tripal_load_bundle_entity(['id' => $bundle]);
   drupal_set_title($fullBundle->label);
 
-  // Get the entity form
+  // Get the entity form.
   $form = drupal_get_form('tripal_entity_form', $fullBundle->id, $entity);
 
-  // Remove the original submit function and replace it with ours
+  // Remove the original submit function and replace it with ours.
   $index = array_search('tripal_entity_form_submit', $form['#submit']);
   if ($index !== FALSE) {
     unset($form['#submit'][$index]);
@@ -90,7 +96,7 @@ function tripal_hq_user_entity_form($bundle, $sid = NULL) {
   $form['#submit'][] = 'tripal_hq_entity_form_submit';
 
   // Attach the submission id to the form so that it's available
-  // to the submit method
+  // to the submit method.
   if ($sid) {
     $form['submission_id'] = [
       '#type' => 'hidden',
@@ -102,18 +108,14 @@ function tripal_hq_user_entity_form($bundle, $sid = NULL) {
 }
 
 /**
- * Alter the tripal entity form to add our submit function.
+ * Implements hook_form_alter().
  *
- * @param array $form
- * @param array $form_state
- * @param string $form_id
- *
- * @return array
+ *  Alter the tripal entity form to add our submit function.
  */
 function tripal_hq_form_tripal_entity_form_alter(&$form, &$form_state) {
   if (strstr($_GET['q'],
       'tripal_hq') !== FALSE || isset($form_state['tripal_hq_set'])) {
-    // Remove the original submit function and replace it with ours
+    // Remove the original submit function and replace it with ours.
     $index = array_search('tripal_entity_form_submit', $form['#submit']);
     if ($index !== FALSE) {
       unset($form['#submit'][$index]);
@@ -135,7 +137,7 @@ function tripal_hq_form_tripal_entity_form_alter(&$form, &$form_state) {
 }
 
 /**
- * Implements hook_validate() for the tripal_hq_user_entity_form.
+ * Implements hook_form_validate().
  */
 function tripal_hq_entity_form_validate($form, &$form_state) {
   // If the user is cancelling or deleting the entity then don't validate.
@@ -155,16 +157,14 @@ function tripal_hq_entity_form_validate($form, &$form_state) {
 
   try {
     $create_date = new DateTime($form_state['values']['author_date']);
-  } catch (Exception $e) {
+  }
+  catch (Exception $e) {
     form_set_error('author_date', 'Please provide a valid authored on date.');
   }
 }
 
 /**
- * Handle submission.
- *
- * @param $form
- * @param $form_state
+ * Implements hook_form_submit().
  */
 function tripal_hq_entity_form_submit($form, &$form_state) {
   // If the user is cancelling or deleting the entity then don't validate.
@@ -246,12 +246,15 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
 /**
  * Save the fully constructed entity as a submission.
  *
- * @param $entity
- * @param null $submission_id
+ * @param \stdClass $entity
+ *   A tripal entity object.
+ * @param int $submission_id
+ *   The HQ submission ID.
  *
- * @return string submission id, or FALSE if error
+ * @return string
+ *   The submission id, or FALSE if error.
  */
-function tripal_hq_save_submission($entity, $submission_id = NULL) {
+function tripal_hq_save_submission(stdClass $entity, int $submission_id = NULL) {
   global $user;
   $submission = NULL;
   if ($submission_id) {
@@ -278,7 +281,7 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
     }
   }
 
-  // If the submission is pending, update it
+  // If the submission is pending, update it.
   if ($submission && $submission->status !== 'approved') {
     db_update('tripal_hq_submission')->condition('id', $submission_id)->fields([
       'uid' => $user->uid,
@@ -291,7 +294,7 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
     return $submission_id;
   }
 
-  // Create a new submission
+  // Create a new submission.
   $submission_id = db_insert('tripal_hq_submission')->fields([
     'uid' => $user->uid,
     'title' => $title,
@@ -303,7 +306,6 @@ function tripal_hq_save_submission($entity, $submission_id = NULL) {
   ])->execute();
 
   if ($submission_id) {
-
 
     tripal_hq_permissions_process_submission($submission_id);
 
