@@ -1,11 +1,20 @@
 <?php
 
 /**
- * @param $submission_id
+ * @file
+ * HQ API Access points.
+ */
+
+/**
+ * Gets a submission object by ID.
+ *
+ * @param int $submission_id
+ *   HQ submission ID.
  *
  * @return mixed
+ *   The submission object (or false if no match).
  */
-function tripal_hq_get_submission_by_id($submission_id) {
+function tripal_hq_get_submission_by_id(int $submission_id) {
   return db_query('SELECT * FROM {tripal_hq_submission} WHERE id=:id', [
     ':id' => $submission_id,
   ])->fetchObject();
@@ -14,7 +23,8 @@ function tripal_hq_get_submission_by_id($submission_id) {
 /**
  * Fetch all submissions for a given user (minus serialized data).
  *
- * @param $user
+ * @param mixed $user
+ *   Drupal user object.
  *
  * @return mixed
  */
@@ -34,8 +44,9 @@ function tripal_hq_get_user_submissions($user) {
 /**
  * Save and publish the entity.
  *
- * @param object $entity The entity object. Normally, this comes from
- *        unserializing the data field in tripal_hq_submissions table.
+ * @param object $entity
+ *   The entity object. Normally, this comes from
+ *   unserializing the data field in tripal_hq_submissions table.
  *
  * @return bool|int The entity id or FALSE on failure.
  */
@@ -47,7 +58,8 @@ function tripal_hq_publish_entity($entity) {
 /**
  * Approve and publish a submission.
  *
- * @param object $submission Submission object.
+ * @param object $submission
+ *   Submission object.
  *
  * @return object|boolean Entity. The published entity or FALSE on failure.
  */
@@ -70,7 +82,8 @@ function tripal_hq_approve_submission($submission) {
 /**
  * Reject a submission.
  *
- * @param object $submission Submission object.
+ * @param object $submission
+ *   Submission object.
  *
  * @return boolean TRUE on success or FALSE otherwise.
  */
@@ -85,7 +98,8 @@ function tripal_hq_reject_submission($submission) {
 /**
  * Fetch all submissions sorted by ID.
  *
- * @param string $status One of "approved", "rejected", "pending"
+ * @param string $status
+ *   One of "approved", "rejected", "pending".
  *
  * @return array of requests, or null if none.
  */
@@ -131,18 +145,16 @@ function tripal_hq_delete_submission($submission) {
     ->execute();
 }
 
-
 /**
- * @param $submission_id - the tripal_hq_submission.id
+ * @param $submission_id
+ *   - the tripal_hq_submission.id
  *
- * @param $event -  the event key. Valid keys:  "submit", "approve", "reject"
+ * @param $event
+ *   -  the event key. Valid keys:  "submit", "approve", "reject"
  */
-
 function tripal_hq_send_emails($submission_id, $event) {
 
-
   $submission = tripal_hq_get_submission_by_id($submission_id);
-
 
   $user_object = user_load($submission->uid);
 
@@ -157,31 +169,32 @@ function tripal_hq_send_emails($submission_id, $event) {
       $site_settings = variable_get('tripal_hq_submit_request');
 
       if (!empty($site_settings['User'])) {
-        //From site, to end user
+        // From site, to end user.
         drupal_mail('tripal_hq', 'user_submit_notice', $user_email, language_default(), $submission, $site_email, TRUE);
       }
-      //from site to site_admin
+      // From site to site_admin.
       if (!empty($site_settings['Admin'])) {
 
         drupal_mail('tripal_hq', 'admin_submit_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
       }
 
       break;
+
     case "approve":
       $site_settings = variable_get('tripal_hq_approval');
-
 
       if (!empty($site_settings['User'])) {
 
         drupal_mail('tripal_hq', 'user_approve_notice', $user_email, language_default(), $submission, $site_email, TRUE);
       }
-      //from site to site_admin
+      // From site to site_admin.
       if (!empty($site_settings['Admin'])) {
 
         drupal_mail('tripal_hq', 'admin_approve_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
       }
 
       break;
+
     case "reject":
       $site_settings = variable_get('tripal_hq_denied');
 
@@ -189,7 +202,7 @@ function tripal_hq_send_emails($submission_id, $event) {
 
         drupal_mail('tripal_hq', 'user_reject_notice', $user_email, language_default(), $submission, $site_email, TRUE);
       }
-      //from site to site_admin
+      // From site to site_admin.
       if (!empty($site_settings['Admin'])) {
 
         drupal_mail('tripal_hq', 'admin_reject_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);

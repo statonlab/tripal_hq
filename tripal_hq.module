@@ -1,13 +1,17 @@
 <?php
 
+/**
+ * @file
+ */
+
 require_once 'includes/tripal_hq.api.inc';
 require_once 'includes/tripal_hq_email.inc';
 
 /**
- * Implements hook_menu()
+ * Implements hook_menu().
  */
 function tripal_hq_menu() {
-  /**
+  /*
    * Admin can configure which emails get sent out, more stuff?
    */
   $items['admin/tripal/tripal_hq'] = [
@@ -18,7 +22,7 @@ function tripal_hq_menu() {
     'page arguments' => ['tripal_hq_admin_settings_form'],
   ];
 
-  //Admin area for viewing requests.  Wildcard is the tripal_hq_submission.status
+  // Admin area for viewing requests.  Wildcard is the tripal_hq_submission.status.
   $items['tripal_hq/admin'] = [
     'title' => 'Tripal HQ Admin Dashboard',
     'page callback' => 'drupal_get_form',
@@ -48,7 +52,6 @@ function tripal_hq_menu() {
     'page arguments' => ['tripal_hq_admin_dashboard_form', NULL],
   ];
 
-
   $items['tripal_hq/admin/rejected'] = [
     'title' => 'Rejected',
     'page arguments' => ['tripal_hq_admin_dashboard_form', 'rejected'],
@@ -62,7 +65,6 @@ function tripal_hq_menu() {
     'access arguments' => ['access tripal_hq admin'],
     'type' => MENU_LOCAL_TASK,
   ];
-
 
   $items['tripal_hq/admin/approve/%'] = [
     'title' => 'Tripal HQ Approve',
@@ -80,9 +82,8 @@ function tripal_hq_menu() {
     'page arguments' => ['tripal_hq_admin_control_form', 'reject', 3],
   ];
 
-  //Todo:  rename title to "site_name content" ro something?  Or make configurable?
-  // note that we can always use drupal_set_title() in the form function
-
+  // Todo:  rename title to "site_name content" ro something?  Or make configurable?
+  // note that we can always use drupal_set_title() in the form function.
   $items['tripal_hq/bio_data'] = [
     'title' => 'Submit Content',
     'page callback' => 'drupal_get_form',
@@ -123,7 +124,6 @@ function tripal_hq_menu() {
 /**
  * Implements hook_permission().
  */
-
 function tripal_hq_permission() {
   $permissions['access tripal_hq admin'] = [
     'title' => t('Administer tripal_HQ content'),
@@ -151,24 +151,26 @@ function tripal_hq_permission() {
 /**
  * Determines whether a user has access to view/edit a submission.
  *
- * @param $submission_id
+ * @param int $submission_id
+ *   Submission ID.
  *
  * @return bool
+ *   The submission object, or false.
  */
-function tripal_hq_submission_access($submission_id) {
+function tripal_hq_submission_access(int $submission_id) {
   global $user;
 
-  // If an admin, allow access to all submissions
+  // If an admin, allow access to all submissions.
   if (user_access('access tripal_hq admin')) {
     return TRUE;
   }
 
-  // Users who don't have an appropriate role don't get to access the page
+  // Users who don't have an appropriate role don't get to access the page.
   if (!user_access('access tripal_hq user')) {
     return FALSE;
   }
 
-  // The last type of allowed user is the submitter
+  // The last type of allowed user is the submitter.
   $submission = tripal_hq_get_submission_by_id($submission_id);
 
   return $submission ? $user->uid == $submission->uid : FALSE;
