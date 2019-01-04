@@ -1,10 +1,15 @@
 <?php
 
 /**
+ * @file
+ * Mail functions for notifying users and admins of acceptance, submission, etc.
+ */
+
+/**
  * Implements hook_mail().
  *
- * @param $key
- *    One of the following strings:
+ * @param string $key
+ *   One of the following strings:
  *      - user_submit_notice
  *      - admin_submit_notice
  *      - user_accept_notice
@@ -12,14 +17,9 @@
  *      - user_reject_notice
  *      - admin_reject_notice
  *      - user_edit_notice
- *      - admin_edit_notice
- *
- * @param $message
- * @param $params - this is the tripal_hq_submission object.
- *
+ *      - admin_edit_notice.
  */
-
-function tripal_hq_mail($key, &$message, $params) {
+function tripal_hq_mail(string $key, &$message, $params) {
   $language = $message['language'];
   $site_name = variable_get('site_name');
 
@@ -40,10 +40,9 @@ function tripal_hq_mail($key, &$message, $params) {
   $entity_id = $params->entity_id;
   $link = $base_url . 'bio_data/' . $entity_id;
 
-
   switch ($key) {
 
-    /**
+    /*
      * Acknowledge user has submitted a content request.
      */
     case 'user_submit_notice':
@@ -59,7 +58,7 @@ function tripal_hq_mail($key, &$message, $params) {
       ]);
       break;
 
-    /**
+    /*
      * Let relevant admins know a content request has been received.
      */
     case 'admin_submit_notice':
@@ -67,7 +66,7 @@ function tripal_hq_mail($key, &$message, $params) {
       $message['subject'] = t('!site Content Submission Request Received', ['!site' => $site_name], ['langcode' => $language->language]);
       $message['body'][] = t('Dear !site admin,', ['!site' => $site_name], ['langcode' => $language->language]);
       $message['body'][] = t("User !user has submitted the following content creation request:", [
-        '!user' => $submitter_name
+        '!user' => $submitter_name,
       ]);
       $message['body'][] = t("Type: !type", ['!type' => $bundle_label]);
       $message['body'][] = t("Title: !title", [
@@ -77,7 +76,7 @@ function tripal_hq_mail($key, &$message, $params) {
 
       break;
 
-    /**
+    /*
      * User's submission has been approved!
      */
     case 'user_accept_notice':
@@ -92,7 +91,7 @@ function tripal_hq_mail($key, &$message, $params) {
 
       break;
 
-    /**
+    /*
      * Admin: submission has been approved!
      */
     case 'admin_accept_notice':
@@ -106,7 +105,6 @@ function tripal_hq_mail($key, &$message, $params) {
       $message['body'][] = t('The newly created content is available here: !url', ['!url' => $link]);
 
       return;
-
 
       break;
 
