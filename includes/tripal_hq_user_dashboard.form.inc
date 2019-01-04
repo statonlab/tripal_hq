@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * @file
+ * End user dashboard.
+ *
+ *  Provides a unified view for users to view submissions and submit new
+ *   content.
+ */
+
+/**
+ * Implements hook_form().
+ */
 function tripal_hq_user_dashboard_form($form, &$form_state) {
 
   global $user;
@@ -42,7 +53,6 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
 
   $bundle_labels = [];
 
-
   foreach ($submissions as $submission) {
     $id = $submission->id;
     $title = $submission->title;
@@ -66,10 +76,10 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
       $submission->updated_at) : '';
     $entity_id = $submission->entity_id;
 
-    $link = l('Edit', '/tripal_hq/bio_data/edit/' . $bundle_id . '/' . $id);
+    $link = l(t('Edit'), '/tripal_hq/bio_data/edit/' . $bundle_id . '/' . $id);
 
     if ($entity_id) {
-      $link = l('View', '/bio_data/' . $entity_id);
+      $link = l(t('View'), '/bio_data/' . $entity_id);
     }
 
     $rows[] = [
