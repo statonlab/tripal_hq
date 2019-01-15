@@ -78,8 +78,6 @@ function tripal_hq_approve_submission($submission) {
     ]
   )->condition('id', $submission->id)->execute();
 
-  tripal_hq_delete_comment_node($submission);
-
   return $entity;
 }
 
@@ -97,8 +95,6 @@ function tripal_hq_reject_submission($submission) {
       'status' => 'rejected',
     ]
   )->condition('id', $submission->id)->execute();
-
-  tripal_hq_delete_comment_node($submission);
 
   return TRUE;
 }
@@ -144,6 +140,8 @@ function tripal_hq_submission_by_entity_id($entity_id) {
  * @return int
  */
 function tripal_hq_delete_submission($submission) {
+  tripal_hq_delete_comment_node($submission);
+
   return db_delete('tripal_hq_submission')
     ->condition('id', $submission->id)
     ->execute();
