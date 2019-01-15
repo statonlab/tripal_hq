@@ -262,8 +262,10 @@ function tripal_hq_get_curator_emails() {
  * Submission comments count.
  *
  * @param \stdClass $submission
+ *    The submission object.
  *
  * @return int
+ *    The number of comments related to a given submission.
  */
 function tripal_hq_get_comments_count(stdClass $submission) {
   if ($submission->nid) {
@@ -284,10 +286,9 @@ function tripal_hq_get_comments_count(stdClass $submission) {
  * Delete the comments node.
  *
  * @param \stdClass $submission
- *     The submission object.
+ *    The submission object.
  *
- * @return void
- *    This function does not return a value.
+ *   This function does not return a value.
  */
 function tripal_hq_delete_comment_node(stdClass $submission) {
   $nid = $submission->nid;

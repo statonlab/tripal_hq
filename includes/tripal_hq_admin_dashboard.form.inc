@@ -46,7 +46,9 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
       'field' => 'created_at',
       'sort' => 'dsc',
     ],
-    'Comments',
+    'Comments' => [
+      'data' => t('Comments')
+    ],
     'Approve',
     'Reject',
   ];
