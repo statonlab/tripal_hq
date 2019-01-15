@@ -17,8 +17,8 @@
 function tripal_hq_get_submission_by_id(int $submission_id) {
   return db_query(
     'SELECT * FROM {tripal_hq_submission} WHERE id=:id', [
-    ':id' => $submission_id,
-  ]
+      ':id' => $submission_id,
+    ]
   )->fetchObject();
 }
 
@@ -35,8 +35,8 @@ function tripal_hq_get_user_submissions($user) {
 
   $results =
     db_select('public.tripal_hq_submission', 't')->fields('t')->condition(
-        'uid', $uid
-      )->orderBy('id', 'desc')->execute()->fetchAll();
+      'uid', $uid
+    )->orderBy('id', 'desc')->execute()->fetchAll();
 
   return $results;
 }
@@ -78,6 +78,8 @@ function tripal_hq_approve_submission($submission) {
     ]
   )->condition('id', $submission->id)->execute();
 
+  tripal_hq_delete_comment_node($submission);
+
   return $entity;
 }
 
@@ -95,6 +97,8 @@ function tripal_hq_reject_submission($submission) {
       'status' => 'rejected',
     ]
   )->condition('id', $submission->id)->execute();
+
+  tripal_hq_delete_comment_node($submission);
 
   return TRUE;
 }
@@ -128,8 +132,8 @@ function tripal_hq_submissions($status = NULL) {
  */
 function tripal_hq_submission_by_entity_id($entity_id) {
   return db_select('tripal_hq_submission', 't')->fields('t')->orderBy(
-      'id', 'desc'
-    )->condition('entity_id', $entity_id)->execute()->fetchObject();
+    'id', 'desc'
+  )->condition('entity_id', $entity_id)->execute()->fetchObject();
 }
 
 /**
@@ -267,8 +271,8 @@ function tripal_hq_get_comments_count(stdClass $submission) {
   if ($submission->nid) {
     $comment_stats =
       db_select('node_comment_statistics', 'NCS')->fields('NCS')->condition(
-          'nid', $submission->nid, '='
-        )->execute()->fetchObject();
+        'nid', $submission->nid, '='
+      )->execute()->fetchObject();
 
     if ($comment_stats) {
       return $comment_stats->comment_count;
@@ -276,4 +280,23 @@ function tripal_hq_get_comments_count(stdClass $submission) {
   }
 
   return 0;
+}
+
+/**
+ * Delete the comments node.
+ *
+ * @param \stdClass $submission
+ *     The submission object.
+ *
+ * @return void
+ *    This function does not return a value.
+ */
+function tripal_hq_delete_comment_node(stdClass $submission) {
+  $nid = $submission->nid;
+
+  if (!$nid) {
+    return;
+  }
+
+  node_delete($nid);
 }
