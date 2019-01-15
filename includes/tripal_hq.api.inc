@@ -88,7 +88,7 @@ function tripal_hq_approve_submission($submission) {
  * @return boolean TRUE on success or FALSE otherwise.
  */
 function tripal_hq_reject_submission($submission) {
-  if($submission->status !== 'pending') {
+  if ($submission->status !== 'pending') {
     throw new Exception('Unable to reject a non-pending submission');
   }
 
