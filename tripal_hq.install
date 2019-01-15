@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @file
+ */
+
+/**
  * Implements hook_schema.
  *
  * @return array
@@ -9,55 +13,60 @@ function tripal_hq_schema() {
 
   $schema['tripal_hq_submission'] = [
     'description' => 'Store pending user requests to create Tripal content',
-    'fields' => [
-      'id' => [
-        'type' => 'serial',
+    'fields'      => [
+      'id'         => [
+        'type'     => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
       ],
-      'uid' => [
+      'uid'        => [
         'description' => "Drupal user ID of submitter",
-        'type' => 'int',
+        'type'        => 'int',
+        'not null'    => TRUE,
+      ],
+      'nid'        => [
+        'description' => "Comments node ID",
+        'type'        => 'int',
+        'not null'    => FALSE,
+      ],
+      'title'      => [
+        'type'     => 'varchar',
+        'length'   => '255',
         'not null' => TRUE,
       ],
-      'title' => [
-        'type' => 'varchar',
-        'length' => '255',
-        'not null' => TRUE,
-      ],
-      'data' => [
+      'data'       => [
         'description' => 'serialized entity data.',
-        'type' => 'blob',
-        'size' => 'big',
-        'serialize' => TRUE,
+        'type'        => 'blob',
+        'size'        => 'big',
+        'serialize'   => TRUE,
       ],
-      'entity_id' => [
+      'entity_id'  => [
         'description' => 'Tripal Entity ID.  NULL For new create requests.',
-        'type' => 'int',
-        'not null' => FALSE,
+        'type'        => 'int',
+        'not null'    => FALSE,
       ],
-      'bundle_id' => [
+      'bundle_id'  => [
         'description' => 'The bundle id. Foreign key to `tripal_bundle.id`.',
-        'type' => 'int',
-        'not null' => TRUE,
+        'type'        => 'int',
+        'not null'    => TRUE,
       ],
-      'status' => [
+      'status'     => [
         'description' => 'pending, published, rejected, obsolete',
-        'type' => 'varchar',
-        'length' => '60',
-        'not null' => TRUE,
+        'type'        => 'varchar',
+        'length'      => '60',
+        'not null'    => TRUE,
       ],
       'created_at' => [
         'description' => 'Date created',
-        'type' => 'int',
-        'size' => 'big',
-        'not null' => TRUE,
+        'type'        => 'int',
+        'size'        => 'big',
+        'not null'    => TRUE,
       ],
       'updated_at' => [
         'description' => 'Date created',
-        'type' => 'int',
-        'size' => 'big',
-        'not null' => FALSE,
+        'type'        => 'int',
+        'size'        => 'big',
+        'not null'    => FALSE,
       ],
     ],
     'primary key' => [
@@ -74,5 +83,20 @@ function tripal_hq_schema() {
 function tripal_hq_uninstall() {
   if (db_table_exists('tripal_hq_submission')) {
     db_drop_table('tripal_hq_submission');
+  }
+}
+
+/**
+ * Add nid column to tripal_hq_submission table.
+ */
+function tripal_hq_update_2100() {
+  if (!db_field_exists('tripal_hq_submission', 'nid')) {
+    db_add_field(
+      'tripal_hq_submission', 'nid', [
+        'description' => "Comments node ID",
+        'type'        => 'int',
+        'not null'    => FALSE,
+      ]
+    );
   }
 }
