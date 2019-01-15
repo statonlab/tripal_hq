@@ -73,7 +73,7 @@ function tripal_hq_approve_submission($submission) {
 
   db_update('tripal_hq_submission')->fields(
     [
-      'status'    => 'approved',
+      'status' => 'approved',
       'entity_id' => $entity->id,
     ]
   )->condition('id', $submission->id)->execute();
@@ -90,11 +90,10 @@ function tripal_hq_approve_submission($submission) {
  * @return boolean TRUE on success or FALSE otherwise.
  */
 function tripal_hq_reject_submission($submission) {
-  db_update('tripal_hq_submission')->fields(
-    [
-      'status' => 'rejected',
-    ]
-  )->condition('id', $submission->id)->execute();
+  db_update('tripal_hq_submission')
+    ->fields(['status' => 'rejected'])
+    ->condition('id', $submission->id)
+    ->execute();
 
   return TRUE;
 }
@@ -127,9 +126,12 @@ function tripal_hq_submissions($status = NULL) {
  * @return mixed
  */
 function tripal_hq_submission_by_entity_id($entity_id) {
-  return db_select('tripal_hq_submission', 't')->fields('t')->orderBy(
-    'id', 'desc'
-  )->condition('entity_id', $entity_id)->execute()->fetchObject();
+  return db_select('tripal_hq_submission', 't')
+    ->fields('t')
+    ->orderBy('id', 'desc')
+    ->condition('entity_id', $entity_id)
+    ->execute()
+    ->fetchObject();
 }
 
 /**
@@ -162,7 +164,7 @@ function tripal_hq_send_emails($submission_id, $event) {
 
   $user_email = $user_object->mail;
 
-  $site_email      = variable_get('site_mail');
+  $site_email = variable_get('site_mail');
   $relevant_admins = tripal_hq_get_curator_emails();
 
   switch ($event) {
@@ -247,7 +249,7 @@ function tripal_hq_get_curator_emails() {
   $query->condition('rp.module', 'tripal_hq');
 
   $results = $query->execute()->fetchAll();
-  $mail    = [];
+  $mail = [];
 
   if (!$results) {
     return '';
@@ -270,9 +272,11 @@ function tripal_hq_get_curator_emails() {
 function tripal_hq_get_comments_count(stdClass $submission) {
   if ($submission->nid) {
     $comment_stats =
-      db_select('node_comment_statistics', 'NCS')->fields('NCS')->condition(
-        'nid', $submission->nid, '='
-      )->execute()->fetchObject();
+      db_select('node_comment_statistics', 'NCS')
+        ->fields('NCS')
+        ->condition('nid', $submission->nid, '=')
+        ->execute()
+        ->fetchObject();
 
     if ($comment_stats) {
       return $comment_stats->comment_count;

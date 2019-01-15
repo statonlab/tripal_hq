@@ -14,10 +14,9 @@
 function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
   $message = '<p>User data submissions are listed below.  The tabs above will let you filter submissions based on their status.  Click on any row to view that submission.</p>';
 
-
-  //Check if the user is a deputy.  If so, they only get access to a subset of data.
-
+  // Check if the user is a deputy.  If so, they only get access to a subset of data.
   $deputy = user_access('tripal_hq_permissions deputy');
+
   global $user;
   $uid = $user->uid;
 
@@ -47,7 +46,7 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
       'sort' => 'dsc',
     ],
     'Comments' => [
-      'data' => t('Comments')
+      'data' => t('Comments'),
     ],
     'Approve',
     'Reject',
@@ -66,16 +65,14 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
     if ($status) {
       $query->condition('t.status', $status);
     }
+
     $requests = $query->fields('t')
       ->orderBy('id', 'desc')
       ->limit(10)
       ->execute()
       ->fetchAll();
-
-
   }
   else {
-
     $query = db_select('tripal_hq_submission', 't')
       ->extend('TableSort')
       ->orderByHeader($header)
@@ -93,7 +90,6 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
 
 
   if (!$requests) {
-
     $message = '<h4>no ' . $status . '  requests</h4>';
 
     $form['message'] = [
@@ -111,8 +107,7 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
     $created_at = date($date_format, $submission->created_at);
     $bundle_id = $submission->bundle_id;
     $bundle = tripal_load_bundle_entity(['id' => $bundle_id]);
-    $updated_at = $submission->updated_at ? date($date_format,
-      $submission->updated_at) : '';
+    $updated_at = $submission->updated_at ? date($date_format, $submission->updated_at) : '';
     $comment_count = tripal_hq_get_comments_count($submission);
 
     $submitter = user_load($submission->uid);

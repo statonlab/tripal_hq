@@ -17,22 +17,22 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
   $uid = $user->uid;
 
   $header = [
-    'Title'        => [
-      'data'  => t('Title'),
+    'Title' => [
+      'data' => t('Title'),
       'field' => 'title',
     ],
-    'Type'         => [
-      'data'  => t('Content Type'),
+    'Type' => [
+      'data' => t('Content Type'),
       'field' => 'bundle_id',
     ],
-    'Status'       => [
-      'data'  => t('Approval Status'),
+    'Status' => [
+      'data' => t('Approval Status'),
       'field' => 'status',
     ],
     'Date Created' => [
-      'data'  => t('Date Created'),
+      'data' => t('Date Created'),
       'field' => 'created_at',
-      'sort'  => 'dsc',
+      'sort' => 'dsc',
     ],
     'Date Updated',
     'Comments',
@@ -41,9 +41,7 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
 
   $submissions = db_select('public.tripal_hq_submission', 't')
     ->fields('t')
-    ->condition(
-      'uid', $uid
-    )
+    ->condition('uid', $uid)
     ->extend('TableSort')
     ->orderByHeader($header)
     ->extend('PagerDefault')
@@ -51,24 +49,25 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
     ->execute()
     ->fetchAll();
 
-  $rows        = [];
+  $rows = [];
   $date_format = 'M d Y H:i:s';
 
   $bundle_labels = [];
 
   foreach ($submissions as $submission) {
-    $id            = $submission->id;
-    $title         = $submission->title;
-    $status        = $submission->status;
-    $bundle_id     = $submission->bundle_id;
+    $id = $submission->id;
+    $title = $submission->title;
+    $status = $submission->status;
+    $bundle_id = $submission->bundle_id;
     $comment_count = tripal_hq_get_comments_count($submission);
 
     if (!isset($bundle_labels[$bundle_id])) {
+      $label = db_select('tripal_bundle', 't')
+        ->fields('t', ['label'])
+        ->condition('id', $bundle_id)
+        ->execute()
+        ->fetchField();
 
-      $label                     =
-        db_select('tripal_bundle', 't')->fields('t', ['label'])->condition(
-            'id', $bundle_id
-          )->execute()->fetchField();
       $bundle_labels[$bundle_id] = $label;
     }
 
@@ -78,7 +77,7 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
     $updated_at = $submission->updated_at ? date(
       $date_format, $submission->updated_at
     ) : '';
-    $entity_id  = $submission->entity_id;
+    $entity_id = $submission->entity_id;
 
     $link = l(t('Edit'), '/tripal_hq/bio_data/edit/' . $bundle_id . '/' . $id);
 
@@ -101,9 +100,9 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
 
   $output = theme(
     'table', [
-    'header' => $header,
-    'rows'   => $rows,
-  ]
+      'header' => $header,
+      'rows' => $rows,
+    ]
   );
 
   $form['my_submissions'] = ['#markup' => $output];
