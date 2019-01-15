@@ -7,8 +7,9 @@ use Faker\Generator;
 use StatonLab\TripalTestSuite\DBTransaction;
 use StatonLab\TripalTestSuite\TripalTestCase;
 use Tests\DatabaseSeeders\UsersTableSeeder;
+use Tests\TestCase;
 
-class SubmissionsAPITest extends TripalTestCase {
+class SubmissionsAPITest extends TestCase {
 
   // Uncomment to auto start and rollback db transactions per test method.
   use DBTransaction;
@@ -83,10 +84,7 @@ class SubmissionsAPITest extends TripalTestCase {
    * @throws \Exception
    */
   public function testThatWeCanGetSubmissionsGivenAUser() {
-    $faker                   = Factory::create();
-    UsersTableSeeder::$email = $faker->email;
-
-    $user = (new UsersTableSeeder())->up();
+    $user = $this->createUser();
 
     factory('tripal_hq_submission', 10)->create(['uid' => $user->uid]);
 
