@@ -46,6 +46,7 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
       'field' => 'created_at',
       'sort' => 'dsc',
     ],
+    'Comments',
     'Approve',
     'Reject',
   ];
@@ -110,6 +111,7 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
     $bundle = tripal_load_bundle_entity(['id' => $bundle_id]);
     $updated_at = $submission->updated_at ? date($date_format,
       $submission->updated_at) : '';
+    $comment_count = tripal_hq_get_comments_count($submission);
 
     $submitter = user_load($submission->uid);
 
@@ -129,6 +131,9 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
       $bundle->label,
       $status,
       $created_at,
+      $submission->nid ? l(
+        'Add Comments (' . $comment_count . ')', 'node/' . $submission->nid
+      ) : $comment_count,
       l('Approve', 'tripal_hq/admin/approve/' . $submission->id),
       l('Reject', 'tripal_hq/admin/reject/' . $submission->id),
     ];

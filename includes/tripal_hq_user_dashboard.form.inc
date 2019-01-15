@@ -61,17 +61,7 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
     $title         = $submission->title;
     $status        = $submission->status;
     $bundle_id     = $submission->bundle_id;
-    $comment_count = 0;
-    if ($submission->nid) {
-      $comment_stats = db_select('node_comment_statistics', 'NCS')
-        ->fields('NCS')->condition(
-          'nid', $submission->nid, '='
-        )->execute()->fetchObject();
-
-      if ($comment_stats) {
-        $comment_count = $comment_stats->comment_count;
-      }
-    }
+    $comment_count = tripal_hq_get_comments_count($submission);
 
     if (!isset($bundle_labels[$bundle_id])) {
 

@@ -15,9 +15,11 @@
  *   The submission object (or false if no match).
  */
 function tripal_hq_get_submission_by_id(int $submission_id) {
-  return db_query('SELECT * FROM {tripal_hq_submission} WHERE id=:id', [
+  return db_query(
+    'SELECT * FROM {tripal_hq_submission} WHERE id=:id', [
     ':id' => $submission_id,
-  ])->fetchObject();
+  ]
+  )->fetchObject();
 }
 
 /**
@@ -31,12 +33,10 @@ function tripal_hq_get_submission_by_id(int $submission_id) {
 function tripal_hq_get_user_submissions($user) {
   $uid = $user->uid;
 
-  $results = db_select('public.tripal_hq_submission', 't')
-    ->fields('t')
-    ->condition('uid', $uid)
-    ->orderBy('id', 'desc')
-    ->execute()
-    ->fetchAll();
+  $results =
+    db_select('public.tripal_hq_submission', 't')->fields('t')->condition(
+        'uid', $uid
+      )->orderBy('id', 'desc')->execute()->fetchAll();
 
   return $results;
 }
@@ -71,10 +71,12 @@ function tripal_hq_approve_submission($submission) {
     return FALSE;
   }
 
-  db_update('tripal_hq_submission')->fields([
-    'status' => 'approved',
-    'entity_id' => $entity->id,
-  ])->condition('id', $submission->id)->execute();
+  db_update('tripal_hq_submission')->fields(
+    [
+      'status'    => 'approved',
+      'entity_id' => $entity->id,
+    ]
+  )->condition('id', $submission->id)->execute();
 
   return $entity;
 }
@@ -88,9 +90,11 @@ function tripal_hq_approve_submission($submission) {
  * @return boolean TRUE on success or FALSE otherwise.
  */
 function tripal_hq_reject_submission($submission) {
-  db_update('tripal_hq_submission')->fields([
-    'status' => 'rejected',
-  ])->condition('id', $submission->id)->execute();
+  db_update('tripal_hq_submission')->fields(
+    [
+      'status' => 'rejected',
+    ]
+  )->condition('id', $submission->id)->execute();
 
   return TRUE;
 }
@@ -104,9 +108,8 @@ function tripal_hq_reject_submission($submission) {
  * @return array of requests, or null if none.
  */
 function tripal_hq_submissions($status = NULL) {
-  $submissions = db_select('tripal_hq_submission', 't')
-    ->fields('t')
-    ->orderBy('id', 'desc');
+  $submissions =
+    db_select('tripal_hq_submission', 't')->fields('t')->orderBy('id', 'desc');
 
   if (!is_null($status)) {
     $submissions->condition('status', $status);
@@ -124,12 +127,9 @@ function tripal_hq_submissions($status = NULL) {
  * @return mixed
  */
 function tripal_hq_submission_by_entity_id($entity_id) {
-  return db_select('tripal_hq_submission', 't')
-    ->fields('t')
-    ->orderBy('id', 'desc')
-    ->condition('entity_id', $entity_id)
-    ->execute()
-    ->fetchObject();
+  return db_select('tripal_hq_submission', 't')->fields('t')->orderBy(
+      'id', 'desc'
+    )->condition('entity_id', $entity_id)->execute()->fetchObject();
 }
 
 /**
@@ -160,7 +160,7 @@ function tripal_hq_send_emails($submission_id, $event) {
 
   $user_email = $user_object->mail;
 
-  $site_email = variable_get('site_mail');
+  $site_email      = variable_get('site_mail');
   $relevant_admins = tripal_hq_get_curator_emails();
 
   switch ($event) {
@@ -170,12 +170,18 @@ function tripal_hq_send_emails($submission_id, $event) {
 
       if (!empty($site_settings['User'])) {
         // From site, to end user.
-        drupal_mail('tripal_hq', 'user_submit_notice', $user_email, language_default(), $submission, $site_email, TRUE);
+        drupal_mail(
+          'tripal_hq', 'user_submit_notice', $user_email, language_default(),
+          $submission, $site_email, TRUE
+        );
       }
       // From site to site_admin.
       if (!empty($site_settings['Admin'])) {
 
-        drupal_mail('tripal_hq', 'admin_submit_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
+        drupal_mail(
+          'tripal_hq', 'admin_submit_notice', $relevant_admins,
+          language_default(), $submission, $site_email, TRUE
+        );
       }
 
       break;
@@ -185,12 +191,18 @@ function tripal_hq_send_emails($submission_id, $event) {
 
       if (!empty($site_settings['User'])) {
 
-        drupal_mail('tripal_hq', 'user_approve_notice', $user_email, language_default(), $submission, $site_email, TRUE);
+        drupal_mail(
+          'tripal_hq', 'user_approve_notice', $user_email, language_default(),
+          $submission, $site_email, TRUE
+        );
       }
       // From site to site_admin.
       if (!empty($site_settings['Admin'])) {
 
-        drupal_mail('tripal_hq', 'admin_approve_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
+        drupal_mail(
+          'tripal_hq', 'admin_approve_notice', $relevant_admins,
+          language_default(), $submission, $site_email, TRUE
+        );
       }
 
       break;
@@ -200,17 +212,22 @@ function tripal_hq_send_emails($submission_id, $event) {
 
       if (!empty($site_settings['User'])) {
 
-        drupal_mail('tripal_hq', 'user_reject_notice', $user_email, language_default(), $submission, $site_email, TRUE);
+        drupal_mail(
+          'tripal_hq', 'user_reject_notice', $user_email, language_default(),
+          $submission, $site_email, TRUE
+        );
       }
       // From site to site_admin.
       if (!empty($site_settings['Admin'])) {
 
-        drupal_mail('tripal_hq', 'admin_reject_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
+        drupal_mail(
+          'tripal_hq', 'admin_reject_notice', $relevant_admins,
+          language_default(), $submission, $site_email, TRUE
+        );
       }
 
       break;
   }
-
 }
 
 /**
@@ -221,15 +238,14 @@ function tripal_hq_send_emails($submission_id, $event) {
  */
 function tripal_hq_get_curator_emails() {
 
-  $query = db_select('users', 'u')
-    ->fields('u', ['mail']);
+  $query = db_select('users', 'u')->fields('u', ['mail']);
   $query->join('users_roles', 'ur', 'ur.uid = u.uid');
   $query->join('role_permission', 'rp', 'rp.rid = ur.rid');
   $query->condition('rp.permission', 'access tripal_hq admin');
   $query->condition('rp.module', 'tripal_hq');
 
   $results = $query->execute()->fetchAll();
-  $mail = [];
+  $mail    = [];
 
   if (!$results) {
     return '';
@@ -238,4 +254,26 @@ function tripal_hq_get_curator_emails() {
     $mail[] = $result->mail;
   }
   return implode(', ', $mail);
+}
+
+/**
+ * Submission comments count.
+ *
+ * @param \stdClass $submission
+ *
+ * @return int
+ */
+function tripal_hq_get_comments_count(stdClass $submission) {
+  if ($submission->nid) {
+    $comment_stats =
+      db_select('node_comment_statistics', 'NCS')->fields('NCS')->condition(
+          'nid', $submission->nid, '='
+        )->execute()->fetchObject();
+
+    if ($comment_stats) {
+      return $comment_stats->comment_count;
+    }
+  }
+
+  return 0;
 }
