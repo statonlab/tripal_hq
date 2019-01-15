@@ -90,10 +90,14 @@ function tripal_hq_approve_submission($submission) {
  * @return boolean TRUE on success or FALSE otherwise.
  */
 function tripal_hq_reject_submission($submission) {
-  db_update('tripal_hq_submission')
-    ->fields(['status' => 'rejected'])
-    ->condition('id', $submission->id)
-    ->execute();
+
+  if ($submission->status !== 'pending') {
+    throw new Exception('Unable to reject a non-pending submission');
+  }
+
+  db_update('tripal_hq_submission')->fields([
+    'status' => 'rejected',
+  ])->condition('id', $submission->id)->execute();
 
   return TRUE;
 }
