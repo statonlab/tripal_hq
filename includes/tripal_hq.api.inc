@@ -34,9 +34,12 @@ function tripal_hq_get_user_submissions($user) {
   $uid = $user->uid;
 
   $results =
-    db_select('public.tripal_hq_submission', 't')->fields('t')->condition(
-      'uid', $uid
-    )->orderBy('id', 'desc')->execute()->fetchAll();
+    db_select('public.tripal_hq_submission', 't')
+      ->fields('t')
+      ->condition('uid', $uid)
+      ->orderBy('id', 'desc')
+      ->execute()
+      ->fetchAll();
 
   return $results;
 }
@@ -71,12 +74,10 @@ function tripal_hq_approve_submission($submission) {
     return FALSE;
   }
 
-  db_update('tripal_hq_submission')->fields(
-    [
-      'status' => 'approved',
-      'entity_id' => $entity->id,
-    ]
-  )->condition('id', $submission->id)->execute();
+  db_update('tripal_hq_submission')->fields([
+    'status' => 'approved',
+    'entity_id' => $entity->id,
+  ])->condition('id', $submission->id)->execute();
 
   return $entity;
 }
@@ -95,9 +96,10 @@ function tripal_hq_reject_submission($submission) {
     throw new Exception('Unable to reject a non-pending submission');
   }
 
-  db_update('tripal_hq_submission')->fields([
-    'status' => 'rejected',
-  ])->condition('id', $submission->id)->execute();
+  db_update('tripal_hq_submission')
+    ->fields(['status' => 'rejected'])
+    ->condition('id', $submission->id)
+    ->execute();
 
   return TRUE;
 }
