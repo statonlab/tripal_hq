@@ -1,9 +1,8 @@
 <?php
 
 /**
-/* Administrator form to approve requests.
-/*
  * @file
+ * Administrator form to approve requests.
  */
 
 /**
