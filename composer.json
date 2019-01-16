@@ -1,8 +1,13 @@
 {
-    "require": {
-        "ext-json": "*"
-    },
-    "require-dev": {
-        "statonlab/tripal-test-suite": "^1.5"
+  "require": {
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "statonlab/tripal-test-suite": "1.5.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Tests\\": "tests/"
     }
+  }
 }
