@@ -11,15 +11,15 @@
  * content.
  *
  * @param array $form
- *    The form array.
+ *   The form array.
  * @param array $form_state
- *    The state array.
+ *   The state array.
  * @param string $status
  *   Valid statuses are: pending, published, rejected, obsolete.
  *
  * @return mixed
  */
-function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
+function tripal_hq_admin_dashboard_form(array $form, array &$form_state, $status = NULL) {
   $message = '<p>User data submissions are listed below.
                  The tabs above will let you filter submissions
                  based on their status.  Click on any row to view
