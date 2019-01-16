@@ -1,9 +1,18 @@
 <?php
 
+/**
+ * @file
+ * Settings form.
+ */
 
+/**
+ * The admin settings form.
+ *
+ * @implements hook_form().
+ */
 function tripal_hq_admin_settings_form($form, &$form_state) {
 
-  ///Use previous form settings.  If new form, then use saved site variables.
+  // Use previous form settings.  If new form, then use saved site variables.
   $prev_email = isset($form_state['values']['email']) ? $form_state['values']['email'] : tripal_hq_get_email_settings();
 
   $form['instructions'] = ['#markup' => "<p>The below form will let you configure site-wide preferences for this module.</p>"];
@@ -23,18 +32,15 @@ function tripal_hq_admin_settings_form($form, &$form_state) {
     '#default_value' => $prev_email['submit_request'] ? $prev_email['submit_request'] : [],
   ];
 
-//TODO: do we want to enable this?
-
-//  $form['email']['edit_request'] = [
-//    '#type' => 'checkboxes',
-//    '#multiple' => TRUE,
-//    '#title' => t('Content Creation Request Edit'),
-//    '#options' => ['User' => t('User'), 'Admin' => t('Admin')],
-//    '#description' => t('When a user edits an existing content creation request, an email can be sent to confirm creation to the user, and to notify the admin an action is required.'),
-//    '#default_value' => $prev_email['edit_request'] ? $prev_email['edit_request'] : [],
-//  ];
-
-
+  // TODO: do we want to enable this?
+  //  $form['email']['edit_request'] = [
+  //    '#type' => 'checkboxes',
+  //    '#multiple' => TRUE,
+  //    '#title' => t('Content Creation Request Edit'),
+  //    '#options' => ['User' => t('User'), 'Admin' => t('Admin')],
+  //    '#description' => t('When a user edits an existing content creation request, an email can be sent to confirm creation to the user, and to notify the admin an action is required.'),
+  //    '#default_value' => $prev_email['edit_request'] ? $prev_email['edit_request'] : [],
+  //  ];.
   $form['email']['approval'] = [
     '#type' => 'checkboxes',
     '#multiple' => TRUE,
@@ -44,7 +50,6 @@ function tripal_hq_admin_settings_form($form, &$form_state) {
     '#default_value' => $prev_email['approval'] ? $prev_email['approval'] : [],
 
   ];
-
 
   $form['email']['denied'] = [
     '#type' => 'checkboxes',
@@ -61,17 +66,23 @@ function tripal_hq_admin_settings_form($form, &$form_state) {
 
 }
 
+/**
+ * Validation for the admin settings form.
+ *
+ * @implements hook_form_validate().
+ */
 function tripal_hq_admin_settings_form_validate() {
 
 }
 
 /**
+ * Form submission handler.
+ *
  * Implements hook_form_submit().
  *
  * @see tripal_hq_mail for mail keys.
  */
 function tripal_hq_admin_settings_form_submit($form, &$form_state) {
-
 
   $values = $form_state['values'];
   $email_prefs = $values['email'];
@@ -83,7 +94,6 @@ function tripal_hq_admin_settings_form_submit($form, &$form_state) {
 
   tripal_set_message('Tripal HQ module settings changed', TRIPAL_NOTICE);
 }
-
 
 /**
  * Get all set variables for tripal_hq.

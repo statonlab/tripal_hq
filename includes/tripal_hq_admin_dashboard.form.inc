@@ -2,6 +2,7 @@
 
 /**
  * @file
+ * Dashboard Form.
  */
 
 /**
@@ -126,19 +127,15 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
       continue;
     }
 
-    $user_row = l(t($submitter->name . ' (' . $submitter->mail . ')'),
-      'user/' . $submitter->uid);
+    $user_row = l($submitter->name . ' (' . $submitter->mail . ')', 'user/' . $submitter->uid);
 
     $row = [
       $user_row,
-      l(t($title),
-        '/tripal_hq/bio_data/edit/' . $bundle_id . '/' . $submission->id),
+      l($title, '/tripal_hq/bio_data/edit/' . $bundle_id . '/' . $submission->id),
       $bundle->label,
       $status,
       $created_at,
-      $submission->nid ? l(
-        'Add Comments (' . $comment_count . ')', 'node/' . $submission->nid
-      ) : $comment_count,
+      $submission->nid ? l('Add Comments (' . $comment_count . ')', 'node/' . $submission->nid) : $comment_count,
       l(t('Approve'), 'tripal_hq/admin/approve/' . $submission->id),
       l(t('Reject'), 'tripal_hq/admin/reject/' . $submission->id),
     ];
