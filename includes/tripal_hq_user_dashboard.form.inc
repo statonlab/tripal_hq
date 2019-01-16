@@ -85,15 +85,18 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
       $link = l(t('View'), '/bio_data/' . $entity_id);
     }
 
+    $comments_link = $comment_count;
+    if ($submission->nid) {
+      $comments_link = l(t('Add Comments (' . $comment_count . ')'), 'node/' . $submission->nid);
+    }
+
     $rows[] = [
       $title,
       $label,
       ucwords($status),
       $created_at,
       $updated_at,
-      $submission->nid ? l(
-        'Add Comments (' . $comment_count . ')', 'node/' . $submission->nid
-      ) : $comment_count,
+      $comments_link,
       $link,
     ];
   }

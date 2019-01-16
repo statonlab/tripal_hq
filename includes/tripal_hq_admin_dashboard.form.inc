@@ -1,20 +1,29 @@
 <?php
 
 /**
+ * @file
+ */
+
+/**
  * Implements hook form().
  * Provides a dashboard for site or content admins to view all user-submitted
  * content.
  *
  * @param $form
  * @param $form_state
- * @param $status - Valid statuses are: pending, published, rejected, obsolete.
+ * @param $status
+ *   - Valid statuses are: pending, published, rejected, obsolete.
  *
  * @return mixed
  */
 function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
-  $message = '<p>User data submissions are listed below.  The tabs above will let you filter submissions based on their status.  Click on any row to view that submission.</p>';
+  $message = '<p>User data submissions are listed below.
+                 The tabs above will let you filter submissions
+                 based on their status.  Click on any row to view
+                 that submission.</p>';
 
-  // Check if the user is a deputy.  If so, they only get access to a subset of data.
+  // Check if the user is a deputy.
+  // If so, they only get access to a subset of data.
   $deputy = user_access('tripal_hq_permissions deputy');
 
   global $user;
@@ -88,7 +97,6 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
       ->fetchAll();
   }
 
-
   if (!$requests) {
     $message = '<h4>no ' . $status . '  requests</h4>';
 
@@ -118,12 +126,12 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
       continue;
     }
 
-    $user_row = l($submitter->name . ' (' . $submitter->mail . ')',
+    $user_row = l(t($submitter->name . ' (' . $submitter->mail . ')'),
       'user/' . $submitter->uid);
 
     $row = [
       $user_row,
-      l($title,
+      l(t($title),
         '/tripal_hq/bio_data/edit/' . $bundle_id . '/' . $submission->id),
       $bundle->label,
       $status,
@@ -131,8 +139,8 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
       $submission->nid ? l(
         'Add Comments (' . $comment_count . ')', 'node/' . $submission->nid
       ) : $comment_count,
-      l('Approve', 'tripal_hq/admin/approve/' . $submission->id),
-      l('Reject', 'tripal_hq/admin/reject/' . $submission->id),
+      l(t('Approve'), 'tripal_hq/admin/approve/' . $submission->id),
+      l(t('Reject'), 'tripal_hq/admin/reject/' . $submission->id),
     ];
     $rows[] = $row;
   }
@@ -148,10 +156,16 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
   return $form;
 }
 
+/**
+ *
+ */
 function tripal_hq_admin_dashboard_form_validate($form, &$form_state) {
 
 }
 
+/**
+ *
+ */
 function tripal_hq_admin_dashboard_form_submit($form, &$form_state) {
 
 }

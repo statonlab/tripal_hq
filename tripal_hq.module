@@ -15,107 +15,107 @@ function tripal_hq_menu() {
    * Admin can configure which emails get sent out, more stuff?
    */
   $items['admin/tripal/tripal_hq'] = [
-    'title'            => 'Tripal HQ settings',
-    'page callback'    => 'drupal_get_form',
-    'file'             => 'includes/tripal_hq_admin_settings.form.inc',
+    'title' => 'Tripal HQ settings',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_admin_settings.form.inc',
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments'   => ['tripal_hq_admin_settings_form'],
+    'page arguments' => ['tripal_hq_admin_settings_form'],
   ];
 
   // Admin area for viewing requests.  Wildcard is the tripal_hq_submission.status.
   $items['tripal_hq/admin'] = [
-    'title'            => 'Tripal HQ Admin Dashboard',
-    'page callback'    => 'drupal_get_form',
-    'file'             => 'includes/tripal_hq_admin_dashboard.form.inc',
+    'title' => 'Tripal HQ Admin Dashboard',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_admin_dashboard.form.inc',
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments'   => ['tripal_hq_admin_dashboard_form', "pending"],
-    'type'             => MENU_NORMAL_ITEM,
+    'page arguments' => ['tripal_hq_admin_dashboard_form', "pending"],
+    'type' => MENU_NORMAL_ITEM,
   ];
 
   $items['tripal_hq/admin/pending'] = [
-    'title'            => 'Pending',
+    'title' => 'Pending',
     'access arguments' => ['access tripal_hq admin'],
-    'type'             => MENU_DEFAULT_LOCAL_TASK,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
   ];
 
   $items['tripal_hq/admin/approved'] = [
-    'title'            => 'Published',
-    'type'             => MENU_LOCAL_TASK,
+    'title' => 'Published',
+    'type' => MENU_LOCAL_TASK,
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments'   => ['tripal_hq_admin_dashboard_form', 'approved'],
+    'page arguments' => ['tripal_hq_admin_dashboard_form', 'approved'],
   ];
 
   $items['tripal_hq/admin/all'] = [
-    'title'            => 'All',
-    'type'             => MENU_LOCAL_TASK,
+    'title' => 'All',
+    'type' => MENU_LOCAL_TASK,
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments'   => ['tripal_hq_admin_dashboard_form', NULL],
+    'page arguments' => ['tripal_hq_admin_dashboard_form', NULL],
   ];
 
   $items['tripal_hq/admin/rejected'] = [
-    'title'            => 'Rejected',
-    'page arguments'   => ['tripal_hq_admin_dashboard_form', 'rejected'],
+    'title' => 'Rejected',
+    'page arguments' => ['tripal_hq_admin_dashboard_form', 'rejected'],
     'access arguments' => ['access tripal_hq admin'],
-    'type'             => MENU_LOCAL_TASK,
+    'type' => MENU_LOCAL_TASK,
   ];
 
   $items['tripal_hq/admin/obsolete'] = [
-    'title'            => 'Obsolete',
-    'page arguments'   => ['tripal_hq_admin_dashboard_form', 'obsolete'],
+    'title' => 'Obsolete',
+    'page arguments' => ['tripal_hq_admin_dashboard_form', 'obsolete'],
     'access arguments' => ['access tripal_hq admin'],
-    'type'             => MENU_LOCAL_TASK,
+    'type' => MENU_LOCAL_TASK,
   ];
 
   $items['tripal_hq/admin/approve/%'] = [
-    'title'            => 'Tripal HQ Approve',
-    'page callback'    => 'drupal_get_form',
-    'file'             => 'includes/tripal_hq_admin_approve.form.inc',
+    'title' => 'Tripal HQ Approve',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_admin_approve.form.inc',
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments'   => ['tripal_hq_admin_control_form', 'approve', 3],
+    'page arguments' => ['tripal_hq_admin_control_form', 'approve', 3],
   ];
 
   $items['tripal_hq/admin/reject/%'] = [
-    'title'            => 'Tripal HQ Reject',
-    'page callback'    => 'drupal_get_form',
-    'file'             => 'includes/tripal_hq_admin_approve.form.inc',
+    'title' => 'Tripal HQ Reject',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_admin_approve.form.inc',
     'access arguments' => ['access tripal_hq admin'],
-    'page arguments'   => ['tripal_hq_admin_control_form', 'reject', 3],
+    'page arguments' => ['tripal_hq_admin_control_form', 'reject', 3],
   ];
 
   // Todo:  rename title to "site_name content" ro something?  Or make configurable?
   // note that we can always use drupal_set_title() in the form function.
   $items['tripal_hq/bio_data'] = [
-    'title'            => 'Submit Content',
-    'page callback'    => 'drupal_get_form',
-    'file'             => 'includes/tripal_hq_user_dashboard.form.inc',
+    'title' => 'Submit Content',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_user_dashboard.form.inc',
     'access arguments' => ['access tripal_hq user'],
-    'page arguments'   => ['tripal_hq_user_dashboard_form'],
-    'type'             => MENU_NORMAL_ITEM,
+    'page arguments' => ['tripal_hq_user_dashboard_form'],
+    'type' => MENU_NORMAL_ITEM,
   ];
 
   // Content control (adding/deleting/editing)
   $items['tripal_hq/bio_data/add'] = [
-    'title'            => 'Add new content',
-    'description'      => 'Create and submit new content for review.',
-    'page callback'    => 'tripal_hq_list_bundles_page',
+    'title' => 'Add new content',
+    'description' => 'Create and submit new content for review.',
+    'page callback' => 'tripal_hq_list_bundles_page',
     'access arguments' => ['access tripal_hq user'],
-    'file'             => 'includes/tripal_hq_user_data.form.inc',
-    'type'             => MENU_LOCAL_ACTION,
+    'file' => 'includes/tripal_hq_user_data.form.inc',
+    'type' => MENU_LOCAL_ACTION,
   ];
 
   $items['tripal_hq/bio_data/add/%'] = [
-    'page callback'    => 'tripal_hq_user_entity_form',
-    'page arguments'   => [3],
+    'page callback' => 'tripal_hq_user_entity_form',
+    'page arguments' => [3],
     'access arguments' => ['access tripal_hq user'],
-    'file'             => 'includes/tripal_hq_user_data.form.inc',
+    'file' => 'includes/tripal_hq_user_data.form.inc',
   ];
 
   $items['tripal_hq/bio_data/edit/%/%'] = [
-    'page callback'    => 'tripal_hq_user_entity_form',
-    'page arguments'   => [3, 4],
+    'page callback' => 'tripal_hq_user_entity_form',
+    'page arguments' => [3, 4],
     'access arguments' => [4],
-    'access callback'  => 'tripal_hq_submission_access',
-    'file'             => 'includes/tripal_hq_user_data.form.inc',
+    'access callback' => 'tripal_hq_submission_access',
+    'file' => 'includes/tripal_hq_user_data.form.inc',
   ];
 
   return $items;
@@ -126,12 +126,12 @@ function tripal_hq_menu() {
  */
 function tripal_hq_permission() {
   $permissions['access tripal_hq admin'] = [
-    'title'       => t('Administer tripal_HQ content'),
+    'title' => t('Administer tripal_HQ content'),
     'description' => t('Allow admins to view and approve content.'),
   ];
 
   $permissions['access tripal_hq user'] = [
-    'title'       => t('Create Tripal content requests'),
+    'title' => t('Create Tripal content requests'),
     'description' => t(
       'Allow users to submit content requests, and view their content dashboard'
     ),
@@ -141,7 +141,7 @@ function tripal_hq_permission() {
   $bundles = tripal_get_content_types();
   foreach ($bundles as $bundle) {
     $permissions['propose ' . $bundle->name] = [
-      'title'       => t(
+      'title' => t(
         '%label: Propose Content', ['%label' => $bundle->label]
       ),
       'description' => t(
@@ -199,6 +199,8 @@ function tripal_hq_entity_delete($entity, $type) {
 }
 
 /**
+ * List of nodes.
+ *
  * @implements hook_node_info()
  *
  * @return array
@@ -208,22 +210,22 @@ function tripal_hq_node_info() {
   $nodes = [];
 
   $nodes['tripal_hq_nd'] = [
-    'name'        => t('Tripal HQ Comments'),
+    'name' => t('Tripal HQ Comments'),
     'description' => t(
       'Add comments about a submission. This node is auto created and should
          not be manually created.'
     ),
-    'has_title'   => FALSE,
-    'base'        => 'node_content',
+    'has_title' => FALSE,
+    'base' => 'node_content',
   ];
 
   return $nodes;
 }
 
 /**
- * Create a new node. 
+ * Create a new node.
  *
- * @param string $title 
+ * @param string $title
  *    The title for the node.
  *
  * @return int
@@ -233,16 +235,16 @@ function tripal_hq_node_info() {
 function tripal_hq_create_node(string $title) {
   global $user;
 
-  $node        = new stdClass();
+  $node = new stdClass();
   $node->title = 'Comments for: ' . $title;
-  $node->type  = "tripal_hq_nd";
+  $node->type = "tripal_hq_nd";
 
   // Sets some defaults. Invokes hook_prepare() and hook_node_prepare().
   node_object_prepare($node);
 
   // Or e.g. 'en' if locale is enabled.
   $node->language = LANGUAGE_NONE;
-  $node->uid      = $user->uid;
+  $node->uid = $user->uid;
 
   // Status is 1 or 0; published or not.
   $node->status = 1;
