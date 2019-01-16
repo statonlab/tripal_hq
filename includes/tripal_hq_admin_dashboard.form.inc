@@ -10,10 +10,10 @@
  * Provides a dashboard for site or content admins to view all user-submitted
  * content.
  *
- * @param $form
- * @param $form_state
- * @param $status
- *   - Valid statuses are: pending, published, rejected, obsolete.
+ * @param array $form
+ * @param array $form_state
+ * @param string $status
+ *   Valid statuses are: pending, published, rejected, obsolete.
  *
  * @return mixed
  */
@@ -154,14 +154,14 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
 }
 
 /**
- *
+ * @implements hook_form_validate().
  */
 function tripal_hq_admin_dashboard_form_validate($form, &$form_state) {
 
 }
 
 /**
- *
+ * @implements hook_form_submit().
  */
 function tripal_hq_admin_dashboard_form_submit($form, &$form_state) {
 

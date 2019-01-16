@@ -226,10 +226,11 @@ function tripal_hq_node_info() {
  * Create a new node.
  *
  * @param string $title
- *    The title for the node.
+ *   The title for the node.
  *
  * @return int
  *   The node id.
+ *
  * @throws \Exception
  */
 function tripal_hq_create_node(string $title) {
