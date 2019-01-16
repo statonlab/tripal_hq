@@ -202,6 +202,7 @@ function tripal_hq_entity_delete($entity, $type) {
  * @implements hook_node_info()
  *
  * @return array
+ *   The list of nodes that this module creates.
  */
 function tripal_hq_node_info() {
   $nodes = [];
@@ -220,9 +221,13 @@ function tripal_hq_node_info() {
 }
 
 /**
- * @param string $title
+ * Create a new node. 
  *
- * @return mixed
+ * @param string $title 
+ *    The title for the node.
+ *
+ * @return int
+ *   The node id.
  * @throws \Exception
  */
 function tripal_hq_create_node(string $title) {
@@ -263,7 +268,7 @@ function tripal_hq_node_access($node, $op, $account) {
 
   $type = is_string($node) ? $node : node_type_get_type($node);
 
-  // If this node is not defined by tripal_hq, tell drupal that we don't care
+  // If this node is not defined by tripal_hq, tell drupal that we don't care.
   if ($type !== 'tripal_hq_nd') {
     return NODE_ACCESS_IGNORE;
   }
@@ -273,7 +278,7 @@ function tripal_hq_node_access($node, $op, $account) {
     return NODE_ACCESS_ALLOW;
   }
 
-  // Get the user id for the submission associated with this node
+  // Get the user id for the submission associated with this node.
   $submission = db_select('tripal_hq_submission', 'THS')
     ->fields('THS', ['uid'])
     ->condition('nid', $node->nid)
@@ -281,15 +286,15 @@ function tripal_hq_node_access($node, $op, $account) {
     ->fetchObject();
 
   // We don't have a submission associated with this node ... DENY!
-  if(!$submission) {
+  if (!$submission) {
     return NODE_ACCESS_DENY;
   }
 
-  // Allow the user to create comments if they created the submission
+  // Allow the user to create comments if they created the submission.
   if ($op === 'view' && $user->uid == $submission->uid) {
     return NODE_ACCESS_ALLOW;
   }
 
-  // Deny all other operations to none admins
+  // Deny all other operations to none admins.
   return NODE_ACCESS_DENY;
 }

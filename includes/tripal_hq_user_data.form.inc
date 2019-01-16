@@ -164,7 +164,8 @@ function tripal_hq_entity_form_validate($form, &$form_state) {
 
   try {
     $create_date = new DateTime($form_state['values']['author_date']);
-  } catch (Exception $e) {
+  } 
+  catch (Exception $e) {
     form_set_error('author_date', 'Please provide a valid authored on date.');
   }
 }
