@@ -19,8 +19,13 @@ class TestCase extends TripalTestCase {
    */
   public function createUser($role = 'authenticated user') {
     $faker = Factory::create();
-    UsersTableSeeder::$email = $faker->email;
-    UsersTableSeeder::$role = $role;
+
+    $seeder = new UsersTableSeeder();
+
+    $seeder->email = uniqid() . $faker->email;
+    $seeder->role = $role;
+    $seeder->name = $faker->name . uniqid();
+
     return (new UsersTableSeeder())->up();
   }
 }
