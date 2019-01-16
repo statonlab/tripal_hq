@@ -11,7 +11,9 @@
  * content.
  *
  * @param array $form
+ *    The form array.
  * @param array $form_state
+ *    The state array.
  * @param string $status
  *   Valid statuses are: pending, published, rejected, obsolete.
  *
@@ -154,6 +156,8 @@ function tripal_hq_admin_dashboard_form($form, &$form_state, $status = NULL) {
 }
 
 /**
+ * Validate the form.
+ *
  * @implements hook_form_validate().
  */
 function tripal_hq_admin_dashboard_form_validate($form, &$form_state) {
@@ -161,6 +165,8 @@ function tripal_hq_admin_dashboard_form_validate($form, &$form_state) {
 }
 
 /**
+ * Submit the form.
+ *
  * @implements hook_form_submit().
  */
 function tripal_hq_admin_dashboard_form_submit($form, &$form_state) {
