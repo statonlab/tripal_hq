@@ -1,12 +1,19 @@
 <?php
 
 /**
+ * @file
+ * Administrator form to approve requests.
+ */
+
+/**
  * Approve or reject a submission based on $op.
  *
  * @param array $form
  * @param array $form_state
- * @param string $op Either "approve" or "reject"
- * @param int $sid Submission id
+ * @param string $op
+ *   Either "approve" or "reject".
+ * @param int $sid
+ *   Submission id.
  *
  * @return array
  */

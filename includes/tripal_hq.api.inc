@@ -15,9 +15,11 @@
  *   The submission object (or false if no match).
  */
 function tripal_hq_get_submission_by_id(int $submission_id) {
-  return db_query('SELECT * FROM {tripal_hq_submission} WHERE id=:id', [
-    ':id' => $submission_id,
-  ])->fetchObject();
+  return db_query(
+    'SELECT * FROM {tripal_hq_submission} WHERE id=:id', [
+      ':id' => $submission_id,
+    ]
+  )->fetchObject();
 }
 
 /**
@@ -31,12 +33,13 @@ function tripal_hq_get_submission_by_id(int $submission_id) {
 function tripal_hq_get_user_submissions($user) {
   $uid = $user->uid;
 
-  $results = db_select('public.tripal_hq_submission', 't')
-    ->fields('t')
-    ->condition('uid', $uid)
-    ->orderBy('id', 'desc')
-    ->execute()
-    ->fetchAll();
+  $results =
+    db_select('public.tripal_hq_submission', 't')
+      ->fields('t')
+      ->condition('uid', $uid)
+      ->orderBy('id', 'desc')
+      ->execute()
+      ->fetchAll();
 
   return $results;
 }
@@ -88,13 +91,15 @@ function tripal_hq_approve_submission($submission) {
  * @return boolean TRUE on success or FALSE otherwise.
  */
 function tripal_hq_reject_submission($submission) {
+
   if ($submission->status !== 'pending') {
     throw new Exception('Unable to reject a non-pending submission');
   }
 
-  db_update('tripal_hq_submission')->fields([
-    'status' => 'rejected',
-  ])->condition('id', $submission->id)->execute();
+  db_update('tripal_hq_submission')
+    ->fields(['status' => 'rejected'])
+    ->condition('id', $submission->id)
+    ->execute();
 
   return TRUE;
 }
@@ -108,9 +113,8 @@ function tripal_hq_reject_submission($submission) {
  * @return array of requests, or null if none.
  */
 function tripal_hq_submissions($status = NULL) {
-  $submissions = db_select('tripal_hq_submission', 't')
-    ->fields('t')
-    ->orderBy('id', 'desc');
+  $submissions =
+    db_select('tripal_hq_submission', 't')->fields('t')->orderBy('id', 'desc');
 
   if (!is_null($status)) {
     $submissions->condition('status', $status);
@@ -144,6 +148,8 @@ function tripal_hq_submission_by_entity_id($entity_id) {
  * @return int
  */
 function tripal_hq_delete_submission($submission) {
+  tripal_hq_delete_comment_node($submission);
+
   return db_delete('tripal_hq_submission')
     ->condition('id', $submission->id)
     ->execute();
@@ -174,12 +180,18 @@ function tripal_hq_send_emails($submission_id, $event) {
 
       if (!empty($site_settings['User'])) {
         // From site, to end user.
-        drupal_mail('tripal_hq', 'user_submit_notice', $user_email, language_default(), $submission, $site_email, TRUE);
+        drupal_mail(
+          'tripal_hq', 'user_submit_notice', $user_email, language_default(),
+          $submission, $site_email, TRUE
+        );
       }
       // From site to site_admin.
       if (!empty($site_settings['Admin'])) {
 
-        drupal_mail('tripal_hq', 'admin_submit_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
+        drupal_mail(
+          'tripal_hq', 'admin_submit_notice', $relevant_admins,
+          language_default(), $submission, $site_email, TRUE
+        );
       }
 
       break;
@@ -189,12 +201,18 @@ function tripal_hq_send_emails($submission_id, $event) {
 
       if (!empty($site_settings['User'])) {
 
-        drupal_mail('tripal_hq', 'user_approve_notice', $user_email, language_default(), $submission, $site_email, TRUE);
+        drupal_mail(
+          'tripal_hq', 'user_approve_notice', $user_email, language_default(),
+          $submission, $site_email, TRUE
+        );
       }
       // From site to site_admin.
       if (!empty($site_settings['Admin'])) {
 
-        drupal_mail('tripal_hq', 'admin_approve_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
+        drupal_mail(
+          'tripal_hq', 'admin_approve_notice', $relevant_admins,
+          language_default(), $submission, $site_email, TRUE
+        );
       }
 
       break;
@@ -204,17 +222,22 @@ function tripal_hq_send_emails($submission_id, $event) {
 
       if (!empty($site_settings['User'])) {
 
-        drupal_mail('tripal_hq', 'user_reject_notice', $user_email, language_default(), $submission, $site_email, TRUE);
+        drupal_mail(
+          'tripal_hq', 'user_reject_notice', $user_email, language_default(),
+          $submission, $site_email, TRUE
+        );
       }
       // From site to site_admin.
       if (!empty($site_settings['Admin'])) {
 
-        drupal_mail('tripal_hq', 'admin_reject_notice', $relevant_admins, language_default(), $submission, $site_email, TRUE);
+        drupal_mail(
+          'tripal_hq', 'admin_reject_notice', $relevant_admins,
+          language_default(), $submission, $site_email, TRUE
+        );
       }
 
       break;
   }
-
 }
 
 /**
@@ -225,8 +248,7 @@ function tripal_hq_send_emails($submission_id, $event) {
  */
 function tripal_hq_get_curator_emails() {
 
-  $query = db_select('users', 'u')
-    ->fields('u', ['mail']);
+  $query = db_select('users', 'u')->fields('u', ['mail']);
   $query->join('users_roles', 'ur', 'ur.uid = u.uid');
   $query->join('role_permission', 'rp', 'rp.rid = ur.rid');
   $query->condition('rp.permission', 'access tripal_hq admin');
@@ -242,4 +264,48 @@ function tripal_hq_get_curator_emails() {
     $mail[] = $result->mail;
   }
   return implode(', ', $mail);
+}
+
+/**
+ * Submission comments count.
+ *
+ * @param \stdClass $submission
+ *   The submission object.
+ *
+ * @return int
+ *   The number of comments related to a given submission.
+ */
+function tripal_hq_get_comments_count(stdClass $submission) {
+  if ($submission->nid) {
+    $comment_stats =
+      db_select('node_comment_statistics', 'NCS')
+        ->fields('NCS')
+        ->condition('nid', $submission->nid, '=')
+        ->execute()
+        ->fetchObject();
+
+    if ($comment_stats) {
+      return $comment_stats->comment_count;
+    }
+  }
+
+  return 0;
+}
+
+/**
+ * Delete the comments node.
+ *
+ * @param \stdClass $submission
+ *   The submission object.
+ *
+ *   This function does not return a value.
+ */
+function tripal_hq_delete_comment_node(stdClass $submission) {
+  $nid = $submission->nid;
+
+  if (!$nid) {
+    return;
+  }
+
+  node_delete($nid);
 }

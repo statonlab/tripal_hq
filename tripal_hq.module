@@ -132,16 +132,21 @@ function tripal_hq_permission() {
 
   $permissions['access tripal_hq user'] = [
     'title' => t('Create Tripal content requests'),
-    'description' => t('Allow users to submit content requests, and view their content dashboard'),
+    'description' => t(
+      'Allow users to submit content requests, and view their content dashboard'
+    ),
   ];
 
   // Add permissions for each content type.
   $bundles = tripal_get_content_types();
   foreach ($bundles as $bundle) {
     $permissions['propose ' . $bundle->name] = [
-      'title' => t('%label: Propose Content', ['%label' => $bundle->label]),
-      'description' => t('Allow the user to propose %label content',
-        ['%label' => $bundle->label]),
+      'title' => t(
+        '%label: Propose Content', ['%label' => $bundle->label]
+      ),
+      'description' => t(
+        'Allow the user to propose %label content', ['%label' => $bundle->label]
+      ),
     ];
   }
 
@@ -191,4 +196,108 @@ function tripal_hq_entity_delete($entity, $type) {
   if (!empty($submission)) {
     tripal_hq_delete_submission($submission);
   }
+}
+
+/**
+ * List of nodes.
+ *
+ * @implements hook_node_info()
+ *
+ * @return array
+ *   The list of nodes that this module creates.
+ */
+function tripal_hq_node_info() {
+  $nodes = [];
+
+  $nodes['tripal_hq_nd'] = [
+    'name' => t('Tripal HQ Comments'),
+    'description' => t(
+      'Add comments about a submission. This node is auto created and should
+         not be manually created.'
+    ),
+    'has_title' => FALSE,
+    'base' => 'node_content',
+  ];
+
+  return $nodes;
+}
+
+/**
+ * Create a new node.
+ *
+ * @param string $title
+ *   The title for the node.
+ *
+ * @return int
+ *   The node id.
+ *
+ * @throws \Exception
+ */
+function tripal_hq_create_node(string $title) {
+  global $user;
+
+  $node = new stdClass();
+  $node->title = 'Comments for: ' . $title;
+  $node->type = "tripal_hq_nd";
+
+  // Sets some defaults. Invokes hook_prepare() and hook_node_prepare().
+  node_object_prepare($node);
+
+  // Or e.g. 'en' if locale is enabled.
+  $node->language = LANGUAGE_NONE;
+  $node->uid = $user->uid;
+
+  // Status is 1 or 0; published or not.
+  $node->status = 1;
+
+  // Promote is 1 or 0; promoted to front page or not.
+  $node->promote = 0;
+
+  // Comment is 0, 1, 2; 0 = disabled, 1 = read only, or 2 = read/write.
+  $node->comment = 2;
+
+  // Prepare node for saving.
+  $node = node_submit($node);
+  node_save($node);
+
+  return $node->nid;
+}
+
+/**
+ * Implements hook_node_access().
+ */
+function tripal_hq_node_access($node, $op, $account) {
+  global $user;
+
+  $type = is_string($node) ? $node : node_type_get_type($node);
+
+  // If this node is not defined by tripal_hq, tell drupal that we don't care.
+  if ($type !== 'tripal_hq_nd') {
+    return NODE_ACCESS_IGNORE;
+  }
+
+  // The user is an admin. They shall pass!
+  if (user_access('access tripal_hq admin')) {
+    return NODE_ACCESS_ALLOW;
+  }
+
+  // Get the user id for the submission associated with this node.
+  $submission = db_select('tripal_hq_submission', 'THS')
+    ->fields('THS', ['uid'])
+    ->condition('nid', $node->nid)
+    ->execute()
+    ->fetchObject();
+
+  // We don't have a submission associated with this node ... DENY!
+  if (!$submission) {
+    return NODE_ACCESS_DENY;
+  }
+
+  // Allow the user to create comments if they created the submission.
+  if ($op === 'view' && $user->uid == $submission->uid) {
+    return NODE_ACCESS_ALLOW;
+  }
+
+  // Deny all other operations to none admins.
+  return NODE_ACCESS_DENY;
 }

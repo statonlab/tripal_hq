@@ -40,7 +40,8 @@ function tripal_hq_list_bundles_page() {
       continue;
     }
 
-    $link = l($bundle->label, "tripal_hq/bio_data/add/$bundle->id");
+    $link =
+      l($bundle->label, "tripal_hq/bio_data/add/$bundle->id");
     $page['bundle_' . $bundle->id] = [
       '#type' => 'item',
       '#markup' => $link,
@@ -113,8 +114,11 @@ function tripal_hq_user_entity_form($bundle, $sid = NULL) {
  *  Alter the tripal entity form to add our submit function.
  */
 function tripal_hq_form_tripal_entity_form_alter(&$form, &$form_state) {
-  if (strstr($_GET['q'],
-      'tripal_hq') !== FALSE || isset($form_state['tripal_hq_set'])) {
+  if (strstr(
+      $_GET['q'], 'tripal_hq'
+    ) !== FALSE
+    || isset($form_state['tripal_hq_set'])
+  ) {
     // Remove the original submit function and replace it with ours.
     $index = array_search('tripal_entity_form_submit', $form['#submit']);
     if ($index !== FALSE) {
@@ -141,8 +145,11 @@ function tripal_hq_form_tripal_entity_form_alter(&$form, &$form_state) {
  */
 function tripal_hq_entity_form_validate($form, &$form_state) {
   // If the user is cancelling or deleting the entity then don't validate.
-  if (array_key_exists('clicked_button',
-      $form_state) and ($form_state['clicked_button']['#name'] == 'cancel_data' or $form_state['clicked_button']['#name'] == 'delete_data')) {
+  if (array_key_exists(
+      'clicked_button', $form_state
+    ) and ($form_state['clicked_button']['#name'] == 'cancel_data'
+      or $form_state['clicked_button']['#name'] == 'delete_data')
+  ) {
     return;
   }
   // For adds and updates, perform validation.
@@ -185,7 +192,8 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
   }
 
   $entity = $form_state['TripalEntity'];
-  $username = isset($form_state['values']['author_name']) ? $form_state['values']['author_name'] : '';
+  $username = isset($form_state['values']['author_name'])
+    ? $form_state['values']['author_name'] : '';
   $user = user_load_by_name($username);
   $entity->uid = $user->uid;
 
@@ -199,8 +207,10 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
   $langcode = 'und';
   foreach ($instances as $field_name => $instance) {
     $entity_type = $instance['entity_type'];
-    if ($entity_type == 'TripalEntity' and array_key_exists($field_name,
-        $form)) {
+    if ($entity_type == 'TripalEntity' and array_key_exists(
+        $field_name, $form
+      )
+    ) {
       foreach ($form[$field_name][$langcode] as $delta => $field_form) {
         if (!preg_match('/^\d+$/', $delta)) {
           continue;
@@ -210,8 +220,9 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
         if (tripal_load_include_field_class($widget_type)) {
           $field = $field_form['#field'];
           $widget = new $widget_type($field, $instance);
-          $widget->submit($form, $form_state, $entity_type, $entity, $langcode,
-            $delta);
+          $widget->submit(
+            $form, $form_state, $entity_type, $entity, $langcode, $delta
+          );
         }
       }
     }
@@ -219,7 +230,8 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
 
   $controller = entity_ui_controller('TripalEntity');
   $entity = $controller->entityFormSubmitBuildEntity($form, $form_state);
-  $sid = isset($form_state['values']['submission_id']) ? $form_state['values']['submission_id'] : NULL;
+  $sid = isset($form_state['values']['submission_id'])
+    ? $form_state['values']['submission_id'] : NULL;
 
   $sid = tripal_hq_save_submission($entity, $sid);
 
@@ -227,26 +239,32 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
     tripal_hq_send_emails($sid, 'submit');
 
     if (isset($form_state['values']['submission_id'])) {
-      drupal_set_message('Submission created successfully. We will review 
-                            your submission and get back to you shortly.');
+      drupal_set_message(
+        'Submission created successfully. We will review your submission and get
+         back to you shortly.'
+      );
     }
     else {
-      drupal_set_message('Submission updated successfully. We will review
-                            your submission and get back to you shortly.');
+      drupal_set_message(
+        'Submission updated successfully. We will review your submission and get
+         back to you shortly.'
+      );
     }
 
     drupal_goto('tripal_hq/bio_data');
   }
   else {
-    drupal_set_message('Unable to save your submission. Please contact us to fix the issue.',
-      'error');
+    drupal_set_message(
+      'Unable to save your submission. Please contact us to fix the issue.',
+      'error'
+    );
   }
 }
 
 /**
  * Save the fully constructed entity as a submission.
  *
- * @param \stdClass $entity
+ * @param \TripalEntity $entity
  *   A tripal entity object.
  * @param int $submission_id
  *   The HQ submission ID.
@@ -254,7 +272,7 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
  * @return string
  *   The submission id, or FALSE if error.
  */
-function tripal_hq_save_submission(stdClass $entity, int $submission_id = NULL) {
+function tripal_hq_save_submission(TripalEntity $entity, int $submission_id = NULL) {
   global $user;
   $submission = NULL;
   if ($submission_id) {
@@ -271,7 +289,11 @@ function tripal_hq_save_submission(stdClass $entity, int $submission_id = NULL) 
   $fields = field_info_instances('TripalEntity', $entity->bundle);
   foreach ($fields as $field_name => $value) {
     if (isset($entity->{$field_name})) {
-      if (!empty($entity->{$field_name}['und']) && is_array($entity->{$field_name}['und'])) {
+      if (!empty($entity->{$field_name}['und'])
+        && is_array(
+          $entity->{$field_name}['und']
+        )
+      ) {
         foreach ($entity->{$field_name}['und'] as $key => $value2) {
           if (empty($value2['value']) || $value2['value'] === 'delete_me') {
             unset($entity->{$field_name}['und'][$key]);
@@ -283,27 +305,35 @@ function tripal_hq_save_submission(stdClass $entity, int $submission_id = NULL) 
 
   // If the submission is pending, update it.
   if ($submission && $submission->status !== 'approved') {
-    db_update('tripal_hq_submission')->condition('id', $submission_id)->fields([
-      'uid' => $user->uid,
-      'title' => $title,
-      'status' => 'pending',
-      'updated_at' => time(),
-      'data' => serialize($entity),
-    ])->execute();
+    db_update('tripal_hq_submission')->condition('id', $submission_id)->fields(
+      [
+        'uid' => $user->uid,
+        'title' => $title,
+        'status' => 'pending',
+        'updated_at' => time(),
+        'data' => serialize($entity),
+      ]
+    )->execute();
 
     return $submission_id;
   }
 
+  // Create the comments node.
+  $nid = tripal_hq_create_node($title);
+
   // Create a new submission.
-  $submission_id = db_insert('tripal_hq_submission')->fields([
-    'uid' => $user->uid,
-    'title' => $title,
-    'status' => 'pending',
-    'created_at' => time(),
-    'data' => serialize($entity),
-    'entity_id' => NULL,
-    'bundle_id' => substr($entity->bundle, strlen('bio_data_')),
-  ])->execute();
+  $submission_id = db_insert('tripal_hq_submission')->fields(
+    [
+      'uid' => $user->uid,
+      'nid' => $nid,
+      'title' => $title,
+      'status' => 'pending',
+      'created_at' => time(),
+      'data' => serialize($entity),
+      'entity_id' => NULL,
+      'bundle_id' => substr($entity->bundle, strlen('bio_data_')),
+    ]
+  )->execute();
 
   if ($submission_id) {
 
