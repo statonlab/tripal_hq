@@ -87,7 +87,7 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
 
     $comments_link = $comment_count;
     if ($submission->nid) {
-      $comments_link = l('Add Comments (' . $comment_count . ')', 'node/' . $submission->nid);
+      $comments_link = l('Add/View Comments (' . $comment_count . ')', 'node/' . $submission->nid);
     }
 
     $rows[] = [

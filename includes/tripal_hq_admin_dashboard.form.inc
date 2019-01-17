@@ -137,7 +137,7 @@ function tripal_hq_admin_dashboard_form(array $form, array &$form_state, $status
       $bundle->label,
       $status,
       $created_at,
-      $submission->nid ? l('Add Comments (' . $comment_count . ')', 'node/' . $submission->nid) : $comment_count,
+      $submission->nid ? l('Add/View Comments (' . $comment_count . ')', 'node/' . $submission->nid) : $comment_count,
       l(t('Approve'), 'tripal_hq/admin/approve/' . $submission->id),
       l(t('Reject'), 'tripal_hq/admin/reject/' . $submission->id),
     ];
