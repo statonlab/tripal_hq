@@ -22,7 +22,7 @@ function tripal_hq_menu() {
     'page arguments' => ['tripal_hq_admin_settings_form'],
   ];
 
-  // Admin area for viewing requests.  Wildcard is the tripal_hq_submission.status.
+  // Admin area for viewing requests.
   $items['tripal_hq/admin'] = [
     'title' => 'Tripal HQ Admin Dashboard',
     'page callback' => 'drupal_get_form',

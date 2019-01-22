@@ -1,27 +1,28 @@
 <?php
 
 /**
- * Tripal jobs callback
- *
- * @param $args
+ * @file
+ * API for interacting with HQ permissions.
  */
-function tripal_hq_permissions_infer_permissions($args) {
 
-  $uid = $args;
+/**
+ * Tripal jobs callback.
+ *
+ * @param int $uid
+ *   Drupal user id.
+ */
+function tripal_hq_permissions_infer_permissions(int $uid) {
 
-  //Get parent user permissions.
-
+  // Get parent user permissions.
   $parents = tripal_hq_permissions_get_root_permissions($uid);
 
-  //For each permission, find all child records and add them.
-
+  // For each permission, find all child records and add them.
   if (!$parents) {
     tripal_log('user !uid had no permissions to set.', TRIPAL_WARNING);
     return;
   }
 
-  //set hq_submission permissions.
-
+  // Set hq_submission permissions.
   $submissions = db_select('tripal_hq_submission', 't')
     ->fields('t')
     ->execute();
@@ -35,12 +36,15 @@ function tripal_hq_permissions_infer_permissions($args) {
 }
 
 /**
- * @param $uid
+ * Get HQ permissions set for a user.
+ *
+ * @param int $uid
+ *   Drupal user ID.
  *
  * @return array
+ *   Array of tripal_hq_permissions.
  */
-function tripal_hq_permissions_get_root_permissions($uid) {
-
+function tripal_hq_permissions_get_root_permissions(int $uid) {
 
   $permissions = db_select('tripal_hq_permissions', 't')
     ->fields('t')
@@ -52,28 +56,16 @@ function tripal_hq_permissions_get_root_permissions($uid) {
 }
 
 /**
- * Is this necessary?
- * I think not.
- */
-
-//function tripal_hq_permissions_set_child_permissions($parent) {
-//  $base = $parent->base_table;
-//  $record_id = $parent->record_id;
-//
-//
-//  return TRUE;
-//}
-
-/**
- * When a new submission is created, check its fields and see if this falls
- * under a parent permission.  For example, an organism created in a project
- * hwere that project has hq_permissions setup.
+ * Checks new submission again HQ permission.
  *
- * @param $submission_id
+ *    When a new submission is created, check its fields and see if this falls
+ *    under a parent permission.  For example, an organism created in a project
+ *    where that project has hq_permissions setup.
  *
- * @return bool
+ * @param int $submission_id
+ *   Tripal HQ permission ID.
  */
-function tripal_hq_permissions_process_submission($submission_id) {
+function tripal_hq_permissions_process_submission(int $submission_id) {
   $submission = db_select('tripal_hq_submission', 't')
     ->fields('t')
     ->condition('id', $submission_id)
@@ -81,10 +73,8 @@ function tripal_hq_permissions_process_submission($submission_id) {
     ->fetchObject();
   $entity = unserialize($submission->data);
 
-
   tripal_hq_permissions_process_entity_permissions($submission_id, $entity);
 }
-
 
 /**
  * For a given record specified via record_id and base table, retrieve all
@@ -92,7 +82,8 @@ function tripal_hq_permissions_process_submission($submission_id) {
  * Link this submission to that user via the tripal_hq_submission_permissions
  * table.
  *
- * @param $base - Chado base table.  organism, project.
+ * @param $base
+ *   - Chado base table.  organism, project.
  * @param $record_id
  * @param $submission_id
  */
@@ -120,18 +111,21 @@ function tripal_hq_permissions_link_request($base, $record_id, $submission_id) {
 }
 
 /**
+ * Process permissions associated with an HQ submission.
+ *
  * @param $submission_id
+ *   Tripal HQ submission ID.
  * @param $entity
+ *   The proposed Tripal entity.
  */
 function tripal_hq_permissions_process_entity_permissions($submission_id, $entity) {
 
   $base = $entity->chado_table;
   if ($base == 'organism' || $base == 'project') {
-    //do we care if its an organism or project?  I actually dont think so.
+    // Do we care if its an organism or project?  I actually dont think so.
   }
 
-  //organism base table field?
-
+  // Organism base table field?
   if (isset($entity->obi__organism)) {
 
     $organisms = $entity->obi__organism;
@@ -150,19 +144,16 @@ function tripal_hq_permissions_process_entity_permissions($submission_id, $entit
 
     foreach ($organisms['und'] as $organism) {
 
-      //field:  see https://github.com/statonlab/tripal_manage_analyses/blob/7ca149463cad59dcb626389dc713cf0bc4a5610e/includes/TripalFields/obi__organism_linker/obi__organism_linker.inc#L173-L184
-
-
+      // field:  see https://github.com/statonlab/tripal_manage_analyses/blob/7ca149463cad59dcb626389dc713cf0bc4a5610e/includes/TripalFields/obi__organism_linker/obi__organism_linker.inc#L173-L184
       $organism_id = $organism['value']['organism_id'];
 
       tripal_hq_permissions_link_request('organism', $organism_id, $submission_id);
 
     }
   }
-  //TODO: project fields.  THey don't exist yet though i think.
+  // TODO: project fields.  THey don't exist yet though i think.
   return;
 }
-
 
 /**
  * @param $record_id

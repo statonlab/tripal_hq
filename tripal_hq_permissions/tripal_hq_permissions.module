@@ -1,8 +1,11 @@
 <?php
 
+/**
+ * @file
+ * Define the Tripal HQ Permissions module.
+ */
 
-include_once('includes/tripal_hq_permissions_api.inc');
-
+include_once 'includes/tripal_hq_permissions_api.inc';
 
 /**
  * Implements hook_menu.
@@ -29,11 +32,9 @@ function tripal_hq_permissions_menu() {
   return $items;
 }
 
-
 /**
  * Implements hook_permission().
  */
-
 function tripal_hq_permissions_permission() {
   $permissions['tripal_hq_permissions deputy'] = [
     'title' => t('Administer CHADO-specific tripal_HQ content'),
