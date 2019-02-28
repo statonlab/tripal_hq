@@ -9,6 +9,7 @@
  * Provides the page view for user submissions.
  *
  * @return array
+ *   Array of markup describing bundles.
  */
 function tripal_hq_list_bundles_page() {
   $page = [];
@@ -271,6 +272,8 @@ function tripal_hq_entity_form_submit($form, &$form_state) {
  *
  * @return string
  *   The submission id, or FALSE if error.
+ *
+ * @throws \Exception
  */
 function tripal_hq_save_submission(TripalEntity $entity, int $submission_id = NULL) {
   global $user;
