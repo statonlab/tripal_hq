@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/statonlab/tripal_hq.svg?branch=master)](https://travis-ci.org/statonlab/tripal_hq)
 [![DOI](https://zenodo.org/badge/152087832.svg)](https://zenodo.org/badge/latestdoi/152087832)
 [![Documentation Status](https://readthedocs.org/projects/tripal-hq/badge/?version=latest)](https://tripal-hq.readthedocs.io/en/latest/?badge=latest)
+[![Tripal Rating Gold Status](https://tripal.readthedocs.io/en/7.x-3.x/_images/Tripal-Gold.png)](https://tripal.readthedocs.io/en/7.x-3.x/extensions/module_rating.html#Gold)
 
 
 # Tripal HeadQuarters (HQ)
