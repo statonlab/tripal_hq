@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @file
+ */
+
+/**
  * Implements hook_schema.
  *
  * @return array
@@ -36,7 +40,6 @@ function tripal_hq_permissions_schema() {
     ],
   ];
 
-
   $schema['tripal_hq_submission_permissions'] = [
     'description' => 'Submissions that a given admin has admin rights to.',
     'fields' => [
@@ -45,11 +48,11 @@ function tripal_hq_permissions_schema() {
         'unsigned' => TRUE,
         'not null' => TRUE,
       ],
-        'hq_permission_id' => [
-          'type' => 'int',
-          'not null' => TRUE,
-          'description' => 'The tripal_hq_permission id.  This is the general Chado permission set which is responsible for this child permission.'
-        ],
+      'hq_permission_id' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'The tripal_hq_permission id.  This is the general Chado permission set which is responsible for this child permission.',
+      ],
       'submission_id' => [
         'type' => 'int',
         'not null' => TRUE,

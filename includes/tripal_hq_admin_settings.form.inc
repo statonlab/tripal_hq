@@ -97,9 +97,11 @@ function tripal_hq_admin_settings_form_submit($form, &$form_state) {
 
 /**
  * Get all set variables for tripal_hq.
- * As of now that is just email settings.
+ *
+ *   As of now that is just email settings.
  *
  * @return array
+ *   Settings as key => value.
  */
 function tripal_hq_get_email_settings() {
 
