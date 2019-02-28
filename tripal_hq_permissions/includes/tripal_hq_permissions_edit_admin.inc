@@ -29,19 +29,13 @@ function tripal_hq_permissions_edit_admin_form($form, &$form_state, $uid) {
   $o_options = [];
   $p_options = [];
 
-  $orgs = db_select('chado.organism', 'o')->fields('o', [
-    'organism_id',
-    'abbreviation',
-  ])->execute();
+  $orgs = chado_query('select organism_id, abbreviation from {organism}');
 
   foreach ($orgs as $organism) {
     $o_options[$organism->organism_id] = $organism->abbreviation;
   }
 
-  $projects = db_select('chado.project', 'p')->fields('p', [
-    'project_id',
-    'name',
-  ])->execute();
+  $projects = chado_query('select project_id, name from {project}');
 
   foreach ($projects as $project) {
     $o_options[$project->project_id] = $project->name;
