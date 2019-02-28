@@ -77,17 +77,21 @@ function tripal_hq_permissions_process_submission(int $submission_id) {
 }
 
 /**
- * For a given record specified via record_id and base table, retrieve all
- * users signed up for permissions for it in the tripal_hq_permissions table.
- * Link this submission to that user via the tripal_hq_submission_permissions
- * table.
+ * Links a request to relevant records.
  *
- * @param $base
- *   - Chado base table.  organism, project.
- * @param $record_id
- * @param $submission_id
+ *   For a given record specified via record_id and base table, retrieve all
+ *  users signed up for permissions for it in the tripal_hq_permissions table.
+ *  Link this submission to that user via the tripal_hq_submission_permissions
+ *  table.
+ *
+ * @param string $base
+ *   Chado base table.  organism, project.
+ * @param string $record_id
+ *   the record ID.
+ * @param string $submission_id
+ *   HQ Submission ID.
  */
-function tripal_hq_permissions_link_request($base, $record_id, $submission_id) {
+function tripal_hq_permissions_link_request(string $base, string $record_id, string $submission_id) {
 
   $permissions = db_select('tripal_hq_permissions', 't')
     ->fields('t', ['id'])
@@ -113,12 +117,12 @@ function tripal_hq_permissions_link_request($base, $record_id, $submission_id) {
 /**
  * Process permissions associated with an HQ submission.
  *
- * @param $submission_id
+ * @param string $submission_id
  *   Tripal HQ submission ID.
- * @param $entity
+ * @param TripalEntity $entity
  *   The proposed Tripal entity.
  */
-function tripal_hq_permissions_process_entity_permissions($submission_id, $entity) {
+function tripal_hq_permissions_process_entity_permissions(string $submission_id, TripalEntity $entity) {
 
   $base = $entity->chado_table;
   if ($base == 'organism' || $base == 'project') {
@@ -156,10 +160,17 @@ function tripal_hq_permissions_process_entity_permissions($submission_id, $entit
 }
 
 /**
- * @param $record_id
- * @param $record_type
+ * Get relevant admins for a given submission.
+ *
+ * @param string $record_id
+ *   HQ submission record id.
+ * @param string $record_type
+ *   Chado base table string name.
+ *
+ * @return array
+ *   An array of admins structured [uid => email].
  */
-function tripal_hq_permissions_get_admins($record_id, $record_type) {
+function tripal_hq_permissions_get_admins(string $record_id, string $record_type) {
   $query = db_select('tripal_hq_permissions', 't')
     ->fields('t', ['uid'])
     ->condition('base_table', $record_type)

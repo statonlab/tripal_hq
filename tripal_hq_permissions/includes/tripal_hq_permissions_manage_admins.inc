@@ -1,5 +1,7 @@
 <?php
+
 /**
+ * @file
  * @file:  This form is a menu of all admins with Chado-specific permissions.
  *   The superadmin can grant subadmins control over specific regions of Chado.
  *   To start this is controlled via EITHER organisms or projects.
@@ -50,18 +52,19 @@ function tripal_hq_permissions_manage_admins_form($form, &$form_state) {
 }
 
 /**
- *  * Get users elligible to admin Chado content and their specific permissions.
+ * Get users elligible to admin Chado content and their specific permissions.
  *
- * @param $header
+ * @param array $header
+ *   Passed into the query orderByHeader() method.
  *
  * @return mixed
+ *   The table query.
  */
-function tripal_hq_permissions_get_deputies_query($header) {
+function tripal_hq_permissions_get_deputies_query(array $header) {
 
   $query = db_select('users', 'u')
     ->extend('PagerDefault')
-    ->extend('TableSort')
-   ;
+    ->extend('TableSort');
 
   $query->join('users_roles', 'ur', 'ur.uid = u.uid');
   $query->join('role_permission', 'p', 'ur.rid = p.rid');
@@ -74,8 +77,6 @@ function tripal_hq_permissions_get_deputies_query($header) {
   $query->groupBy('u.uid');
   $query->addExpression('COUNT(thqp.id)', 'count');
 
-
-
   $results = $query
     ->orderByHeader($header)
     ->limit(25)
@@ -87,11 +88,13 @@ function tripal_hq_permissions_get_deputies_query($header) {
 /**
  * Get all BASE permissions set for the given user.
  *
- * @param $uid
+ * @param string $uid
+ *   Drupal user UID.
  *
  * @return mixed
+ *   Array of HQ permissions for given user.
  */
-function tripal_hq_permissions_get_users_specific_permissions($uid) {
+function tripal_hq_permissions_get_users_specific_permissions(string $uid) {
 
   $query = db_select('tripal_hq_permissions', 'ths');
   $query->fields('ths');
