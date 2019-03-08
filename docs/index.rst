@@ -6,6 +6,11 @@
 Tripal HeadQuarters Guide
 ==========================
 
+.. image:: https://tripal.readthedocs.io/en/7.x-3.x/_images/Tripal-Gold.png
+      :target: https://tripal.readthedocs.io/en/7.x-3.x/extensions/module_rating.html#Gold
+      :alt: Tripal Rating: Gold
+
+
 .. toctree::
   :maxdepth: 2
   :caption: Documentation:
