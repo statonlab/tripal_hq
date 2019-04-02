@@ -37,7 +37,7 @@ function tripal_hq_permissions_menu() {
  */
 function tripal_hq_permissions_permission() {
   $permissions['tripal_hq_permissions deputy'] = [
-    'title' => t('Administer CHADO-specific tripal_HQ content'),
+    'title' => t('Administer CHADO-specific Tripal HQ content'),
     'description' => t('Give admins chado-specific admin roles.'),
   ];
   return $permissions;
