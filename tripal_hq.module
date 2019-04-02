@@ -126,12 +126,12 @@ function tripal_hq_menu() {
  */
 function tripal_hq_permission() {
   $permissions['access tripal_hq admin'] = [
-    'title' => t('Administer tripal_HQ content'),
+    'title' => t('Administer Tripal HQ content'),
     'description' => t('Allow admins to view and approve content.'),
   ];
 
   $permissions['access tripal_hq user'] = [
-    'title' => t('Create Tripal content requests'),
+    'title' => t('Create Tripal HQ content requests'),
     'description' => t(
       'Allow users to submit content requests, and view their content dashboard'
     ),
@@ -142,7 +142,7 @@ function tripal_hq_permission() {
   foreach ($bundles as $bundle) {
     $permissions['propose ' . $bundle->name] = [
       'title' => t(
-        '%label: Propose Content', ['%label' => $bundle->label]
+        '%label: Propose Tripal HQ Content', ['%label' => $bundle->label]
       ),
       'description' => t(
         'Allow the user to propose %label content', ['%label' => $bundle->label]
