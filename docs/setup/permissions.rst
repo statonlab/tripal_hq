@@ -13,7 +13,7 @@ On installation, HQ defines the following permissions:
 * "Propose content" permission for each of your defined bundles.  This will let you configure which bundles can be proposed by users.
 
 
-To get started, you'll need to create a role for your content submitters, and give them the "Create Content Requests" permission, plus whatever specific bundle permissions you'd like them to see.
+To get started, you'll need to create a role for your content submitters, and give them the "Create Tripal Content Requests" permission, plus whatever specific bundle permissions you'd like them to see.
 
 For your administrators, you'll want to give them the "Administer HQ content" permission.  If you'd like your admin to only see a subset of content, give them the "Administer CHADO-specific tripal_HQ content" permission and configure their specific permissions (see below).
 
