@@ -277,7 +277,7 @@ function tripal_hq_node_access($node, $op, $account) {
   }
 
   // The user is an admin. They shall pass!
-  if (user_access('access tripal_hq admin')) {
+  if (user_access('access tripal_hq admin') && $op !== 'create') {
     return NODE_ACCESS_ALLOW;
   }
 
