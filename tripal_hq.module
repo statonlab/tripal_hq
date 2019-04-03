@@ -281,12 +281,19 @@ function tripal_hq_node_access($node, $op, $account) {
     return NODE_ACCESS_ALLOW;
   }
 
+  // Don't allow non-admins to create a node. When $node is a string, it's
+  // actually the type of the node rather than the node itself. This is
+  // usually the case when the $op is create.
+  if (!is_object($node)) {
+    return NODE_ACCESS_DENY;
+  }
+
   // Get the user id for the submission associated with this node.
-  $submission = db_select('tripal_hq_submission', 'THS')
-    ->fields('THS', ['uid'])
-    ->condition('nid', $node->nid)
-    ->execute()
-    ->fetchObject();
+    $submission = db_select('tripal_hq_submission', 'THS')
+      ->fields('THS', ['uid'])
+      ->condition('nid', $node->nid)
+      ->execute()
+      ->fetchObject();
 
   // We don't have a submission associated with this node ... DENY!
   if (!$submission) {

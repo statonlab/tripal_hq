@@ -3,7 +3,8 @@
     "ext-json": "*"
   },
   "require-dev": {
-    "statonlab/tripal-test-suite": "1.5.*"
+    "statonlab/tripal-test-suite": "1.5.*",
+    "phpunit/php-code-coverage": "^6.1"
   },
   "autoload": {
     "psr-4": {
