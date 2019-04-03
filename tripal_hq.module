@@ -289,11 +289,11 @@ function tripal_hq_node_access($node, $op, $account) {
   }
 
   // Get the user id for the submission associated with this node.
-    $submission = db_select('tripal_hq_submission', 'THS')
-      ->fields('THS', ['uid'])
-      ->condition('nid', $node->nid)
-      ->execute()
-      ->fetchObject();
+  $submission = db_select('tripal_hq_submission', 'THS')
+    ->fields('THS', ['uid'])
+    ->condition('nid', $node->nid)
+    ->execute()
+    ->fetchObject();
 
   // We don't have a submission associated with this node ... DENY!
   if (!$submission) {
