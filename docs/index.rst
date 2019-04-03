@@ -10,7 +10,6 @@ Tripal HeadQuarters Guide
       :target: https://tripal.readthedocs.io/en/7.x-3.x/extensions/module_rating.html#Gold
       :alt: Tripal Rating: Gold
 
-
 .. toctree::
   :maxdepth: 2
   :caption: Documentation:
@@ -19,3 +18,10 @@ Tripal HeadQuarters Guide
   installation
   usage
   contributing
+
+
+.. image:: tripalHQlogo.png
+      :alt: Tripal HQ Logo
+
+
+Tripal HQ logoartist credit: `Jason Kang <https://www.deviantart.com/kangjason/art/Hearthstone-BlackHowl-Gunspire-738554497>`_, Copyright 2010-2018 Blizzard Entertainment

@@ -10,9 +10,19 @@ Tripal HQ provides a user-contributed content control center and administrative 
 
 For module installation and usage instructions, [please see our documentation website](https://tripal-hq.readthedocs.io/en/latest/?badge=latest).
 
+
+![TripalHQLogo](docs/tripalHQLogo.png)
+
 ## Module Features
 
 * Users create data using your existing Bundle configuration- no extra forms!
 * User dashboard area for viewing pending submissions
 * Admin dashboard for viewing submissions
 * Chado-based permissions to create admins for certain projects or organisms
+
+
+
+## Logo Credit
+
+artist credit: Jason Kang, Copyright 2010-2018 Blizzard Entertainment
+https://www.deviantart.com/kangjason/art/Hearthstone-BlackHowl-Gunspire-738554497
