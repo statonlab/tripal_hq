@@ -14,12 +14,11 @@
 function tripal_hq_list_bundles_page() {
   $page = [];
 
-  // TODO: add description for the page. We might also add a warning
-  // TODO: for *admin* users to use the actual tripal content forms.
+  // We might also add a warning for *admin* users to use the actual tripal content forms.
   $page['description'] = [
     '#type' => 'markup',
     '#prefix' => '<p>',
-    '#markup' => t('Page description with instructions will go here'),
+    '#markup' => t('Please click a content type below to add new content for admin approval.'),
     '#suffix' => '</p>',
   ];
 
@@ -30,10 +29,12 @@ function tripal_hq_list_bundles_page() {
     ->execute()
     ->fetchAll();
 
+  $user_has_stuff = 0;
   foreach ($bundles as $bundle) {
     if (!user_access("propose $bundle->name")) {
       continue;
     }
+    $user_has_stuff = 1;
 
     // Load the bundle to get the description (aka term definition)
     $bundle = tripal_load_bundle_entity(['id' => $bundle->id]);
@@ -48,6 +49,16 @@ function tripal_hq_list_bundles_page() {
       '#markup' => $link,
       '#description' => $bundle->term->definition,
     ];
+  }
+
+  if ($user_has_stuff === 0) {
+    $page['description'] = [
+      '#type' => 'markup',
+      '#prefix' => '<p>',
+      '#markup' => t('You do not have site permissions to create new content.'),
+      '#suffix' => '</p>',
+    ];
+
   }
 
   return $page;
