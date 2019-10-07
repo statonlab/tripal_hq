@@ -11,7 +11,7 @@ Tripal HQ provides a user-contributed content control center and administrative 
 For module installation and usage instructions, [please see our documentation website](https://tripal-hq.readthedocs.io/en/latest/?badge=latest).
 
 
-![TripalHQLogo](docs/tripalHQLogo.png)
+![TripalHQLogo](docs/tripalHQlogo.png)
 
 ## Module Features
 
