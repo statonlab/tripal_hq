@@ -90,7 +90,6 @@ function tripal_hq_user_importer_form_validate($form, $form_state) {
   $importer_class = $form_state['build_info']['args'][0];
   tripal_load_include_importer_class($importer_class);
 
-  dpm($form_state, 'form state');
   // Validate the user input in the same manner as the original importer.
   module_load_include('inc', 'tripal', 'includes/tripal.importer');
   tripal_get_importer_form_validate($form, $form_state);
