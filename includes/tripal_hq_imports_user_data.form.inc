@@ -101,17 +101,22 @@ function tripal_hq_user_importer_form_validate($form, $form_state) {
 function tripal_hq_user_importer_form_submit($form, $form_state) {
   global $user;
   $importer_class = $form_state['build_info']['args'][0];
+  tripal_load_include_importer_class($importer_class);
+
+  // Create the comments node.
+  $title = $importer_class::$name . ' Submission from ' . date('M d Y H:i:s');
+  $nid = tripal_hq_create_node($title);
 
   // Save it to the tripal_hq_imports_submission table!
   $data = serialize($form_state);
   db_insert('tripal_hq_importer_submission')
     ->fields([
       'uid' => $user->uid,
+      'nid' => $nid,
       'class' => $importer_class,
       'data' => $data,
       'status' => 'pending',
       'created_at' => time(),
-      'updated_at' => time(),
     ])->execute();
 
 }

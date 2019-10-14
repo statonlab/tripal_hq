@@ -22,6 +22,16 @@ function tripal_hq_imports_schema() {
          'type'        => 'int',
          'not null'    => TRUE,
        ],
+       'nid'        => [
+         'description' => "Comments node ID",
+         'type'        => 'int',
+         'not null'    => FALSE,
+       ],
+       'job_id'        => [
+         'description' => "The id of the tripal job which ran the importer once approved.",
+         'type'        => 'int',
+         'not null'    => FALSE,
+       ],
        'class'         => [
          'description' => "The importer class the file and metadata is associated with.",
          'type'        => 'varchar',
