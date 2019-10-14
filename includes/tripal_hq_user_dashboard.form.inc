@@ -101,13 +101,18 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
     ];
   }
 
-  $output = theme(
-    'table', [
-      'header' => $header,
-      'rows' => $rows,
-    ]
-  );
+  $form['my_submissions'] = [
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+    '#empty' => t("You have no pending content submissions."),
+  ];
 
-  $form['my_submissions'] = ['#markup' => $output];
+  // Now we add in an alter hook to allow submodules to add to this dashboard.
+  // To use this after hook in your own module create a function named
+  // [yourmodule]_tripal_hq_user_dashboard_alter($form, $form_state) {}
+  // and change or add to the form as needed.
+  drupal_alter('tripal_hq_user_dashboard', $form, $form_state);
+
   return $form;
 }
