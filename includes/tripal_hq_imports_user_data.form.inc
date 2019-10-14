@@ -11,6 +11,7 @@
   *   Array of markup describing bundles.
   */
  function tripal_hq_import_list_importers_page() {
+   global $user;
    $page = [];
 
    // We might also add a warning for *admin* users to use the actual tripal import forms.
@@ -22,7 +23,7 @@
    ];
 
    $user_has_stuff = 0;
-   $importers = tripal_get_importers();
+   $importers = tripal_hq_get_importers();
    foreach ($importers as $importer_class) {
 
      // Pull some important info out of the class.
@@ -31,9 +32,10 @@
      $importer_description = $importer_class::$description;
 
      // @todo Ensure the user has permission to propose that file type.
-     //if (!user_access("propose $importer_machine_name")) {
-       //continue;
-     //}
+     // Currently we are just restricting anonymous users.
+     if ($user->uid === 0) {
+       continue;
+     }
      $user_has_stuff = 1;
 
 
@@ -70,9 +72,9 @@
   * @return array
   *   Renderable array.
   */
-function tripal_hq_user_importer_form($form, $form_state) {
+function tripal_hq_user_importer_form($form, &$form_state) {
   $importer_class = $form_state['build_info']['args'][0];
-  tripal_load_include_importer_class($importer_class);
+  $success = tripal_hq_load_include_importer_class($importer_class);
 
   drupal_set_title($importer_class::$name);
 
@@ -88,7 +90,7 @@ function tripal_hq_user_importer_form($form, $form_state) {
  */
 function tripal_hq_user_importer_form_validate($form, $form_state) {
   $importer_class = $form_state['build_info']['args'][0];
-  tripal_load_include_importer_class($importer_class);
+  tripal_hq_load_include_importer_class($importer_class);
 
   // Validate the user input in the same manner as the original importer.
   module_load_include('inc', 'tripal', 'includes/tripal.importer');
@@ -101,7 +103,7 @@ function tripal_hq_user_importer_form_validate($form, $form_state) {
 function tripal_hq_user_importer_form_submit($form, $form_state) {
   global $user;
   $importer_class = $form_state['build_info']['args'][0];
-  tripal_load_include_importer_class($importer_class);
+  tripal_hq_load_include_importer_class($importer_class);
 
   // Create the comments node.
   $title = $importer_class::$name . ' Submission from ' . date('M d Y H:i:s');

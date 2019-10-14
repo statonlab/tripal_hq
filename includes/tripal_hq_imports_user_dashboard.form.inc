@@ -41,7 +41,7 @@ function tripal_hq_imports_tripal_hq_user_dashboard_alter(&$form, &$form_state) 
      // Determine the label.
      if (!isset($importer_labels[$importer_class])) {
 
-       tripal_load_include_importer_class($importer_class);
+       tripal_hq_load_include_importer_class($importer_class);
        $label = $importer_class::$name;
 
        $importer_labels[$importer_class] = $label;

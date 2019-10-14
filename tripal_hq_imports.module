@@ -2,7 +2,7 @@
 /**
  * Contains core drupal hook implementations.
  */
-
+require_once 'includes/tripal_hq_imports.api.inc';
 require_once 'includes/tripal_hq_imports_user_dashboard.form.inc';
 
 /**

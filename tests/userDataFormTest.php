@@ -17,8 +17,15 @@ class userDataFormTest extends TripalTestCase {
    */
   public function testListImportersPage() {
 
-    $this->markTestSkipped('Test skipped due to bug in core Tripal.');
+    // First test as the anonymous user.
+    $page = tripal_hq_import_list_importers_page();
+    $this->assertArrayHasKey('description', $page,
+      "Ensure the listing page shows help text to the user.");
+    $this->assertStringContainsString('do not', $page['description']['#markup'],
+      "Make sure we actually tell them they do not have permission.");
 
+    // Then test as an administrator.
+    $this->actingAs(1);
     $page = tripal_hq_import_list_importers_page();
 
     // This page should at least list the Tripal core importers.
@@ -35,9 +42,6 @@ class userDataFormTest extends TripalTestCase {
    */
   public function testUserImporterForm() {
 
-    $this->markTestSkipped('Test skipped due to bug in core Tripal.');
-
-    $this->
     // Mock the form state specifying the GFF3 importer.
     $form_state = [
       'build_info' => [
@@ -86,8 +90,6 @@ class userDataFormTest extends TripalTestCase {
    */
   public function testUserImporterFormValidate() {
 
-    $this->markTestSkipped('Test skipped due to bug in core Tripal.');
-
     // Mock the form state specifying the GFF3 importer.
     $form_state = [
       'build_info' => [
@@ -120,8 +122,6 @@ class userDataFormTest extends TripalTestCase {
    * Tests tripal_hq_user_importer_form_submit().
    */
   public function testUserImporterFormSubmit() {
-
-    $this->markTestSkipped('Test skipped due to bug in core Tripal.');
 
     // Mock the form state specifying the GFF3 importer.
     $form_state = [
