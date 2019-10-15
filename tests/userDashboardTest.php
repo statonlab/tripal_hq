@@ -14,8 +14,6 @@ class userDashboardTest extends TripalTestCase {
   public function testUserDashboard() {
     module_load_include('inc', 'tripal_hq', 'includes/tripal_hq_user_dashboard.form');
 
-    $this->markTestSkipped('This test needs to be skipped until our PR makes it into Tripal HQ master.');
-
     // Add a submission for better testing.
     $data = serialize([1,2,3]);
     global $user;

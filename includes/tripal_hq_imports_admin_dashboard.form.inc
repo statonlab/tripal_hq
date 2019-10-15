@@ -90,7 +90,7 @@
      $submitter = user_load($request->uid);
      if (!$submitter) {
        tripal_set_message(t("Error looking up user !user",
-         ['!user' => $submission->uid], TRIPAL_WARNING));
+         ['!user' => $request->uid]), TRIPAL_WARNING);
        continue;
      }
      $user_row = l($submitter->name . ' (' . $submitter->mail . ')', 'user/' . $submitter->uid);
