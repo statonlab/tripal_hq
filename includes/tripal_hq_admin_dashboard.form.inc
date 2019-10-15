@@ -32,6 +32,8 @@ function tripal_hq_admin_dashboard_form(array $form, array &$form_state, $status
   global $user;
   $uid = $user->uid;
 
+  $items_per_page = 10;
+
   $form['instructions'] = ['#markup' => $message];
 
   $header = [
@@ -80,7 +82,7 @@ function tripal_hq_admin_dashboard_form(array $form, array &$form_state, $status
 
     $requests = $query->fields('t')
       ->orderBy('id', 'desc')
-      ->limit(10)
+      ->limit($items_per_page)
       ->execute()
       ->fetchAll();
   }
@@ -95,7 +97,7 @@ function tripal_hq_admin_dashboard_form(array $form, array &$form_state, $status
     }
     $requests = $query->fields('t')
       ->orderBy('id', 'desc')
-      ->limit(10)
+      ->limit($items_per_page)
       ->execute()
       ->fetchAll();
   }
@@ -144,7 +146,6 @@ function tripal_hq_admin_dashboard_form(array $form, array &$form_state, $status
 
   $form['pager'] = [
     '#theme' => 'pager',
-    '#quantity' => 5,
   ];
 
   // Now we add in an alter hook to allow submodules to add to this dashboard.

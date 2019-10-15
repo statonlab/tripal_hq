@@ -16,6 +16,8 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
   global $user;
   $uid = $user->uid;
 
+  $items_per_page = 5;
+
   $header = [
     'Title' => [
       'data' => t('Title'),
@@ -45,7 +47,7 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
     ->extend('TableSort')
     ->orderByHeader($header)
     ->extend('PagerDefault')
-    ->limit(20)
+    ->limit($items_per_page)
     ->execute()
     ->fetchAll();
 
@@ -106,6 +108,10 @@ function tripal_hq_user_dashboard_form($form, &$form_state) {
     '#header' => $header,
     '#rows' => $rows,
     '#empty' => t("You have no pending content submissions."),
+  ];
+
+  $form['pager'] = [
+    '#theme' => 'pager',
   ];
 
   // Now we add in an alter hook to allow submodules to add to this dashboard.
