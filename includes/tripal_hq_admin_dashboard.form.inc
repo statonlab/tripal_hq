@@ -32,6 +32,8 @@ function tripal_hq_admin_dashboard_form(array $form, array &$form_state, $status
   global $user;
   $uid = $user->uid;
 
+  $items_per_page = 10;
+
   $form['instructions'] = ['#markup' => $message];
 
   $header = [
@@ -80,7 +82,7 @@ function tripal_hq_admin_dashboard_form(array $form, array &$form_state, $status
 
     $requests = $query->fields('t')
       ->orderBy('id', 'desc')
-      ->limit(10)
+      ->limit($items_per_page)
       ->execute()
       ->fetchAll();
   }
@@ -95,18 +97,9 @@ function tripal_hq_admin_dashboard_form(array $form, array &$form_state, $status
     }
     $requests = $query->fields('t')
       ->orderBy('id', 'desc')
-      ->limit(10)
+      ->limit($items_per_page)
       ->execute()
       ->fetchAll();
-  }
-
-  if (!$requests) {
-    $message = '<h4>no ' . $status . '  requests</h4>';
-
-    $form['message'] = [
-      '#markup' => $message,
-    ];
-    return $form;
   }
 
   $rows = [];
@@ -144,14 +137,23 @@ function tripal_hq_admin_dashboard_form(array $form, array &$form_state, $status
     $rows[] = $row;
   }
 
-  $output = theme('table', [
-    'header' => $header,
-    'rows' => $rows,
-  ]);
+  $form['table'] = [
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+    '#empty' => t('There are no !status content submissions.', ['!status' => $status]),
+  ];
 
-  $output .= theme('pager', ['quantity', 5]);
+  $form['pager'] = [
+    '#theme' => 'pager',
+  ];
 
-  $form['table'] = ['#markup' => $output];
+  // Now we add in an alter hook to allow submodules to add to this dashboard.
+  // To use this after hook in your own module create a function named
+  // [yourmodule]_tripal_hq_admin_dashboard_alter($form, $form_state, $status)
+  // and change or add to the form as needed.
+  drupal_alter('tripal_hq_admin_dashboard', $form, $form_state, $status);
+
   return $form;
 }
 
