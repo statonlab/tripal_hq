@@ -141,7 +141,7 @@ function tripal_hq_admin_dashboard_form(array $form, array &$form_state, $status
     '#theme' => 'table',
     '#header' => $header,
     '#rows' => $rows,
-    '#empty' => t("There are no $status content submissions."),
+    '#empty' => t('There are no !status content submissions.', ['!status' => $status]),
   ];
 
   $form['pager'] = [
