@@ -76,11 +76,59 @@ function tripal_hq_user_importer_form($form, &$form_state) {
   $importer_class = $form_state['build_info']['args'][0];
   $success = tripal_hq_load_include_importer_class($importer_class);
 
+  // Check if we should allow editing/viewing of an existing submission.
+  if (isset($form_state['build_info']['args'][1])) {
+    $submission_id = $form_state['build_info']['args'][1];
+    $op = $form_state['build_info']['args'][2];
+
+    $submission = db_select('tripal_hq_importer_submission', 't')
+      ->fields('t')
+      ->condition('id', $submission_id)
+      ->execute()->fetchObject();
+    if (is_object($submission)) {
+      $importer_form_state = unserialize($submission->data);
+      $status = $submission->status;
+
+      $form['submission_id'] = [
+        '#type' => 'hidden',
+        '#value' => $submission_id,
+      ];
+    }
+    else {
+      $form['warning'] = [
+        '#type' => 'markup',
+        '#markup' => '<div class="messages error">Unable to find your previous submission. Please contact an administrator.</div>',
+      ];
+      return $form;
+    }
+  }
+  else {
+    $importer_form_state = $form_state;
+  }
+
   drupal_set_title($importer_class::$name);
 
   // Retrieve the form for the importer.
   module_load_include('inc', 'tripal', 'includes/tripal.importer');
-  $form = tripal_get_importer_form($form, $form_state, $importer_class);
+  $form = tripal_get_importer_form($form, $importer_form_state, $importer_class);
+
+  // Most importers don't actually fill in defaults since they expect to be
+  // sumbitted only once. As such, we should still fill in the defaults ourselves.
+  if (isset($importer_form_state['values'])) {
+
+    // Ensure people do not try to edit submissions which are no longer pending.
+    if (($op != 'edit') OR ($status != 'pending')) {
+      $op = 'view';
+    }
+
+    // Fill the default for the full form and disable if $op is view.
+    foreach (element_children($form) as $element_key) {
+      tripal_hq_editview_form_field($form[$element_key], $importer_form_state['values'], $element_key, $op);
+    }
+  }
+
+  // Change the name of the button!
+  $form['button']['#value'] = 'Submit';
 
   return $form;
 }
@@ -105,20 +153,33 @@ function tripal_hq_user_importer_form_submit($form, $form_state) {
   $importer_class = $form_state['build_info']['args'][0];
   tripal_hq_load_include_importer_class($importer_class);
 
-  // Create the comments node.
-  $title = $importer_class::$name . ' Submission from ' . date('M d Y H:i:s');
-  $nid = tripal_hq_create_node($title);
+  // If we have a submission id then update.
+  if (isset($form_state['values']['submission_id'])) {
+    $data = serialize($form_state);
+    db_update('tripal_hq_importer_submission')
+      ->fields([
+        'data' => $data,
+        'updated_at' => time(),
+      ])
+      ->condition('id', $form_state['values']['submission_id'])
+      ->execute();
+  }
+  // Otherwise, insert.
+  else {
+    // Create the comments node.
+    $title = $importer_class::$name . ' Submission from ' . date('M d Y H:i:s');
+    $nid = tripal_hq_create_node($title);
 
-  // Save it to the tripal_hq_imports_submission table!
-  $data = serialize($form_state);
-  db_insert('tripal_hq_importer_submission')
-    ->fields([
-      'uid' => $user->uid,
-      'nid' => $nid,
-      'class' => $importer_class,
-      'data' => $data,
-      'status' => 'pending',
-      'created_at' => time(),
-    ])->execute();
-
+    // Save it to the tripal_hq_imports_submission table!
+    $data = serialize($form_state);
+    db_insert('tripal_hq_importer_submission')
+      ->fields([
+        'uid' => $user->uid,
+        'nid' => $nid,
+        'class' => $importer_class,
+        'data' => $data,
+        'status' => 'pending',
+        'created_at' => time(),
+      ])->execute();
+  }
 }

@@ -63,3 +63,33 @@ function tripal_hq_load_include_importer_class($class) {
 
   return $success;
 }
+
+/**
+ * Updates a given form field for edit (default value) or view (read-only) mode.
+ *
+ * @param $form_field
+ *   A form field defined using the Drupal Form API.
+ * @param $values
+ *  The full values list for the form.
+ * @param $op
+ *  One of 'edit' or 'view' where the second will be read-only.
+ */
+function tripal_hq_editview_form_field(&$form_field, $values, $element_key, $op) {
+
+  if (isset($form_field['#type']) AND ($form_field['#type'] == 'fieldset')) {
+    foreach(element_children($form_field) as $child_element) {
+      tripal_hq_editview_form_field($form_field[$child_element], $values, $child_element, $op);
+    }
+  }
+  else {
+    if (isset($values[$element_key])) {
+      $form_field['#default_value'] = $values[$element_key];
+    }
+
+    if ($op == 'view') {
+      $form_field['#disabled'] = TRUE;
+      $form_field['#attributes'] = array('readonly' => 'readonly');
+    }
+  }
+
+}

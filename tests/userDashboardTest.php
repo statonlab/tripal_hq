@@ -23,7 +23,7 @@ class userDashboardTest extends TripalTestCase {
         'nid' => 1,
         'class' => 'GFF3Importer',
         'data' => $data,
-        'status' => 'pending',
+        'status' => 'approved',
         'created_at' => time(),
         'updated_at' => time(),
       ])->execute();

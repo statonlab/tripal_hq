@@ -63,6 +63,13 @@ function tripal_hq_imports_tripal_hq_user_dashboard_alter(&$form, &$form_state) 
        $comments_link = l('Add/View Comments (' . $comment_count . ')', 'node/' . $submission->nid);
      }
 
+     // Edit or View link.
+     $link = l(t('Edit'), '/tripal_hq/bio_data/import-data/edit/' . $importer_class . '/' . $id);
+     if ($status != 'pending') {
+       $link = l(t('View'), '/tripal_hq/bio_data/import-data/view/' . $importer_class . '/' . $id);
+     }
+
+
      // Now compile the row.
      $rows[] = [
        $label,
@@ -71,7 +78,7 @@ function tripal_hq_imports_tripal_hq_user_dashboard_alter(&$form, &$form_state) 
        $created_at,
        $updated_at,
        $comments_link,
-       ''
+       $link
      ];
    }
 

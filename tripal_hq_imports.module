@@ -30,5 +30,21 @@ function tripal_hq_imports_menu() {
     'file' => 'includes/tripal_hq_imports_user_data.form.inc',
   ];
 
+  $items['tripal_hq/bio_data/import-data/edit/%/%'] = [
+    'title' => 'Import data file',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => ['tripal_hq_user_importer_form', 4, 5, 3],
+    'access arguments' => ['access tripal_hq user'],
+    'file' => 'includes/tripal_hq_imports_user_data.form.inc',
+  ];
+
+  $items['tripal_hq/bio_data/import-data/view/%/%'] = [
+    'title' => 'Import data file',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => ['tripal_hq_user_importer_form', 4, 5, 3],
+    'access arguments' => ['access tripal_hq user'],
+    'file' => 'includes/tripal_hq_imports_user_data.form.inc',
+  ];
+
   return $items;
 }
