@@ -10,6 +10,9 @@
 function tripal_hq_imports_tripal_hq_user_dashboard_alter(&$form, &$form_state) {
    global $user;
 
+   // Number of items per page.
+   $items_per_page = 5;
+
    // Add a caption to differentiate the two tables.
    $form['my_submissions']['#caption'] = '<h3>' . t('Content') . '</h3>';
 
@@ -24,7 +27,7 @@ function tripal_hq_imports_tripal_hq_user_dashboard_alter(&$form, &$form_state) 
      ->extend('TableSort')
      ->orderByHeader($header)
      ->extend('PagerDefault')
-     ->limit(20)
+     ->limit($items_per_page)
      ->execute()
      ->fetchAll();
 
@@ -78,6 +81,11 @@ function tripal_hq_imports_tripal_hq_user_dashboard_alter(&$form, &$form_state) 
      '#rows' => $rows,
      '#caption' => '<h3>' . t('Data Files') . '</h3>',
      '#empty' => t("You have no pending data file submissions."),
+   ];
+
+   $form['importer_pager'] = [
+     '#theme' => 'pager',
+     '#element' => 1,
    ];
 
    return $form;

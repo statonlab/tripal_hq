@@ -11,6 +11,8 @@
    global $user;
    $uid = $user->uid;
 
+   $items_per_page = 10;
+
    // Add a caption to differentiate the two tables.
    $form['table']['#caption'] = '<h3>' . t('Content') . '</h3>';
 
@@ -59,7 +61,7 @@
    }
    $requests = $query->fields('t')
      ->orderBy('id', 'desc')
-     ->limit(10)
+     ->limit($items_per_page)
      ->execute()
      ->fetchAll();
 
@@ -121,6 +123,11 @@
      '#rows' => $rows,
      '#caption' => '<h3>' . t('Data Files') . '</h3>',
      '#empty' => t("There are no $status data file submissions."),
+   ];
+
+   $form['importer_pager'] = [
+     '#theme' => 'pager',
+     '#element' => 1,
    ];
 
    return $form;
