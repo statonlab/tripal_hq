@@ -10,6 +10,8 @@ class moduleFileTest extends TripalTestCase {
 
   /**
    * Tests hook_menu(). Specifically, are all the required keys set.
+   *
+   * @group core-hook
    */
   public function testHookMenu() {
     $menu_items = tripal_hq_imports_menu();

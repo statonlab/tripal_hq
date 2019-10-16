@@ -46,5 +46,21 @@ function tripal_hq_imports_menu() {
     'file' => 'includes/tripal_hq_imports_user_data.form.inc',
   ];
 
+  $items['tripal_hq/admin/data-imports/approve/%'] = [
+    'title' => 'Tripal HQ Data Import Approve',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_imports_approve.form.inc',
+    'access arguments' => ['access tripal_hq admin'],
+    'page arguments' => ['tripal_hq_imports_admin_control_form', 'approve', 4],
+  ];
+
+  $items['tripal_hq/admin/data-imports/reject/%'] = [
+    'title' => 'Tripal HQ Data Import Reject',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_imports_approve.form.inc',
+    'access arguments' => ['access tripal_hq admin'],
+    'page arguments' => ['tripal_hq_imports_admin_control_form', 'reject', 4],
+  ];
+
   return $items;
 }

@@ -65,6 +65,87 @@ function tripal_hq_load_include_importer_class($class) {
 }
 
 /**
+ * Returns the full submission.
+ *
+ * @param $submission_id
+ *   The id of the submission you would like returned.
+ * @return
+ *   An object describing the submission.
+ */
+function tripal_hq_imports_get_submission_by_id($submission_id) {
+
+  $submission = db_select('tripal_hq_importer_submission', 't')
+    ->fields('t')
+    ->condition('id', $submission_id)
+    ->execute()->fetchObject();
+  return $submission;
+}
+
+/**
+ * Reject a specific submission.
+ *
+ * @param $submission
+ *   An object describing the submission to be rejected.
+ * @return
+ *   True if the rejection was successful, FALSE otherwise.
+ */
+function tripal_hq_imports_reject_submission($submission) {
+
+  if (!is_object($submission)) {
+    return FALSE;
+  }
+  if ($submission->status !== 'pending') {
+    return FALSE;
+  }
+
+  $submission_id = $submission->id;
+  return db_update('tripal_hq_importer_submission')
+    ->fields([
+      'status' => 'rejected',
+      'updated_at' => time(),
+    ])
+    ->condition('id', $submission_id)
+    ->execute();
+}
+
+/**
+ * Approve a specific submission.
+ *
+ * @param $submission
+ *   An object describing the submission to be approved.
+ */
+function tripal_hq_imports_approve_submission($submission) {
+
+  if (!is_object($submission)) {
+    return FALSE;
+  }
+  if ($submission->status !== 'pending') {
+    return FALSE;
+  }
+  $submission_id = $submission->id;
+  $importer_class = $submission->class;
+
+  // Grab the form state from the submission.
+  $form_state = unserialize($submission->data);
+
+  // Retrieve the form for the importer.
+  module_load_include('inc', 'tripal', 'includes/tripal.importer');
+  $form = [];
+  $form = tripal_get_importer_form($form, $form_state, $importer_class);
+
+  // Now submit the tripal importer which will create the job.
+  tripal_get_importer_form_submit($form, $form_state);
+
+  db_update('tripal_hq_importer_submission')
+    ->fields([
+      'status' => 'approved',
+      'updated_at' => time(),
+    ])
+    ->condition('id', $submission_id)
+    ->execute();
+}
+
+/**
  * Updates a given form field for edit (default value) or view (read-only) mode.
  *
  * @param $form_field

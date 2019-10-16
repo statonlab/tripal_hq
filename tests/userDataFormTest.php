@@ -11,9 +11,9 @@ class userDataFormTest extends TripalTestCase {
   use DBTransaction;
 
   /**
-   * Basic test example.
-   * Tests must begin with the word "test".
-   * See https://phpunit.readthedocs.io/en/latest/ for more information.
+   * List importers.
+   *
+   * @group user
    */
   public function testListImportersPage() {
 
@@ -39,6 +39,9 @@ class userDataFormTest extends TripalTestCase {
 
   /**
    * Tests tripal_hq_user_importer_form().
+   *
+   * @group submit-form
+   * @group user
    */
   public function testUserImporterForm() {
 
@@ -87,6 +90,9 @@ class userDataFormTest extends TripalTestCase {
 
   /**
    * Tests tripal_hq_user_importer_form().
+   *
+   * @group submit-form
+   * @group user
    */
   public function testUserImporterEDITForm() {
     global $user;
@@ -180,6 +186,9 @@ class userDataFormTest extends TripalTestCase {
 
   /**
    * Tests tripal_hq_user_importer_form_validate().
+   *
+   * @group submit-form
+   * @group user
    */
   public function testUserImporterFormValidate() {
 
@@ -213,6 +222,9 @@ class userDataFormTest extends TripalTestCase {
 
   /**
    * Tests tripal_hq_user_importer_form_submit().
+   *
+   * @group submit-form
+   * @group user
    */
   public function testUserImporterFormSubmit() {
 
@@ -228,6 +240,7 @@ class userDataFormTest extends TripalTestCase {
         ],
       ],
       'rebuild' => FALSE,
+      'no_redirect' => TRUE,
       'redirect' => NULL,
       'values' => [
         'importer_class' => 'GFF3Importer',
@@ -251,6 +264,9 @@ class userDataFormTest extends TripalTestCase {
 
   /**
    * Tests tripal_hq_user_importer_form_submit().
+   *
+   * @group submit-form
+   * @group user
    */
   public function testUserImporterEDITFormSubmit() {
     global $user;
@@ -292,6 +308,7 @@ class userDataFormTest extends TripalTestCase {
       'rebuild' => FALSE,
       'rebuild_info' => [],
       'redirect' => NULL,
+      'no_redirect' => TRUE,
       'temporary' => [],
       'submitted' => FALSE,
       'executed' => FALSE,

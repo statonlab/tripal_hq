@@ -81,10 +81,7 @@ function tripal_hq_user_importer_form($form, &$form_state) {
     $submission_id = $form_state['build_info']['args'][1];
     $op = $form_state['build_info']['args'][2];
 
-    $submission = db_select('tripal_hq_importer_submission', 't')
-      ->fields('t')
-      ->condition('id', $submission_id)
-      ->execute()->fetchObject();
+    $submission = tripal_hq_imports_get_submission_by_id($submission_id);
     if (is_object($submission)) {
       $importer_form_state = unserialize($submission->data);
       $status = $submission->status;
@@ -170,7 +167,9 @@ function tripal_hq_user_importer_form_submit($form, $form_state) {
       );
     }
 
-    drupal_goto('tripal_hq/bio_data');
+    if (!isset($form_state['no_redirect'])) {
+      drupal_goto('tripal_hq/bio_data');
+    }
   }
   else {
     drupal_set_message(

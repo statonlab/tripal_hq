@@ -10,6 +10,9 @@ class userDashboardTest extends TripalTestCase {
 
   /**
    * Tests tripal_hq_imports_tripal_hq_user_dashboard_alter().
+   *
+   * @group dashboard
+   * @group user
    */
   public function testUserDashboard() {
     module_load_include('inc', 'tripal_hq', 'includes/tripal_hq_user_dashboard.form');

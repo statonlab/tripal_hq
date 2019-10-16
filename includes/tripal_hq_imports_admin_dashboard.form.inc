@@ -104,6 +104,14 @@
        $comments_link = l('Add/View Comments (' . $comment_count . ')', 'node/' . $request->nid);
      }
 
+     // Approve or Deny.
+     $approve = $reject = '';
+     if ($status == 'pending') {
+       $approve = l(t('Approve'), 'tripal_hq/admin/data-imports/approve/' . $request->id);
+       $reject = l(t('Reject'), 'tripal_hq/admin/data-imports/reject/' . $request->id);
+     }
+
+
      // Now compile the row.
      $rows[] = [
        $user_row,
@@ -112,8 +120,8 @@
        ucwords($status),
        $created_at,
        $comments_link,
-       '',
-       ''
+       $approve,
+       $reject
      ];
    }
 

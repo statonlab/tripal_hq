@@ -10,6 +10,9 @@ class adminDashboardTest extends TripalTestCase {
 
   /**
    * Tests tripal_hq_imports_tripal_hq_user_dashboard_alter().
+   *
+   * @group dashboard
+   * @group admin
    */
   public function testAdminDashboard() {
     module_load_include('inc', 'tripal_hq', 'includes/tripal_hq_admin_dashboard.form');
@@ -48,4 +51,5 @@ class adminDashboardTest extends TripalTestCase {
       "Our submission requests table is not in the page.");
 
   }
+
 }
