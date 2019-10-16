@@ -136,7 +136,7 @@ function tripal_hq_user_importer_form($form, &$form_state) {
 /**
  * Validate the user submission.
  */
-function tripal_hq_user_importer_form_validate($form, $form_state) {
+function tripal_hq_user_importer_form_validate($form, &$form_state) {
   $importer_class = $form_state['build_info']['args'][0];
   tripal_hq_load_include_importer_class($importer_class);
 
@@ -149,20 +149,58 @@ function tripal_hq_user_importer_form_validate($form, $form_state) {
  * Submit the submission.
  */
 function tripal_hq_user_importer_form_submit($form, $form_state) {
+
+  $sid = tripal_hq_imports_save_submission($form_state);
+  if ($sid) {
+
+    // @todo currently we cant use tripal_hq_send_emails() since it retrieves
+    //       the submission with the assumption of db table.
+    //tripal_hq_send_emails($sid, 'submit');
+
+    if (isset($form_state['values']['submission_id'])) {
+      drupal_set_message(
+        'Submission created successfully. We will review your submission and get
+         back to you shortly.'
+      );
+    }
+    else {
+      drupal_set_message(
+        'Submission updated successfully. We will review your submission and get
+         back to you shortly.'
+      );
+    }
+
+    drupal_goto('tripal_hq/bio_data');
+  }
+  else {
+    drupal_set_message(
+      'Unable to save your submission. Please contact us to fix the issue.',
+      'error'
+    );
+  }
+}
+
+/**
+ * Save the submission.
+ */
+function tripal_hq_imports_save_submission($form_state) {
+
   global $user;
   $importer_class = $form_state['build_info']['args'][0];
   tripal_hq_load_include_importer_class($importer_class);
 
   // If we have a submission id then update.
   if (isset($form_state['values']['submission_id'])) {
+    $sid = $form_state['values']['submission_id'];
     $data = serialize($form_state);
-    db_update('tripal_hq_importer_submission')
+    $success = db_update('tripal_hq_importer_submission')
       ->fields([
         'data' => $data,
         'updated_at' => time(),
       ])
-      ->condition('id', $form_state['values']['submission_id'])
+      ->condition('id', $sid)
       ->execute();
+
   }
   // Otherwise, insert.
   else {
@@ -172,7 +210,7 @@ function tripal_hq_user_importer_form_submit($form, $form_state) {
 
     // Save it to the tripal_hq_imports_submission table!
     $data = serialize($form_state);
-    db_insert('tripal_hq_importer_submission')
+    $sid = db_insert('tripal_hq_importer_submission')
       ->fields([
         'uid' => $user->uid,
         'nid' => $nid,
@@ -182,4 +220,6 @@ function tripal_hq_user_importer_form_submit($form, $form_state) {
         'created_at' => time(),
       ])->execute();
   }
+
+  return $sid;
 }
