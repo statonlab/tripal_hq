@@ -31,9 +31,11 @@
      $importer_machine_name = $importer_class::$machine_name;
      $importer_description = $importer_class::$description;
 
-     // @todo Ensure the user has permission to propose that file type.
-     // Currently we are just restricting anonymous users.
+     // Ensure the user has permission to propose that file type.
      if ($user->uid === 0) {
+       continue;
+     }
+     if (!user_access("propose $importer_label")) {
        continue;
      }
      $user_has_stuff = 1;
@@ -75,6 +77,7 @@
 function tripal_hq_user_importer_form($form, &$form_state) {
   $importer_class = $form_state['build_info']['args'][0];
   $success = tripal_hq_load_include_importer_class($importer_class);
+  $importer_label = $importer_class::$name;
 
   // Check if we should allow editing/viewing of an existing submission.
   if (isset($form_state['build_info']['args'][1])) {
@@ -101,6 +104,14 @@ function tripal_hq_user_importer_form($form, &$form_state) {
   }
   else {
     $importer_form_state = $form_state;
+  }
+
+  // Ensure the user has permission to propose that file type.
+  if ($user->uid === 0) {
+    drupal_not_found();
+  }
+  if (!user_access("propose $importer_label")) {
+    drupal_not_found();
   }
 
   drupal_set_title($importer_class::$name);

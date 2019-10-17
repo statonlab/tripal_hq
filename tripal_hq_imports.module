@@ -64,3 +64,31 @@ function tripal_hq_imports_menu() {
 
   return $items;
 }
+
+/**
+ * Implements hook_permission().
+ */
+function tripal_hq_imports_permission() {
+  $permissions = [];
+
+  // Add permissions for each importer.
+  $importers = tripal_hq_get_importers();
+  foreach ($importers as $importer_class) {
+
+    // Pull some important info out of the class.
+    $importer_label = $importer_class::$name;
+    $importer_machine_name = $importer_class::$machine_name;
+    $importer_description = $importer_class::$description;
+
+    $permissions['propose ' . $importer_label] = [
+      'title' => t(
+        '%label: Propose Tripal HQ Data File', ['%label' => $importer_label]
+      ),
+      'description' => t(
+        'Allow the user to propose %label data files for import into your site. No data will be imported until an administrator approves the submission.', ['%label' => $importer_label]
+      ),
+    ];
+  }
+
+  return $permissions;
+}
