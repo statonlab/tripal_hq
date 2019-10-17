@@ -44,6 +44,7 @@ class userDataFormTest extends TripalTestCase {
    * @group user
    */
   public function testUserImporterForm() {
+    $this->actingAs(1);
 
     // Mock the form state specifying the GFF3 importer.
     $form_state = [
@@ -95,6 +96,7 @@ class userDataFormTest extends TripalTestCase {
    * @group user
    */
   public function testUserImporterEDITForm() {
+    $this->actingAs(1);
     global $user;
 
     // Create some elements to use in our mock.
@@ -343,5 +345,47 @@ class userDataFormTest extends TripalTestCase {
       "We were unable to select the new submission.");
     $this->assertEquals(serialize($form_state), $record->data,
       "The most recent GFF3Importer submission data, did not match our submitted form state.");
+  }
+
+  /**
+   * Check that anonymous users do not have access to the forms.
+   */
+  public function testFormPermissions() {
+    // Ensure we are anonymous.
+    $this->actingAs(0);
+
+    // Mock the form state specifying the GFF3 importer.
+    $form_state = [
+      'build_info' => [
+        'args' => [
+          'GFF3Importer',
+        ],
+        'form_id' => 'tripal_hq_user_importer_form',
+        'files' => [
+          'menu' => 'sites/all/modules/tripal_hq_imports/includes/tripal_hq_imports_user_data.form.inc',
+        ],
+      ],
+      'rebuild' => FALSE,
+      'rebuild_info' => [],
+      'redirect' => NULL,
+      'temporary' => [],
+      'submitted' => FALSE,
+      'executed' => FALSE,
+      'programmed' => FALSE,
+      'programmed_bypass_access_check' => TRUE,
+      'cache' => FALSE,
+      'method' => 'post',
+      'groups' => [],
+      'buttons' => [],
+      'input' => [],
+    ];
+    // Now execute the form function with the mock form state.
+    $form = [];
+    $form = tripal_hq_user_importer_form($form, $form_state);
+    $this->assertArrayHasKey('warning', $form,
+      "Form should have contained a warning but has not.");
+    $this->assertStringContainsString('do not have access', $form['warning']['#markup'],
+      "Warning should specify that the user does not have access");
+
   }
 }

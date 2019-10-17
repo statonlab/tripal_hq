@@ -27,4 +27,18 @@ class moduleFileTest extends TripalTestCase {
         "$path menu item access arguments must be an array.");
     }
   }
+
+  /**
+   * Tests hook_permission(). Specifically, are all the required keys set.
+   *
+   * @group core-hook
+   */
+  public function testHookPerm() {
+    $permissions = tripal_hq_imports_permission();
+    $this->assertIsArray($permissions);
+    foreach($permissions as $path => $item) {
+      $this->assertArrayHasKey('title', $item,
+        "$path permission item is missing a title.");
+    }
+  }
 }

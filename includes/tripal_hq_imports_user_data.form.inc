@@ -32,10 +32,7 @@
      $importer_description = $importer_class::$description;
 
      // Ensure the user has permission to propose that file type.
-     if ($user->uid === 0) {
-       continue;
-     }
-     if (!user_access("propose $importer_label")) {
+     if (($user->uid === 0) OR (!user_access("propose $importer_label"))) {
        continue;
      }
      $user_has_stuff = 1;
@@ -107,11 +104,12 @@ function tripal_hq_user_importer_form($form, &$form_state) {
   }
 
   // Ensure the user has permission to propose that file type.
-  if ($user->uid === 0) {
-    drupal_not_found();
-  }
-  if (!user_access("propose $importer_label")) {
-    drupal_not_found();
+  if (($user->uid === 0) OR (!user_access("propose $importer_label"))) {
+    $form['warning'] = [
+      '#type' => 'markup',
+      '#markup' => '<div class="messages error">You do not have access to propose data files of this type. Please contact an administrator.</div>',
+    ];
+    return $form;
   }
 
   drupal_set_title($importer_class::$name);

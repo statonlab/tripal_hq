@@ -21,8 +21,11 @@ function tripal_hq_imports_admin_control_form($form, &$form_state, $op, $sid) {
 
   $submission = tripal_hq_imports_get_submission_by_id($sid);
   if (empty($submission)) {
-    drupal_not_found();
-    return [];
+    $form['warning'] = [
+      '#type' => 'markup',
+      '#markup' => '<div class="messages error">We were unable to find the submission. Please contact an administrator.</div>',
+    ];
+    return $form;
   }
 
   $importer_class = $submission->class;
@@ -109,7 +112,9 @@ function tripal_hq_imports_admin_control_form_submit($form, &$form_state) {
       //tripal_hq_send_emails($sid, 'reject');
 
       drupal_set_message('Submission rejected successfully');
-      drupal_goto('tripal_hq/admin');
+      if (!isset($form_state['no_redirect'])) {
+        drupal_goto('tripal_hq/admin');
+      }
       return TRUE;
     }
     else {
