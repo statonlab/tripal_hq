@@ -21,7 +21,7 @@ before_script:
 script:
   - docker run -it -d --rm --name tripal -v "$(pwd)":/modules/tripal_hq statonlab/tripal3
   - sleep 30 # We pause here so postgres and apache complete booting up
-  - docker exec -it tripal drush pm-enable -y tripal_hq tripal_hq_permissions
+  - docker exec -it tripal drush pm-enable -y tripal_hq tripal_hq_permissions tripal_hq_imports
   - docker exec -it tripal yum install -y php-pecl-xdebug.x86_64
   - docker exec -it tripal bash -c "cd /modules/tripal_hq && composer install && DRUPAL_ROOT=/var/www/html ./vendor/bin/phpunit --coverage-clover ./clover.xml"
 

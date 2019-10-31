@@ -16,10 +16,15 @@
     </testsuites>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
+            <file>./tripal_hq.module</file>
             <directory suffix=".inc">./includes</directory>
             <directory suffix=".php">./includes</directory>
+            <file>./tripal_hq_permissions/tripal_hq_permissions.module</file>
             <directory suffix=".inc">./tripal_hq_permissions/includes</directory>
             <directory suffix=".php">./tripal_hq_permissions/includes</directory>
+            <file>./tripal_hq_imports/tripal_hq_imports.module</file>
+            <directory suffix=".inc">./tripal_hq_imports/includes</directory>
+            <directory suffix=".php">./tripal_hq_imports/includes</directory>
         </whitelist>
     </filter>
 </phpunit>

@@ -3,3 +3,4 @@ vendor/
 .idea/
 docs/_build/*
 .DS_Store
+tests/_build
