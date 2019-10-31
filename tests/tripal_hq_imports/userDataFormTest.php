@@ -14,6 +14,7 @@ class userDataFormTest extends TripalTestCase {
    * List importers.
    *
    * @group user
+   * @group hq-imports
    */
   public function testListImportersPage() {
 

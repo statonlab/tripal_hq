@@ -13,6 +13,7 @@ class adminDashboardTest extends TripalTestCase {
    *
    * @group dashboard
    * @group admin
+   * @group hq-imports
    */
   public function testAdminDashboard() {
     module_load_include('inc', 'tripal_hq', 'includes/tripal_hq_admin_dashboard.form');

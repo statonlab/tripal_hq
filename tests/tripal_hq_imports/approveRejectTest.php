@@ -12,6 +12,10 @@ class approveRejectTest extends TripalTestCase {
 
   /**
    * Tests tripal_hq_imports_admin_control_form().
+   *
+   * @group admin
+   * @group approve-reject
+   * @group hq-imports
    */
   public function testAdminControlForm() {
     $this->actingAs(1);
@@ -93,6 +97,10 @@ class approveRejectTest extends TripalTestCase {
 
   /**
    * Tests tripal_hq_imports_admin_control_form_validate().
+   *
+   * @group admin
+   * @group approve-reject
+   * @group hq-imports
    */
   public function testAdminControlFormValidate() {
     $this->actingAs(1);

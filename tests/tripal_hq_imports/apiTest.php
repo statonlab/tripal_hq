@@ -13,6 +13,7 @@ class apiTest extends TripalTestCase {
    * Tests tripal_hg_get_importers().
    *
    * @group api
+   * @group hq-imports
    */
   public function testGetImporters() {
 

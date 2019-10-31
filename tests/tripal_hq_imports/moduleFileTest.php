@@ -12,6 +12,7 @@ class moduleFileTest extends TripalTestCase {
    * Tests hook_menu(). Specifically, are all the required keys set.
    *
    * @group core-hook
+   * @group hq-imports
    */
   public function testHookMenu() {
     $menu_items = tripal_hq_imports_menu();
@@ -32,6 +33,7 @@ class moduleFileTest extends TripalTestCase {
    * Tests hook_permission(). Specifically, are all the required keys set.
    *
    * @group core-hook
+   * @group hq-imports
    */
   public function testHookPerm() {
     $permissions = tripal_hq_imports_permission();
