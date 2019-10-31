@@ -1,0 +1,7 @@
+name = Tripal HQ Imports
+description = Extends Tripal HQ to support TripalImporters
+core = 7.x
+package = Tripal Extensions
+dependencies[] = tripal
+dependencies[] = tripal_chado
+dependencies[] = tripal_hq
