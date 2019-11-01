@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * User Dashboard.
@@ -6,6 +7,15 @@
 
 /**
  * Override the user dashboard to add data import submissions.
+ *
+ * @param array $form
+ *   The default form to be altered.
+ * @param array $form_state
+ *   The state of the form to be altered.
+ * @param string $status
+ *   The status of the submissions to show (e.g. pending).
+ * @return array
+ *   The altered form array.
  */
 function tripal_hq_imports_tripal_hq_user_dashboard_alter(&$form, &$form_state) {
    global $user;
@@ -60,7 +70,10 @@ function tripal_hq_imports_tripal_hq_user_dashboard_alter(&$form, &$form_state) 
      // Comments.
      $comments_link = $comment_count;
      if ($submission->nid) {
-       $comments_link = l('Add/View Comments (' . $comment_count . ')', 'node/' . $submission->nid);
+       $comments_link = l(
+         t('Add/View Comments (:count)', [':count' => $comment_count]),
+         'node/' . $submission->nid
+       );
      }
 
      // Edit or View link.
@@ -78,7 +91,7 @@ function tripal_hq_imports_tripal_hq_user_dashboard_alter(&$form, &$form_state) 
        $created_at,
        $updated_at,
        $comments_link,
-       $link
+       $link,
      ];
    }
 
