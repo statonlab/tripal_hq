@@ -75,6 +75,7 @@ function tripal_hq_user_importer_form($form, &$form_state) {
   $importer_class = $form_state['build_info']['args'][0];
   $success = tripal_hq_load_include_importer_class($importer_class);
   $importer_label = $importer_class::$name;
+  global $user;
 
   // Check if we should allow editing/viewing of an existing submission.
   if (isset($form_state['build_info']['args'][1])) {
