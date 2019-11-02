@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Provides utility functions.
@@ -6,6 +7,14 @@
 
 /**
  * Retrieve a list of importers.
+ *
+ * NOTE: We use this function rather then tripal_get_importers() directly due to
+ *  a bug in core which caused tests to fail. This function will use newer
+ *  versions of the function but fall back to our fix if an older version of
+ *  Tripal is used. This is great for backwards compatiblity.
+ *
+ * @return array
+ *   Returns an array listing the importers available.
  */
 function tripal_hq_get_importers() {
 
@@ -37,13 +46,15 @@ function tripal_hq_get_importers() {
 /**
  * Loads the TripalImporter class file into scope.
  *
- * @param $class
+ * NOTE: We use this function rather then tripal_load_include_importer_class()
+ *  directly due to  a bug in core which caused tests to fail. This function
+ *  will use newer versions of the function but fall back to our fix if an
+ *  older version of Tripal is used. This is great for backwards compatiblity.
+ *
+ * @param string $class
  *   The TripalImporter class to include.
- *
- * @return
+ * @return bool
  *   TRUE if the field type class file was found, FALSE otherwise.
- *
- * @ingroup tripal_importer_api
  */
 function tripal_hq_load_include_importer_class($class) {
 
@@ -67,9 +78,9 @@ function tripal_hq_load_include_importer_class($class) {
 /**
  * Returns the full submission.
  *
- * @param $submission_id
+ * @param int $submission_id
  *   The id of the submission you would like returned.
- * @return
+ * @return object
  *   An object describing the submission.
  */
 function tripal_hq_imports_get_submission_by_id($submission_id) {
@@ -84,9 +95,9 @@ function tripal_hq_imports_get_submission_by_id($submission_id) {
 /**
  * Reject a specific submission.
  *
- * @param $submission
+ * @param object $submission
  *   An object describing the submission to be rejected.
- * @return
+ * @return bool
  *   True if the rejection was successful, FALSE otherwise.
  */
 function tripal_hq_imports_reject_submission($submission) {
@@ -111,8 +122,10 @@ function tripal_hq_imports_reject_submission($submission) {
 /**
  * Approve a specific submission.
  *
- * @param $submission
+ * @param object $submission
  *   An object describing the submission to be approved.
+ * @return bool
+ *   Returns FALSE if an error is encountered, otherwise TRUE.
  */
 function tripal_hq_imports_approve_submission($submission) {
 
@@ -136,7 +149,7 @@ function tripal_hq_imports_approve_submission($submission) {
   // Now submit the tripal importer which will create the job.
   tripal_get_importer_form_submit($form, $form_state);
 
-  db_update('tripal_hq_importer_submission')
+  return db_update('tripal_hq_importer_submission')
     ->fields([
       'status' => 'approved',
       'updated_at' => time(),
@@ -148,17 +161,17 @@ function tripal_hq_imports_approve_submission($submission) {
 /**
  * Updates a given form field for edit (default value) or view (read-only) mode.
  *
- * @param $form_field
+ * @param array $form_field
  *   A form field defined using the Drupal Form API.
- * @param $values
- *  The full values list for the form.
- * @param $op
- *  One of 'edit' or 'view' where the second will be read-only.
+ * @param array $values
+ *   The full values list for the form.
+ * @param string $op
+ *   One of 'edit' or 'view' where the second will be read-only.
  */
 function tripal_hq_editview_form_field(&$form_field, $values, $element_key, $op) {
 
-  if (isset($form_field['#type']) AND ($form_field['#type'] == 'fieldset')) {
-    foreach(element_children($form_field) as $child_element) {
+  if (isset($form_field['#type']) and ($form_field['#type'] == 'fieldset')) {
+    foreach (element_children($form_field) as $child_element) {
       tripal_hq_editview_form_field($form_field[$child_element], $values, $child_element, $op);
     }
   }

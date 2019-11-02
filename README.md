@@ -15,7 +15,7 @@ For module installation and usage instructions, [please see our documentation we
 
 ## Module Features
 
-* Users create data using your existing Bundle configuration- no extra forms!
+* Users create data using your existing Bundle configuration or Importers- no extra forms!
 * User dashboard area for viewing pending submissions
 * Admin dashboard for viewing submissions
 * Chado-based permissions to create admins for certain projects or organisms

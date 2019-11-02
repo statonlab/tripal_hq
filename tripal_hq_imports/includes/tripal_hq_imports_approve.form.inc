@@ -9,13 +9,16 @@
  * Approve or reject a submission based on $op.
  *
  * @param array $form
+ *   The array describing the form.
  * @param array $form_state
+ *   An array describing the state of the form.
  * @param string $op
  *   Either "approve" or "reject".
  * @param int $sid
  *   Submission id.
  *
  * @return array
+ *   The form render array.
  */
 function tripal_hq_imports_admin_control_form($form, &$form_state, $op, $sid) {
 
@@ -74,8 +77,10 @@ function tripal_hq_imports_admin_control_form($form, &$form_state, $op, $sid) {
 /**
  * Validate the request.
  *
- * @param $form
- * @param $form_state
+ * @param array $form
+ *   The array describing the form.
+ * @param array $form_state
+ *   An array describing the state of the form.
  */
 function tripal_hq_imports_admin_control_form_validate($form, &$form_state) {
   $values = $form_state['values'];
@@ -91,8 +96,10 @@ function tripal_hq_imports_admin_control_form_validate($form, &$form_state) {
 /**
  * Approve and publish or reject a submission.
  *
- * @param $form
- * @param $form_state
+ * @param array $form
+ *   The array describing the form.
+ * @param array $form_state
+ *   An array describing the state of the form.
  */
 function tripal_hq_imports_admin_control_form_submit($form, &$form_state) {
   $values = $form_state['values'];
@@ -105,7 +112,6 @@ function tripal_hq_imports_admin_control_form_submit($form, &$form_state) {
     // @todo implement api function.
     $rejected = tripal_hq_imports_reject_submission($submission);
     if ($rejected) {
-
 
       // @todo currently we cant use tripal_hq_send_emails() since it retrieves
       //       the submission with the assumption of db table.

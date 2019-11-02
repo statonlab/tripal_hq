@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * User submissions.
@@ -14,7 +15,8 @@
    global $user;
    $page = [];
 
-   // We might also add a warning for *admin* users to use the actual tripal import forms.
+   // We might also add a warning for *admin* users to use the actual tripal
+   // import forms.
    $page['description'] = [
      '#type' => 'markup',
      '#prefix' => '<p>',
@@ -105,7 +107,7 @@ function tripal_hq_user_importer_form($form, &$form_state) {
   }
 
   // Ensure the user has permission to propose that file type.
-  if (($user->uid === 0) OR (!user_access("propose $importer_label"))) {
+  if (($user->uid === 0) or (!user_access("propose $importer_label"))) {
     $form['warning'] = [
       '#type' => 'markup',
       '#markup' => '<div class="messages error">You do not have access to propose data files of this type. Please contact an administrator.</div>',

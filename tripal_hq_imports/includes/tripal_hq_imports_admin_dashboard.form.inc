@@ -1,11 +1,21 @@
 <?php
+
 /**
  * @file
- *
+ * Provides changes to the administrative dashboard for tripal HQ imports.
  */
 
  /**
   * Alter the administration dashboard to add our submissions.
+  *
+  * @param array $form
+  *   The default form to be altered.
+  * @param array $form_state
+  *   The state of the form to be altered.
+  * @param string $status
+  *   The status of the submissions to show (e.g. pending).
+  * @return array
+  *   The altered form array.
   */
  function tripal_hq_imports_tripal_hq_admin_dashboard_alter(&$form, &$form_state, $status) {
    global $user;
@@ -44,8 +54,8 @@
      'Comments' => [
        'data' => t('Comments'),
      ],
-     'Approve',
-     'Reject',
+     'approve_link' => 'Approve',
+     'reject_link' => 'Reject',
    ];
 
    // @todo support HQ deputy permissmissions!
@@ -101,7 +111,10 @@
      // Comments.
      $comments_link = $comment_count;
      if ($request->nid) {
-       $comments_link = l('Add/View Comments (' . $comment_count . ')', 'node/' . $request->nid);
+       $comments_link = l(
+         t('Add/View Comments (:count)', [':count' => $comment_count]),
+         'node/' . $request->nid
+       );
      }
 
      // Approve or Deny.
@@ -110,7 +123,6 @@
        $approve = l(t('Approve'), 'tripal_hq/admin/data-imports/approve/' . $request->id);
        $reject = l(t('Reject'), 'tripal_hq/admin/data-imports/reject/' . $request->id);
      }
-
 
      // Now compile the row.
      $rows[] = [
@@ -121,7 +133,7 @@
        $created_at,
        $comments_link,
        $approve,
-       $reject
+       $reject,
      ];
    }
 
@@ -130,7 +142,8 @@
      '#header' => $header,
      '#rows' => $rows,
      '#caption' => '<h3>' . t('Data Files') . '</h3>',
-     '#empty' => t("There are no $status data file submissions."),
+     '#empty' => t('There are no :status data file submissions.',
+       [':status' => $status]),
    ];
 
    $form['importer_pager'] = [
