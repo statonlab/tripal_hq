@@ -5,75 +5,74 @@
  * User submissions.
  */
 
- /**
-  * Provides the page view for user importer submissions.
-  *
-  * @return array
-  *   Array of markup describing bundles.
-  */
- function tripal_hq_import_list_importers_page() {
-   global $user;
-   $page = [];
+/**
+ * Provides the page view for user importer submissions.
+ *
+ * @return array
+ *   Array of markup describing bundles.
+ */
+function tripal_hq_import_list_importers_page() {
+  global $user;
+  $page = [];
 
-   // We might also add a warning for *admin* users to use the actual tripal
-   // import forms.
-   $page['description'] = [
-     '#type' => 'markup',
-     '#prefix' => '<p>',
-     '#markup' => t('Please click a data type below to submit a new data file and associated metadata for admin approval.'),
-     '#suffix' => '</p>',
-   ];
+  // We might also add a warning for *admin* users to use the actual tripal
+  // import forms.
+  $page['description'] = [
+    '#type' => 'markup',
+    '#prefix' => '<p>',
+    '#markup' => t('Please click a data type below to submit a new data file and associated metadata for admin approval.'),
+    '#suffix' => '</p>',
+  ];
 
-   $user_has_stuff = 0;
-   $importers = tripal_hq_get_importers();
-   foreach ($importers as $importer_class) {
+  $user_has_stuff = 0;
+  $importers = tripal_hq_get_importers();
+  foreach ($importers as $importer_class) {
 
-     // Pull some important info out of the class.
-     $importer_label = $importer_class::$name;
-     $importer_machine_name = $importer_class::$machine_name;
-     $importer_description = $importer_class::$description;
+    // Pull some important info out of the class.
+    $importer_label = $importer_class::$name;
+    $importer_machine_name = $importer_class::$machine_name;
+    $importer_description = $importer_class::$description;
 
-     // Ensure the user has permission to propose that file type.
-     if (($user->uid === 0) OR (!user_access("propose $importer_label"))) {
-       continue;
-     }
-     $user_has_stuff = 1;
+    // Ensure the user has permission to propose that file type.
+    if (($user->uid === 0) or (!user_access("propose $importer_label"))) {
+      continue;
+    }
+    $user_has_stuff = 1;
 
+    $link = l($importer_label,
+      "tripal_hq/bio_data/import-data/$importer_class");
+    $page[$importer_machine_name] = [
+      '#type' => 'item',
+      '#markup' => $link,
+      '#description' => $importer_description,
+    ];
+  }
 
-     $link = l($importer_label,
-        "tripal_hq/bio_data/import-data/$importer_class");
-     $page[$importer_machine_name] = [
-       '#type' => 'item',
-       '#markup' => $link,
-       '#description' => $importer_description,
-     ];
-   }
+  if ($user_has_stuff === 0) {
+    $page['description'] = [
+      '#type' => 'markup',
+      '#prefix' => '<p>',
+      '#markup' => t('You do not have site permissions to submit data files for consideration.'),
+      '#suffix' => '</p>',
+    ];
 
-   if ($user_has_stuff === 0) {
-     $page['description'] = [
-       '#type' => 'markup',
-       '#prefix' => '<p>',
-       '#markup' => t('You do not have site permissions to submit data files for consideration.'),
-       '#suffix' => '</p>',
-     ];
+  }
 
-   }
+  return $page;
+}
 
-   return $page;
- }
-
- /**
-  * TripalImporter submission form.
-  *
-  * @param int $importer_class
-  *   The class name for the importer to show the form for.
-  * @param int $sid
-  *   Submission ID.
-  *
-  * @return array
-  *   Renderable array.
-  */
-function tripal_hq_user_importer_form($form, &$form_state) {
+/**
+ * TripalImporter submission form.
+ *
+ * @param array $form
+ *   The form array.
+ * @param array $form_state
+ *   The state of the form.
+ *
+ * @return array
+ *   Renderable array.
+ */
+function tripal_hq_user_importer_form(array $form, array &$form_state) {
   $importer_class = $form_state['build_info']['args'][0];
   $success = tripal_hq_load_include_importer_class($importer_class);
   $importer_label = $importer_class::$name;
@@ -122,11 +121,12 @@ function tripal_hq_user_importer_form($form, &$form_state) {
   $form = tripal_get_importer_form($form, $importer_form_state, $importer_class);
 
   // Most importers don't actually fill in defaults since they expect to be
-  // sumbitted only once. As such, we should still fill in the defaults ourselves.
+  // sumbitted only once. As such, we should still fill in the
+  // defaults ourselves.
   if (isset($importer_form_state['values'])) {
 
     // Ensure people do not try to edit submissions which are no longer pending.
-    if (($op != 'edit') OR ($status != 'pending')) {
+    if (($op != 'edit') or ($status != 'pending')) {
       $op = 'view';
     }
 
@@ -163,9 +163,8 @@ function tripal_hq_user_importer_form_submit($form, $form_state) {
   if ($sid) {
 
     // @todo currently we cant use tripal_hq_send_emails() since it retrieves
-    //       the submission with the assumption of db table.
-    //tripal_hq_send_emails($sid, 'submit');
-
+    //   the submission with the assumption of db table.
+    // tripal_hq_send_emails($sid, 'submit');
     if (isset($form_state['values']['submission_id'])) {
       drupal_set_message(
         'Submission created successfully. We will review your submission and get
