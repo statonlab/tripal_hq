@@ -84,7 +84,7 @@ function tripal_hq_imports_permission() {
     $importer_description = $importer_class::$description;
 
     // Publication importer is not supported.
-    if ($importer_class == 'PubBulkImporter' OR $importer_class == 'OBOImporter') {
+    if ($importer_class == 'PubBulkImporter' or $importer_class == 'OBOImporter') {
       continue;
     }
 

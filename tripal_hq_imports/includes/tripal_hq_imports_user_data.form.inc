@@ -34,10 +34,10 @@ function tripal_hq_import_list_importers_page() {
     $importer_description = $importer_class::$description;
 
     // Publication importer is not supported.
-    if ($importer_class == 'PubBulkImporter' OR $importer_class == 'OBOImporter') {
+    if ($importer_class == 'PubBulkImporter' or $importer_class == 'OBOImporter') {
       continue;
     }
-    
+
     // Ensure the user has permission to propose that file type.
     if (($user->uid === 0) or (!user_access("propose $importer_label"))) {
       continue;
@@ -84,7 +84,7 @@ function tripal_hq_user_importer_form(array $form, array &$form_state) {
   global $user;
 
   // Tripal Bulk publication importer not supported.
-  if ($importer_class == 'PubBulkImporter' OR $importer_class == 'OBOImporter') {
+  if ($importer_class == 'PubBulkImporter' or $importer_class == 'OBOImporter') {
     return drupal_not_found();
   }
 
