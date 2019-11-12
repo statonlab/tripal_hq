@@ -53,6 +53,7 @@ function tripal_hq_get_importers() {
  *
  * @param string $class
  *   The TripalImporter class to include.
+ *
  * @return bool
  *   TRUE if the field type class file was found, FALSE otherwise.
  */
@@ -80,6 +81,7 @@ function tripal_hq_load_include_importer_class($class) {
  *
  * @param int $submission_id
  *   The id of the submission you would like returned.
+ *
  * @return object
  *   An object describing the submission.
  */
@@ -97,6 +99,7 @@ function tripal_hq_imports_get_submission_by_id($submission_id) {
  *
  * @param object $submission
  *   An object describing the submission to be rejected.
+ *
  * @return bool
  *   True if the rejection was successful, FALSE otherwise.
  */
@@ -124,6 +127,7 @@ function tripal_hq_imports_reject_submission($submission) {
  *
  * @param object $submission
  *   An object describing the submission to be approved.
+ *
  * @return bool
  *   Returns FALSE if an error is encountered, otherwise TRUE.
  */
@@ -165,10 +169,12 @@ function tripal_hq_imports_approve_submission($submission) {
  *   A form field defined using the Drupal Form API.
  * @param array $values
  *   The full values list for the form.
+ * @param string $element_key
+ *   THe key of the element to be checked.
  * @param string $op
  *   One of 'edit' or 'view' where the second will be read-only.
  */
-function tripal_hq_editview_form_field(&$form_field, $values, $element_key, $op) {
+function tripal_hq_editview_form_field(array &$form_field, array $values, $element_key, $op) {
 
   if (isset($form_field['#type']) and ($form_field['#type'] == 'fieldset')) {
     foreach (element_children($form_field) as $child_element) {

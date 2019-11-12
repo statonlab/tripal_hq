@@ -4,7 +4,9 @@
   },
   "require-dev": {
     "statonlab/tripal-test-suite": "1.5.*",
-    "phpunit/php-code-coverage": "^6.1"
+    "phpunit/php-code-coverage": "^6.1",
+    "squizlabs/php_codesniffer": "^2.9.1",
+    "drupal/coder": "^8.2"
   },
   "autoload": {
     "psr-4": {

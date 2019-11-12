@@ -20,7 +20,7 @@
  * @return array
  *   The form render array.
  */
-function tripal_hq_imports_admin_control_form($form, &$form_state, $op, $sid) {
+function tripal_hq_imports_admin_control_form(array $form, array &$form_state, $op, $sid) {
 
   $submission = tripal_hq_imports_get_submission_by_id($sid);
   if (empty($submission)) {
@@ -82,7 +82,7 @@ function tripal_hq_imports_admin_control_form($form, &$form_state, $op, $sid) {
  * @param array $form_state
  *   An array describing the state of the form.
  */
-function tripal_hq_imports_admin_control_form_validate($form, &$form_state) {
+function tripal_hq_imports_admin_control_form_validate(array $form, array &$form_state) {
   $values = $form_state['values'];
   $op = isset($values['operation']) ? $values['operation'] : '';
   $sid = isset($values['submission_id']) ? $values['submission_id'] : '';
@@ -101,7 +101,7 @@ function tripal_hq_imports_admin_control_form_validate($form, &$form_state) {
  * @param array $form_state
  *   An array describing the state of the form.
  */
-function tripal_hq_imports_admin_control_form_submit($form, &$form_state) {
+function tripal_hq_imports_admin_control_form_submit(array $form, array &$form_state) {
   $values = $form_state['values'];
   $op = $values['operation'];
   $sid = $values['submission_id'];
@@ -114,9 +114,8 @@ function tripal_hq_imports_admin_control_form_submit($form, &$form_state) {
     if ($rejected) {
 
       // @todo currently we cant use tripal_hq_send_emails() since it retrieves
-      //       the submission with the assumption of db table.
-      //tripal_hq_send_emails($sid, 'reject');
-
+      //   the submission with the assumption of db table.
+      // tripal_hq_send_emails($sid, 'reject');
       drupal_set_message('Submission rejected successfully');
       if (!isset($form_state['no_redirect'])) {
         drupal_goto('tripal_hq/admin');
@@ -133,9 +132,8 @@ function tripal_hq_imports_admin_control_form_submit($form, &$form_state) {
   tripal_hq_imports_approve_submission($submission);
 
   // @todo currently we cant use tripal_hq_send_emails() since it retrieves
-  //       the submission with the assumption of db table.
-  //tripal_hq_send_emails($sid, 'approve');
-
+  //   the submission with the assumption of db table.
+  // tripal_hq_send_emails($sid, 'approve');
   if (!isset($form_state['no_redirect'])) {
     drupal_goto('tripal_hq/admin');
   }
