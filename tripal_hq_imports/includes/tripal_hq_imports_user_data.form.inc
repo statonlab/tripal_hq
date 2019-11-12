@@ -131,6 +131,12 @@ function tripal_hq_user_importer_form($form, &$form_state) {
   module_load_include('inc', 'tripal', 'includes/tripal.importer');
   $form = tripal_get_importer_form($form, $importer_form_state, $importer_class);
 
+  // Disable local and remote file uplaod for security reasons.
+  if (isset($form['file'])) {
+    $form['file']['file_local']['#disabled'] = TRUE;
+    $form['file']['file_remote']['#disabled'] = TRUE;
+  }
+
   // Most importers don't actually fill in defaults since they expect to be
   // sumbitted only once. As such, we should still fill in the defaults ourselves.
   if (isset($importer_form_state['values'])) {
