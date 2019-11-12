@@ -112,7 +112,7 @@
      $comments_link = $comment_count;
      if ($request->nid) {
        $comments_link = l(
-         t('Add/View Comments (:count)', [':count' => $comment_count]),
+         t('Add/View Comments (@count)', ['@count' => $comment_count]),
          'node/' . $request->nid
        );
      }
@@ -142,8 +142,8 @@
      '#header' => $header,
      '#rows' => $rows,
      '#caption' => '<h3>' . t('Data Files') . '</h3>',
-     '#empty' => t('There are no :status data file submissions.',
-       [':status' => $status]),
+     '#empty' => t('There are no @status data file submissions.',
+       ['@status' => $status]),
    ];
 
    $form['importer_pager'] = [

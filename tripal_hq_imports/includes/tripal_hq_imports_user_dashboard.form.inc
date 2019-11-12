@@ -71,7 +71,7 @@ function tripal_hq_imports_tripal_hq_user_dashboard_alter(&$form, &$form_state) 
      $comments_link = $comment_count;
      if ($submission->nid) {
        $comments_link = l(
-         t('Add/View Comments (:count)', [':count' => $comment_count]),
+         t('Add/View Comments (@count)', ['@count' => $comment_count]),
          'node/' . $submission->nid
        );
      }
