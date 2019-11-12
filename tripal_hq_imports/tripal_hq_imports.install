@@ -1,0 +1,73 @@
+<?php
+
+/**
+ * @file
+ * Handles installation of the module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function tripal_hq_imports_schema() {
+
+  $schema['tripal_hq_importer_submission'] = [
+    'description' => 'Store pending user requests to import files.',
+    'fields'      => [
+      'id'         => [
+        'type'     => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'uid'        => [
+        'description' => "Drupal user ID of submitter",
+        'type'        => 'int',
+        'not null'    => TRUE,
+      ],
+      'nid'        => [
+        'description' => "Comments node ID",
+        'type'        => 'int',
+        'not null'    => FALSE,
+      ],
+      'job_id'        => [
+        'description' => "The id of the tripal job which ran the importer once approved.",
+        'type'        => 'int',
+        'not null'    => FALSE,
+      ],
+      'class'         => [
+        'description' => "The importer class the file and metadata is associated with.",
+        'type'        => 'varchar',
+        'length'      => 255,
+        'not null'    => FALSE,
+      ],
+      'data'       => [
+        'description' => 'Serialized tripal importer data.',
+        'type'        => 'blob',
+        'size'        => 'big',
+        'serialize'   => TRUE,
+      ],
+      'status'     => [
+        'description' => 'One of pending, published, rejected, obsolete',
+        'type'        => 'varchar',
+        'length'      => '60',
+        'not null'    => TRUE,
+      ],
+      'created_at' => [
+        'description' => 'Date submission created',
+        'type'        => 'int',
+        'size'        => 'big',
+        'not null'    => TRUE,
+      ],
+      'updated_at' => [
+        'description' => 'Date submission updated',
+        'type'        => 'int',
+        'size'        => 'big',
+        'not null'    => FALSE,
+      ],
+    ],
+    'primary key' => [
+      'id',
+    ],
+  ];
+
+  return $schema;
+}

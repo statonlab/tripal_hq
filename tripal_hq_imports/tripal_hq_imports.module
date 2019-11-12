@@ -1,0 +1,102 @@
+<?php
+
+/**
+ * @file
+ * Contains core drupal hook implementations.
+ */
+
+require_once 'includes/tripal_hq_imports.api.inc';
+require_once 'includes/tripal_hq_imports_user_dashboard.form.inc';
+require_once 'includes/tripal_hq_imports_admin_dashboard.form.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function tripal_hq_imports_menu() {
+  $items = [];
+
+  // Content control (adding/deleting/editing).
+  $items['tripal_hq/bio_data/import-data'] = [
+    'title' => 'Import data file',
+    'description' => 'Submit a data file for import.',
+    'page callback' => 'tripal_hq_import_list_importers_page',
+    'access arguments' => ['access tripal_hq user'],
+    'file' => 'includes/tripal_hq_imports_user_data.form.inc',
+    'type' => MENU_LOCAL_ACTION,
+  ];
+
+  $items['tripal_hq/bio_data/import-data/%'] = [
+    'title' => 'Import data file',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => ['tripal_hq_user_importer_form', 3],
+    'access arguments' => ['access tripal_hq user'],
+    'file' => 'includes/tripal_hq_imports_user_data.form.inc',
+  ];
+
+  $items['tripal_hq/bio_data/import-data/edit/%/%'] = [
+    'title' => 'Import data file',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => ['tripal_hq_user_importer_form', 4, 5, 3],
+    'access arguments' => ['access tripal_hq user'],
+    'file' => 'includes/tripal_hq_imports_user_data.form.inc',
+  ];
+
+  $items['tripal_hq/bio_data/import-data/view/%/%'] = [
+    'title' => 'Import data file',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => ['tripal_hq_user_importer_form', 4, 5, 3],
+    'access arguments' => ['access tripal_hq user'],
+    'file' => 'includes/tripal_hq_imports_user_data.form.inc',
+  ];
+
+  $items['tripal_hq/admin/data-imports/approve/%'] = [
+    'title' => 'Tripal HQ Data Import Approve',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_imports_approve.form.inc',
+    'access arguments' => ['access tripal_hq admin'],
+    'page arguments' => ['tripal_hq_imports_admin_control_form', 'approve', 4],
+  ];
+
+  $items['tripal_hq/admin/data-imports/reject/%'] = [
+    'title' => 'Tripal HQ Data Import Reject',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/tripal_hq_imports_approve.form.inc',
+    'access arguments' => ['access tripal_hq admin'],
+    'page arguments' => ['tripal_hq_imports_admin_control_form', 'reject', 4],
+  ];
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function tripal_hq_imports_permission() {
+  $permissions = [];
+
+  // Add permissions for each importer.
+  $importers = tripal_hq_get_importers();
+  foreach ($importers as $importer_class) {
+
+    // Pull some important info out of the class.
+    $importer_label = $importer_class::$name;
+    $importer_machine_name = $importer_class::$machine_name;
+    $importer_description = $importer_class::$description;
+
+    // Publication importer is not supported.
+    if ($importer_class == 'PubBulkImporter' or $importer_class == 'OBOImporter') {
+      continue;
+    }
+
+    $permissions['propose ' . $importer_label] = [
+      'title' => t(
+        '%label: Propose Tripal HQ Data File', ['%label' => $importer_label]
+      ),
+      'description' => t(
+        'Allow the user to propose %label data files for import into your site. No data will be imported until an administrator approves the submission.', ['%label' => $importer_label]
+      ),
+    ];
+  }
+
+  return $permissions;
+}

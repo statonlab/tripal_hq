@@ -1,0 +1,7 @@
+name = Tripal Headquarters Imports
+description = Provides support for data loaders.
+core = 7.x
+package = Tripal Extensions: Tripal Headquarters
+dependencies[] = tripal
+dependencies[] = tripal_chado
+dependencies[] = tripal_hq

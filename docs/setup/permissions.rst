@@ -14,6 +14,7 @@ On installation, HQ defines the following permissions:
 * **Administer CHADO-specific Tripal HQ content**: Lets you specify what Chado content a user can administer.
 * **Create Tripal HQ content requests**: Allows users to submit content requests and view their dashboard.
 * **Propose Tripal HQ Content** permission for each of your defined bundles.  This will let you configure which bundles can be proposed by users.
+* **Propose Tripal HQ Data File** permission for each available Tripal Importer.  This will let you configure which importers can be proposed by users.
 
 To get started, you'll need to create a role for your content submitters, and give them the "Create Tripal Content Requests" permission, plus whatever specific bundle permissions you'd like them to see.
 
