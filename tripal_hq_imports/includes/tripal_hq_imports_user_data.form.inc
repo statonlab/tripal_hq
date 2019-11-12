@@ -33,6 +33,11 @@
      $importer_machine_name = $importer_class::$machine_name;
      $importer_description = $importer_class::$description;
 
+     // Publication importer is not supported.
+     if ($importer_class == 'PubBulkImporter' OR $importer_class == 'OBOImporter') {
+       continue;
+     }
+
      // Ensure the user has permission to propose that file type.
      if (($user->uid === 0) OR (!user_access("propose $importer_label"))) {
        continue;
@@ -77,6 +82,12 @@ function tripal_hq_user_importer_form($form, &$form_state) {
   $importer_class = $form_state['build_info']['args'][0];
   $success = tripal_hq_load_include_importer_class($importer_class);
   $importer_label = $importer_class::$name;
+  global $user;
+
+  // Tripal Bulk publication importer not supported.
+  if ($importer_class == 'PubBulkImporter' OR $importer_class == 'OBOImporter') {
+    return drupal_not_found();
+  }
 
   // Check if we should allow editing/viewing of an existing submission.
   if (isset($form_state['build_info']['args'][1])) {

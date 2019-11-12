@@ -83,6 +83,11 @@ function tripal_hq_imports_permission() {
     $importer_machine_name = $importer_class::$machine_name;
     $importer_description = $importer_class::$description;
 
+    // Publication importer is not supported.
+    if ($importer_class == 'PubBulkImporter' OR $importer_class == 'OBOImporter') {
+      continue;
+    }
+
     $permissions['propose ' . $importer_label] = [
       'title' => t(
         '%label: Propose Tripal HQ Data File', ['%label' => $importer_label]
